@@ -12,9 +12,9 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory("libraries/glfw")
 
-include_directories("libraries")
-
 add_executable("${PROJECT_NAME}" main.cpp glad.c interface/interface.cpp interface/interface.h)
+
+include_directories("libraries")
 
 target_link_libraries("${PROJECT_NAME}" OpenGL::GL)
 

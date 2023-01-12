@@ -1,6 +1,8 @@
 #include <string>
 #include <iostream>
+#include <glad/glad.h>
 #include "GLFW/glfw3.h"
+
 
 static bool throw_exit = false;
 static double timer = 0;
@@ -50,12 +52,6 @@ int run() {
 
     GLFWwindow* window;
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-//
-//    if(!gladLoadGL()){
-//        printf("Something went wrong!\n");
-//        glfwTerminate();
-//        return -1;
-//    }
 
     if (!window)
     {
@@ -65,6 +61,13 @@ int run() {
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+
+    //Needs to go after makeContextCurrent
+    if(!gladLoadGL()){
+        printf("Something went wrong!\n");
+        glfwTerminate();
+        return -1;
+    }
 
     /* register input callbacks */
     glfwSetKeyCallback(window, key_callback);
