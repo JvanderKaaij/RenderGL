@@ -52,14 +52,14 @@ build cmake_object_order_depends_target_RenderGL: phony || cmake_object_order_de
 build CMakeFiles/RenderGL.dir/main.cpp.obj: CXX_COMPILER__RenderGL_Debug D$:/UserProjects/Joey/C++/RenderGL/main.cpp || cmake_object_order_depends_target_RenderGL
   DEP_FILE = CMakeFiles\RenderGL.dir\main.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include
   OBJECT_DIR = CMakeFiles\RenderGL.dir
   OBJECT_FILE_DIR = CMakeFiles\RenderGL.dir
 
 build CMakeFiles/RenderGL.dir/interface/interface.cpp.obj: CXX_COMPILER__RenderGL_Debug D$:/UserProjects/Joey/C++/RenderGL/interface/interface.cpp || cmake_object_order_depends_target_RenderGL
   DEP_FILE = CMakeFiles\RenderGL.dir\interface\interface.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include
   OBJECT_DIR = CMakeFiles\RenderGL.dir
   OBJECT_FILE_DIR = CMakeFiles\RenderGL.dir\interface
 
@@ -71,9 +71,9 @@ build CMakeFiles/RenderGL.dir/interface/interface.cpp.obj: CXX_COMPILER__RenderG
 #############################################
 # Link the executable RenderGL.exe
 
-build RenderGL.exe: CXX_EXECUTABLE_LINKER__RenderGL_Debug CMakeFiles/RenderGL.dir/main.cpp.obj CMakeFiles/RenderGL.dir/interface/interface.cpp.obj | libraries/glfw-3.3.8/src/libglfw3.a || libraries/glfw-3.3.8/src/libglfw3.a
+build RenderGL.exe: CXX_EXECUTABLE_LINKER__RenderGL_Debug CMakeFiles/RenderGL.dir/main.cpp.obj CMakeFiles/RenderGL.dir/interface/interface.cpp.obj | libraries/GLFW/src/libglfw3.a || libraries/GLFW/src/libglfw3.a
   FLAGS = -g
-  LINK_LIBRARIES = -lopengl32  libraries/glfw-3.3.8/src/libglfw3.a  -lopengl32  -lglu32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_LIBRARIES = -lopengl32  libraries/GLFW/src/libglfw3.a  -lopengl32  -lglu32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\RenderGL.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
@@ -155,90 +155,84 @@ build install/strip: phony CMakeFiles/install/strip.util
 #############################################
 # Utility command for uninstall
 
-build libraries/glfw-3.3.8/uninstall: phony libraries/glfw-3.3.8/CMakeFiles/uninstall
+build libraries/GLFW/uninstall: phony libraries/GLFW/CMakeFiles/uninstall
 
 
 #############################################
 # Utility command for edit_cache
 
-build libraries/glfw-3.3.8/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\glfw-3.3.8 && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+build libraries/GLFW/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\GLFW && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
   DESC = No interactive CMake dialog available...
   restat = 1
 
-build libraries/glfw-3.3.8/edit_cache: phony libraries/glfw-3.3.8/CMakeFiles/edit_cache.util
+build libraries/GLFW/edit_cache: phony libraries/GLFW/CMakeFiles/edit_cache.util
 
 
 #############################################
 # Utility command for rebuild_cache
 
-build libraries/glfw-3.3.8/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\glfw-3.3.8 && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" --regenerate-during-build -SD:\UserProjects\Joey\C++\RenderGL -BD:\UserProjects\Joey\C++\RenderGL\cmake-build-debug"
+build libraries/GLFW/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\GLFW && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" --regenerate-during-build -SD:\UserProjects\Joey\C++\RenderGL -BD:\UserProjects\Joey\C++\RenderGL\cmake-build-debug"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
 
-build libraries/glfw-3.3.8/rebuild_cache: phony libraries/glfw-3.3.8/CMakeFiles/rebuild_cache.util
+build libraries/GLFW/rebuild_cache: phony libraries/GLFW/CMakeFiles/rebuild_cache.util
 
 
 #############################################
 # Utility command for list_install_components
 
-build libraries/glfw-3.3.8/list_install_components: phony
+build libraries/GLFW/list_install_components: phony
 
 
 #############################################
 # Utility command for install
 
-build libraries/glfw-3.3.8/CMakeFiles/install.util: CUSTOM_COMMAND libraries/glfw-3.3.8/all
-  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\glfw-3.3.8 && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -P cmake_install.cmake"
+build libraries/GLFW/CMakeFiles/install.util: CUSTOM_COMMAND libraries/GLFW/all
+  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\GLFW && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -P cmake_install.cmake"
   DESC = Install the project...
   pool = console
   restat = 1
 
-build libraries/glfw-3.3.8/install: phony libraries/glfw-3.3.8/CMakeFiles/install.util
+build libraries/GLFW/install: phony libraries/GLFW/CMakeFiles/install.util
 
 
 #############################################
 # Utility command for install/local
 
-build libraries/glfw-3.3.8/CMakeFiles/install/local.util: CUSTOM_COMMAND libraries/glfw-3.3.8/all
-  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\glfw-3.3.8 && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake"
+build libraries/GLFW/CMakeFiles/install/local.util: CUSTOM_COMMAND libraries/GLFW/all
+  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\GLFW && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake"
   DESC = Installing only the local directory...
   pool = console
   restat = 1
 
-build libraries/glfw-3.3.8/install/local: phony libraries/glfw-3.3.8/CMakeFiles/install/local.util
+build libraries/GLFW/install/local: phony libraries/GLFW/CMakeFiles/install/local.util
 
 
 #############################################
 # Utility command for install/strip
 
-build libraries/glfw-3.3.8/CMakeFiles/install/strip.util: CUSTOM_COMMAND libraries/glfw-3.3.8/all
-  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\glfw-3.3.8 && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake"
+build libraries/GLFW/CMakeFiles/install/strip.util: CUSTOM_COMMAND libraries/GLFW/all
+  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\GLFW && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake"
   DESC = Installing the project stripped...
   pool = console
   restat = 1
 
-build libraries/glfw-3.3.8/install/strip: phony libraries/glfw-3.3.8/CMakeFiles/install/strip.util
+build libraries/GLFW/install/strip: phony libraries/GLFW/CMakeFiles/install/strip.util
 
 
 #############################################
-# Custom command for libraries\glfw-3.3.8\CMakeFiles\uninstall
+# Custom command for libraries\GLFW\CMakeFiles\uninstall
 
-build libraries/glfw-3.3.8/CMakeFiles/uninstall | ${cmake_ninja_workdir}libraries/glfw-3.3.8/CMakeFiles/uninstall: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\glfw-3.3.8 && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -P D:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/cmake_uninstall.cmake"
+build libraries/GLFW/CMakeFiles/uninstall | ${cmake_ninja_workdir}libraries/GLFW/CMakeFiles/uninstall: CUSTOM_COMMAND
+  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\GLFW && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -P D:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/cmake_uninstall.cmake"
 
 # =============================================================================
 # Write statements declared in CMakeLists.txt:
-# D:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/CMakeLists.txt
+# D:/UserProjects/Joey/C++/RenderGL/libraries/glfw/CMakeLists.txt
 # =============================================================================
-
-
-#############################################
-# Utility command for update_mappings
-
-build libraries/glfw-3.3.8/src/update_mappings: phony libraries/glfw-3.3.8/src/CMakeFiles/update_mappings
 
 # =============================================================================
 # Object build statements for STATIC_LIBRARY target glfw
@@ -247,127 +241,175 @@ build libraries/glfw-3.3.8/src/update_mappings: phony libraries/glfw-3.3.8/src/C
 #############################################
 # Order-only phony target for glfw
 
-build cmake_object_order_depends_target_glfw: phony || libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir
+build cmake_object_order_depends_target_glfw: phony || libraries/GLFW/src/CMakeFiles/glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/context.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/context.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\context.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/context.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/context.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\context.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/init.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/init.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\init.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/init.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/init.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\init.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/input.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/input.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\input.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/input.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/input.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\input.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/monitor.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/monitor.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\monitor.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/monitor.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/monitor.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\monitor.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/vulkan.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/vulkan.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\vulkan.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/platform.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/platform.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\platform.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/window.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/window.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\window.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/vulkan.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/vulkan.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\vulkan.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/win32_init.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/win32_init.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\win32_init.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/window.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/window.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\window.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/win32_joystick.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/win32_joystick.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\win32_joystick.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/egl_context.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/egl_context.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\egl_context.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/win32_monitor.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/win32_monitor.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\win32_monitor.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/osmesa_context.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/osmesa_context.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\osmesa_context.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/win32_time.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/win32_time.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\win32_time.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/null_init.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/null_init.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\null_init.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/win32_thread.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/win32_thread.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\win32_thread.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/null_monitor.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/null_monitor.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\null_monitor.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/win32_window.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/win32_window.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\win32_window.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/null_window.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/null_window.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\null_window.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/wgl_context.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/wgl_context.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\wgl_context.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/null_joystick.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/null_joystick.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\null_joystick.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/egl_context.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/egl_context.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\egl_context.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/win32_module.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/win32_module.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\win32_module.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
-build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/osmesa_context.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src/osmesa_context.c || cmake_object_order_depends_target_glfw
-  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE
-  DEP_FILE = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir\osmesa_context.c.obj.d
-  FLAGS = -g -Wall -std=gnu99 -Wdeclaration-after-statement
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
-  OBJECT_FILE_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+build libraries/GLFW/src/CMakeFiles/glfw.dir/win32_time.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/win32_time.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\win32_time.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+
+build libraries/GLFW/src/CMakeFiles/glfw.dir/win32_thread.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/win32_thread.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\win32_thread.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+
+build libraries/GLFW/src/CMakeFiles/glfw.dir/win32_init.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/win32_init.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\win32_init.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+
+build libraries/GLFW/src/CMakeFiles/glfw.dir/win32_joystick.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/win32_joystick.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\win32_joystick.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+
+build libraries/GLFW/src/CMakeFiles/glfw.dir/win32_monitor.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/win32_monitor.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\win32_monitor.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+
+build libraries/GLFW/src/CMakeFiles/glfw.dir/win32_window.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/win32_window.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\win32_window.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+
+build libraries/GLFW/src/CMakeFiles/glfw.dir/wgl_context.c.obj: C_COMPILER__glfw_Debug D$:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src/wgl_context.c || cmake_object_order_depends_target_glfw
+  DEFINES = -DUNICODE -DWINVER=0x0501 -D_GLFW_WIN32 -D_UNICODE
+  DEP_FILE = libraries\GLFW\src\CMakeFiles\glfw.dir\wgl_context.c.obj.d
+  FLAGS = -g -Wall -std=c99 -Wdeclaration-after-statement
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/src -ID:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
+  OBJECT_FILE_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
 
 
 # =============================================================================
@@ -375,87 +417,93 @@ build libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/osmesa_context.c.obj: C_COMPI
 
 
 #############################################
-# Link the static library libraries\glfw-3.3.8\src\libglfw3.a
+# Link the static library libraries\GLFW\src\libglfw3.a
 
-build libraries/glfw-3.3.8/src/libglfw3.a: C_STATIC_LIBRARY_LINKER__glfw_Debug libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/context.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/init.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/input.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/monitor.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/vulkan.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/window.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/win32_init.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/win32_joystick.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/win32_monitor.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/win32_time.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/win32_thread.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/win32_window.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/wgl_context.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/egl_context.c.obj libraries/glfw-3.3.8/src/CMakeFiles/glfw.dir/osmesa_context.c.obj
+build libraries/GLFW/src/libglfw3.a: C_STATIC_LIBRARY_LINKER__glfw_Debug libraries/GLFW/src/CMakeFiles/glfw.dir/context.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/init.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/input.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/monitor.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/platform.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/vulkan.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/window.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/egl_context.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/osmesa_context.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/null_init.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/null_monitor.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/null_window.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/null_joystick.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/win32_module.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/win32_time.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/win32_thread.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/win32_init.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/win32_joystick.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/win32_monitor.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/win32_window.c.obj libraries/GLFW/src/CMakeFiles/glfw.dir/wgl_context.c.obj
   LANGUAGE_COMPILE_FLAGS = -g
-  OBJECT_DIR = libraries\glfw-3.3.8\src\CMakeFiles\glfw.dir
+  OBJECT_DIR = libraries\GLFW\src\CMakeFiles\glfw.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
-  TARGET_FILE = libraries\glfw-3.3.8\src\libglfw3.a
+  TARGET_FILE = libraries\GLFW\src\libglfw3.a
   TARGET_PDB = glfw3.a.dbg
+
+
+#############################################
+# Utility command for update_mappings
+
+build libraries/GLFW/src/update_mappings: phony libraries/GLFW/src/CMakeFiles/update_mappings
 
 
 #############################################
 # Utility command for edit_cache
 
-build libraries/glfw-3.3.8/src/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\glfw-3.3.8\src && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+build libraries/GLFW/src/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\GLFW\src && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
   DESC = No interactive CMake dialog available...
   restat = 1
 
-build libraries/glfw-3.3.8/src/edit_cache: phony libraries/glfw-3.3.8/src/CMakeFiles/edit_cache.util
+build libraries/GLFW/src/edit_cache: phony libraries/GLFW/src/CMakeFiles/edit_cache.util
 
 
 #############################################
 # Utility command for rebuild_cache
 
-build libraries/glfw-3.3.8/src/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\glfw-3.3.8\src && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" --regenerate-during-build -SD:\UserProjects\Joey\C++\RenderGL -BD:\UserProjects\Joey\C++\RenderGL\cmake-build-debug"
+build libraries/GLFW/src/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\GLFW\src && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" --regenerate-during-build -SD:\UserProjects\Joey\C++\RenderGL -BD:\UserProjects\Joey\C++\RenderGL\cmake-build-debug"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
 
-build libraries/glfw-3.3.8/src/rebuild_cache: phony libraries/glfw-3.3.8/src/CMakeFiles/rebuild_cache.util
+build libraries/GLFW/src/rebuild_cache: phony libraries/GLFW/src/CMakeFiles/rebuild_cache.util
 
 
 #############################################
 # Utility command for list_install_components
 
-build libraries/glfw-3.3.8/src/list_install_components: phony
+build libraries/GLFW/src/list_install_components: phony
 
 
 #############################################
 # Utility command for install
 
-build libraries/glfw-3.3.8/src/CMakeFiles/install.util: CUSTOM_COMMAND libraries/glfw-3.3.8/src/all
-  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\glfw-3.3.8\src && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -P cmake_install.cmake"
+build libraries/GLFW/src/CMakeFiles/install.util: CUSTOM_COMMAND libraries/GLFW/src/all
+  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\GLFW\src && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -P cmake_install.cmake"
   DESC = Install the project...
   pool = console
   restat = 1
 
-build libraries/glfw-3.3.8/src/install: phony libraries/glfw-3.3.8/src/CMakeFiles/install.util
+build libraries/GLFW/src/install: phony libraries/GLFW/src/CMakeFiles/install.util
 
 
 #############################################
 # Utility command for install/local
 
-build libraries/glfw-3.3.8/src/CMakeFiles/install/local.util: CUSTOM_COMMAND libraries/glfw-3.3.8/src/all
-  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\glfw-3.3.8\src && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake"
+build libraries/GLFW/src/CMakeFiles/install/local.util: CUSTOM_COMMAND libraries/GLFW/src/all
+  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\GLFW\src && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake"
   DESC = Installing only the local directory...
   pool = console
   restat = 1
 
-build libraries/glfw-3.3.8/src/install/local: phony libraries/glfw-3.3.8/src/CMakeFiles/install/local.util
+build libraries/GLFW/src/install/local: phony libraries/GLFW/src/CMakeFiles/install/local.util
 
 
 #############################################
 # Utility command for install/strip
 
-build libraries/glfw-3.3.8/src/CMakeFiles/install/strip.util: CUSTOM_COMMAND libraries/glfw-3.3.8/src/all
-  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\glfw-3.3.8\src && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake"
+build libraries/GLFW/src/CMakeFiles/install/strip.util: CUSTOM_COMMAND libraries/GLFW/src/all
+  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug\libraries\GLFW\src && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake"
   DESC = Installing the project stripped...
   pool = console
   restat = 1
 
-build libraries/glfw-3.3.8/src/install/strip: phony libraries/glfw-3.3.8/src/CMakeFiles/install/strip.util
+build libraries/GLFW/src/install/strip: phony libraries/GLFW/src/CMakeFiles/install/strip.util
 
 
 #############################################
-# Custom command for libraries\glfw-3.3.8\src\CMakeFiles\update_mappings
+# Custom command for libraries\GLFW\src\CMakeFiles\update_mappings
 
-build libraries/glfw-3.3.8/src/CMakeFiles/update_mappings | ${cmake_ninja_workdir}libraries/glfw-3.3.8/src/CMakeFiles/update_mappings: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\libraries\glfw-3.3.8\src && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -P D:/UserProjects/Joey/C++/RenderGL/libraries/glfw-3.3.8/CMake/GenerateMappings.cmake mappings.h.in mappings.h"
+build libraries/GLFW/src/CMakeFiles/update_mappings | ${cmake_ninja_workdir}libraries/GLFW/src/CMakeFiles/update_mappings: CUSTOM_COMMAND
+  COMMAND = cmd.exe /C "cd /D D:\UserProjects\Joey\C++\RenderGL\libraries\glfw\src && "D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -P D:/UserProjects/Joey/C++/RenderGL/libraries/glfw/CMake/GenerateMappings.cmake mappings.h.in mappings.h"
   DESC = Updating gamepad mappings from upstream repository
 
 # =============================================================================
@@ -463,13 +511,13 @@ build libraries/glfw-3.3.8/src/CMakeFiles/update_mappings | ${cmake_ninja_workdi
 
 build RenderGL: phony RenderGL.exe
 
-build glfw: phony libraries/glfw-3.3.8/src/libglfw3.a
+build glfw: phony libraries/GLFW/src/libglfw3.a
 
-build libglfw3.a: phony libraries/glfw-3.3.8/src/libglfw3.a
+build libglfw3.a: phony libraries/GLFW/src/libglfw3.a
 
-build uninstall: phony libraries/glfw-3.3.8/uninstall
+build uninstall: phony libraries/GLFW/uninstall
 
-build update_mappings: phony libraries/glfw-3.3.8/src/update_mappings
+build update_mappings: phony libraries/GLFW/src/update_mappings
 
 # =============================================================================
 # Folder targets.
@@ -479,21 +527,21 @@ build update_mappings: phony libraries/glfw-3.3.8/src/update_mappings
 #############################################
 # Folder: D:/UserProjects/Joey/C++/RenderGL/cmake-build-debug
 
-build all: phony RenderGL.exe libraries/glfw-3.3.8/all
+build all: phony RenderGL.exe libraries/GLFW/all
 
 # =============================================================================
 
 #############################################
-# Folder: D:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8
+# Folder: D:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW
 
-build libraries/glfw-3.3.8/all: phony libraries/glfw-3.3.8/src/all
+build libraries/GLFW/all: phony libraries/GLFW/src/all
 
 # =============================================================================
 
 #############################################
-# Folder: D:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/glfw-3.3.8/src
+# Folder: D:/UserProjects/Joey/C++/RenderGL/cmake-build-debug/libraries/GLFW/src
 
-build libraries/glfw-3.3.8/src/all: phony libraries/glfw-3.3.8/src/libglfw3.a
+build libraries/GLFW/src/all: phony libraries/GLFW/src/libglfw3.a
 
 # =============================================================================
 # Built-in targets
@@ -502,14 +550,14 @@ build libraries/glfw-3.3.8/src/all: phony libraries/glfw-3.3.8/src/libglfw3.a
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | ../CMakeLists.txt ../libraries/glfw-3.3.8/CMakeLists.txt ../libraries/glfw-3.3.8/cmake_uninstall.cmake.in ../libraries/glfw-3.3.8/src/CMakeLists.txt ../libraries/glfw-3.3.8/src/glfw3.pc.in ../libraries/glfw-3.3.8/src/glfw3Config.cmake.in ../libraries/glfw-3.3.8/src/glfw_config.h.in CMakeCache.txt CMakeFiles/3.23.2/CMakeCCompiler.cmake CMakeFiles/3.23.2/CMakeCXXCompiler.cmake CMakeFiles/3.23.2/CMakeRCCompiler.cmake CMakeFiles/3.23.2/CMakeSystem.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/BasicConfigVersion-SameMajorVersion.cmake.in D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCXXInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeDependentOption.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeGenericSystem.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeInitializeConfigs.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakePackageConfigHelpers.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeRCInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeSystemSpecificInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeSystemSpecificInitialize.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckCCompilerFlag.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckCSourceCompiles.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckIncludeFile.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckLibraryExists.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/CMakeCommonCompilerMacros.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-C.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-CXX.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindOpenGL.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindPackageHandleStandardArgs.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindPackageMessage.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindThreads.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/GNUInstallDirs.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Internal/CheckCompilerFlag.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Internal/CheckFlagCommonConfig.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Internal/CheckSourceCompiles.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-C-ABI.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-C.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-CXX-ABI.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-CXX.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-windres.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/WindowsPaths.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/WriteBasicConfigVersionFile.cmake
+build build.ninja: RERUN_CMAKE | ../CMakeLists.txt ../libraries/glfw/CMakeLists.txt ../libraries/glfw/CMake/cmake_uninstall.cmake.in ../libraries/glfw/CMake/glfw3.pc.in ../libraries/glfw/CMake/glfw3Config.cmake.in ../libraries/glfw/src/CMakeLists.txt CMakeCache.txt CMakeFiles/3.23.2/CMakeCCompiler.cmake CMakeFiles/3.23.2/CMakeCXXCompiler.cmake CMakeFiles/3.23.2/CMakeRCCompiler.cmake CMakeFiles/3.23.2/CMakeSystem.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/BasicConfigVersion-SameMajorVersion.cmake.in D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCXXInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeDependentOption.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeGenericSystem.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeInitializeConfigs.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakePackageConfigHelpers.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeRCInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeSystemSpecificInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeSystemSpecificInitialize.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckCSourceCompiles.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckIncludeFile.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckLibraryExists.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/CMakeCommonCompilerMacros.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-C.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-CXX.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindOpenGL.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindPackageHandleStandardArgs.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindPackageMessage.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindThreads.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/GNUInstallDirs.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Internal/CheckSourceCompiles.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-C-ABI.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-C.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-CXX-ABI.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-CXX.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-windres.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/WindowsPaths.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/WriteBasicConfigVersionFile.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build ../CMakeLists.txt ../libraries/glfw-3.3.8/CMakeLists.txt ../libraries/glfw-3.3.8/cmake_uninstall.cmake.in ../libraries/glfw-3.3.8/src/CMakeLists.txt ../libraries/glfw-3.3.8/src/glfw3.pc.in ../libraries/glfw-3.3.8/src/glfw3Config.cmake.in ../libraries/glfw-3.3.8/src/glfw_config.h.in CMakeCache.txt CMakeFiles/3.23.2/CMakeCCompiler.cmake CMakeFiles/3.23.2/CMakeCXXCompiler.cmake CMakeFiles/3.23.2/CMakeRCCompiler.cmake CMakeFiles/3.23.2/CMakeSystem.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/BasicConfigVersion-SameMajorVersion.cmake.in D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCXXInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeDependentOption.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeGenericSystem.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeInitializeConfigs.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakePackageConfigHelpers.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeRCInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeSystemSpecificInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeSystemSpecificInitialize.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckCCompilerFlag.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckCSourceCompiles.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckIncludeFile.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckLibraryExists.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/CMakeCommonCompilerMacros.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-C.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-CXX.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindOpenGL.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindPackageHandleStandardArgs.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindPackageMessage.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindThreads.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/GNUInstallDirs.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Internal/CheckCompilerFlag.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Internal/CheckFlagCommonConfig.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Internal/CheckSourceCompiles.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-C-ABI.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-C.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-CXX-ABI.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-CXX.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-windres.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/WindowsPaths.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/WriteBasicConfigVersionFile.cmake: phony
+build ../CMakeLists.txt ../libraries/glfw/CMakeLists.txt ../libraries/glfw/CMake/cmake_uninstall.cmake.in ../libraries/glfw/CMake/glfw3.pc.in ../libraries/glfw/CMake/glfw3Config.cmake.in ../libraries/glfw/src/CMakeLists.txt CMakeCache.txt CMakeFiles/3.23.2/CMakeCCompiler.cmake CMakeFiles/3.23.2/CMakeCXXCompiler.cmake CMakeFiles/3.23.2/CMakeRCCompiler.cmake CMakeFiles/3.23.2/CMakeSystem.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/BasicConfigVersion-SameMajorVersion.cmake.in D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCXXInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeDependentOption.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeGenericSystem.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeInitializeConfigs.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakePackageConfigHelpers.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeRCInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeSystemSpecificInformation.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CMakeSystemSpecificInitialize.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckCSourceCompiles.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckIncludeFile.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/CheckLibraryExists.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/CMakeCommonCompilerMacros.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-C.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-CXX.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindOpenGL.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindPackageHandleStandardArgs.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindPackageMessage.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/FindThreads.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/GNUInstallDirs.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Internal/CheckSourceCompiles.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-C-ABI.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-C.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-CXX-ABI.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU-CXX.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-GNU.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows-windres.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/Windows.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/Platform/WindowsPaths.cmake D$:/Program$ Files/CLion$ 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/WriteBasicConfigVersionFile.cmake: phony
 
 
 #############################################

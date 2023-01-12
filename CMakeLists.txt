@@ -10,7 +10,7 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
-add_subdirectory("libraries/glfw-3.3.8")
+add_subdirectory("libraries/glfw")
 
 add_executable(RenderGL main.cpp interface/interface.cpp interface/interface.h)
 

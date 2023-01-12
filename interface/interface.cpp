@@ -65,6 +65,9 @@ int run() {
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
 
+
+    /* TODO Initialize Buffer Objects */
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
