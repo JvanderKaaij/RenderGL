@@ -50,6 +50,12 @@ int run() {
 
     GLFWwindow* window;
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+//
+//    if(!gladLoadGL()){
+//        printf("Something went wrong!\n");
+//        glfwTerminate();
+//        return -1;
+//    }
 
     if (!window)
     {

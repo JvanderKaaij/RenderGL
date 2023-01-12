@@ -52,14 +52,21 @@ build cmake_object_order_depends_target_RenderGL: phony || cmake_object_order_de
 build CMakeFiles/RenderGL.dir/main.cpp.obj: CXX_COMPILER__RenderGL_Debug D$:/UserProjects/Joey/C++/RenderGL/main.cpp || cmake_object_order_depends_target_RenderGL
   DEP_FILE = CMakeFiles\RenderGL.dir\main.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include
+  OBJECT_DIR = CMakeFiles\RenderGL.dir
+  OBJECT_FILE_DIR = CMakeFiles\RenderGL.dir
+
+build CMakeFiles/RenderGL.dir/glad.c.obj: C_COMPILER__RenderGL_Debug D$:/UserProjects/Joey/C++/RenderGL/glad.c || cmake_object_order_depends_target_RenderGL
+  DEP_FILE = CMakeFiles\RenderGL.dir\glad.c.obj.d
+  FLAGS = -g
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include
   OBJECT_DIR = CMakeFiles\RenderGL.dir
   OBJECT_FILE_DIR = CMakeFiles\RenderGL.dir
 
 build CMakeFiles/RenderGL.dir/interface/interface.cpp.obj: CXX_COMPILER__RenderGL_Debug D$:/UserProjects/Joey/C++/RenderGL/interface/interface.cpp || cmake_object_order_depends_target_RenderGL
   DEP_FILE = CMakeFiles\RenderGL.dir\interface\interface.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include
+  INCLUDES = -ID:/UserProjects/Joey/C++/RenderGL/libraries -ID:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include
   OBJECT_DIR = CMakeFiles\RenderGL.dir
   OBJECT_FILE_DIR = CMakeFiles\RenderGL.dir\interface
 
@@ -71,7 +78,7 @@ build CMakeFiles/RenderGL.dir/interface/interface.cpp.obj: CXX_COMPILER__RenderG
 #############################################
 # Link the executable RenderGL.exe
 
-build RenderGL.exe: CXX_EXECUTABLE_LINKER__RenderGL_Debug CMakeFiles/RenderGL.dir/main.cpp.obj CMakeFiles/RenderGL.dir/interface/interface.cpp.obj | libraries/GLFW/src/libglfw3.a || libraries/GLFW/src/libglfw3.a
+build RenderGL.exe: CXX_EXECUTABLE_LINKER__RenderGL_Debug CMakeFiles/RenderGL.dir/main.cpp.obj CMakeFiles/RenderGL.dir/glad.c.obj CMakeFiles/RenderGL.dir/interface/interface.cpp.obj | libraries/GLFW/src/libglfw3.a || libraries/GLFW/src/libglfw3.a
   FLAGS = -g
   LINK_LIBRARIES = -lopengl32  libraries/GLFW/src/libglfw3.a  -lopengl32  -lglu32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\RenderGL.dir

@@ -14,7 +14,8 @@
 		"commands" : 
 		[
 			"add_executable",
-			"target_link_libraries"
+			"target_link_libraries",
+			"include_directories"
 		],
 		"files" : 
 		[
@@ -28,12 +29,6 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 15,
-				"parent" : 0
-			},
-			{
-				"command" : 1,
-				"file" : 0,
 				"line" : 17,
 				"parent" : 0
 			},
@@ -41,6 +36,18 @@
 				"command" : 1,
 				"file" : 0,
 				"line" : 19,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 21,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 15,
 				"parent" : 0
 			}
 		]
@@ -60,6 +67,10 @@
 			"includes" : 
 			[
 				{
+					"backtrace" : 4,
+					"path" : "D:/UserProjects/Joey/C++/RenderGL/libraries"
+				},
+				{
 					"backtrace" : 3,
 					"path" : "D:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include"
 				}
@@ -76,6 +87,30 @@
 			"sourceIndexes" : 
 			[
 				0,
+				2
+			]
+		},
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 4,
+					"path" : "D:/UserProjects/Joey/C++/RenderGL/libraries"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include"
+				}
+			],
+			"language" : "C",
+			"sourceIndexes" : 
+			[
 				1
 			]
 		}
@@ -141,14 +176,15 @@
 			"sourceIndexes" : 
 			[
 				0,
-				1
+				1,
+				2
 			]
 		},
 		{
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
-				2
+				3
 			]
 		}
 	],
@@ -158,6 +194,12 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "main.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "glad.c",
 			"sourceGroupIndex" : 0
 		},
 		{
