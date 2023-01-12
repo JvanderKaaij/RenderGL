@@ -1,5 +1,0 @@
-"D:\Program Files\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=D:/Program Files/CLion 2022.2.4/bin/ninja/win/ninja.exe" -G Ninja -S D:\UserProjects\Joey\C++\RenderGL -B D:\UserProjects\Joey\C++\RenderGL\cmake-build-debug
--- Including Win32 support
--- Configuring done
--- Generating done
--- Build files have been written to: D:/UserProjects/Joey/C++/RenderGL/cmake-build-debug
