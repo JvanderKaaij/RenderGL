@@ -5,6 +5,7 @@
 #include "GLFW/glfw3.h"
     bool throw_exit;
     bool timer;
+
     int run();
     void draw(GLFWwindow* window);
     void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
