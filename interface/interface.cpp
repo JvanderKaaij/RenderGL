@@ -4,12 +4,15 @@
 #include "GLFW/glfw3.h"
 #include "cyCodeBase/cyVector.h"
 #include "cyCodeBase/cyTriMesh.h"
-
+#include "cyCodeBase/cyGL.h"
 
 static bool throw_exit = false;
 static double timer = 0;
 unsigned int vao;
 cy::TriMesh mesh;
+cy::GLSLShader vert_shader;
+cy::GLSLShader frag_shader;
+cy::GLSLProgram program;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -22,8 +25,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    std::cout << "mouse_x: " + std::to_string(xpos) << std::endl;
-    std::cout << "mouse_y " + std::to_string(ypos) << std::endl;
+//    std::cout << "mouse_x: " + std::to_string(xpos) << std::endl;
+//    std::cout << "mouse_y " + std::to_string(ypos) << std::endl;
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -32,7 +35,23 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         std::cout << "mouse down" << std::endl;
 }
 
-void initialize(){
+void initializeProgram(){
+    vert_shader = *new cy::GLSLShader();
+    vert_shader.CompileFile("../assets/shader.vert", GL_VERTEX_SHADER);
+
+    frag_shader = *new cy::GLSLShader();
+    frag_shader.CompileFile("../assets/shader.frag", GL_FRAGMENT_SHADER);
+
+    program = *new cy::GLSLProgram();
+    program.CreateProgram();
+    program.AttachShader(vert_shader);
+    program.AttachShader(frag_shader);
+    program.Link();
+    program.Bind();
+
+}
+
+void initializeMesh(){
     mesh = *new cy::TriMesh();
     mesh.LoadFromFileObj("../assets/teapot.obj");
     std::cout << mesh.NV() << " vertices loaded" << std::endl;
@@ -101,7 +120,8 @@ int run() {
     glfwSetMouseButtonCallback(window, mouse_button_callback);
 
     /* TODO Initialize Buffer Objects */
-    initialize();
+    initializeMesh();
+    initializeProgram();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
