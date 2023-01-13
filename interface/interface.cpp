@@ -2,13 +2,19 @@
 #include <iostream>
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
+#include <cmath>
 #include "cyCodeBase/cyVector.h"
+#include "cyCodeBase/cyMatrix.h"
 #include "cyCodeBase/cyTriMesh.h"
 #include "cyCodeBase/cyGL.h"
 
 static bool throw_exit = false;
 static double timer = 0;
 unsigned int vao;
+int width = 640;
+int height = 480;
+
+
 cy::TriMesh mesh;
 cy::GLSLShader vert_shader;
 cy::GLSLShader frag_shader;
@@ -35,6 +41,42 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         std::cout << "mouse down" << std::endl;
 }
 
+int ToRadian(float degrees){
+    return degrees * (M_PI / 180);
+}
+
+void InitPerspectiveProj()
+{
+    cy::Matrix4<float> mat4 = *new cy::Matrix4<float>();
+
+    const float ar = width / height;
+    const float zNear = 1.0f;
+    const float zFar = 1000.0f;
+    const float FOV = 30.0f;
+    const float zRange = zNear - zFar;
+    const float tanHalfFOV = tanf(ToRadian(FOV / 2.0));
+
+//    mat4.[0][0] = 1.0f / (tanHalfFOV * ar);
+//    mat4.[0][1] = 0.0f;
+//    mat4.[0][2] = 0.0f;
+//    mat4.[0][3] = 0.0f;
+//
+//    mat4.[1][0] = 0.0f;
+//    mat4.[1][1] = 1.0f / tanHalfFOV;
+//    mat4.[1][2] = 0.0f;
+//    mat4.[1][3] = 0.0f;
+//
+//    mat4.[2][0] = 0.0f;
+//    mat4.[2][1] = 0.0f;
+//    mat4.[2][2] = (-zNear - zFar) / zRange;
+//    mat4.[2][3] = 2.0f * zFar * zNear / zRange;
+//
+//    mat4.[3][0] = 0.0f;
+//    mat4.[3][1] = 0.0f;
+//    mat4.[3][2] = 1.0f;
+//    mat4.[3][3] = 0.0f;
+}
+
 void initializeProgram(){
     vert_shader = *new cy::GLSLShader();
     vert_shader.CompileFile("../assets/shader.vert", GL_VERTEX_SHADER);
@@ -42,13 +84,16 @@ void initializeProgram(){
     frag_shader = *new cy::GLSLShader();
     frag_shader.CompileFile("../assets/shader.frag", GL_FRAGMENT_SHADER);
 
+    cy::Matrix4f mvp = *new cy::Matrix4f();
+
     program = *new cy::GLSLProgram();
     program.CreateProgram();
     program.AttachShader(vert_shader);
     program.AttachShader(frag_shader);
     program.Link();
     program.Bind();
-
+    program.RegisterUniform(0, "mvp");
+//    program.SetUniformMatrix4();
 }
 
 void initializeMesh(){
@@ -96,7 +141,7 @@ int run() {
         return -1;
 
     GLFWwindow* window;
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
 
     if (!window)
     {

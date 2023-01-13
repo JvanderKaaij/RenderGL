@@ -5,5 +5,6 @@ layout (location = 0) in vec3 position;
 uniform mat4 mvp;
 
 void main(){
+//    position *= mvp;
     gl_Position = vec4(position, 1.0);
 }
