@@ -239,6 +239,17 @@
 		},
 		{
 			"path" : "libraries/glfw/CMake/glfw3.pc.in"
+		},
+		{
+			"path" : "libraries/glm/CMakeLists.txt"
+		},
+		{
+			"path" : "libraries/glm/glm/CMakeLists.txt"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/Program Files/CLion 2022.2.4/bin/cmake/win/share/cmake-3.23/Modules/GNUInstallDirs.cmake"
 		}
 	],
 	"kind" : "cmakeFiles",

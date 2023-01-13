@@ -7,6 +7,8 @@
 #include "cyCodeBase/cyMatrix.h"
 #include "cyCodeBase/cyTriMesh.h"
 #include "cyCodeBase/cyGL.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include "glm/ext.hpp"
 
 static bool throw_exit = false;
 static double timer = 0;
@@ -41,40 +43,15 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         std::cout << "mouse down" << std::endl;
 }
 
-int ToRadian(float degrees){
-    return degrees * (M_PI / 180);
-}
-
-void InitPerspectiveProj()
+void InitPerspectiveProj(GLuint id)
 {
-    cy::Matrix4<float> mat4 = *new cy::Matrix4<float>();
+//    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
+//    GLuint mvp_location = glGetUniformLocation(id, "mvp");
+//    glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &projection[0][0]);
 
-    const float ar = width / height;
-    const float zNear = 1.0f;
-    const float zFar = 1000.0f;
-    const float FOV = 30.0f;
-    const float zRange = zNear - zFar;
-    const float tanHalfFOV = tanf(ToRadian(FOV / 2.0));
-
-//    mat4.[0][0] = 1.0f / (tanHalfFOV * ar);
-//    mat4.[0][1] = 0.0f;
-//    mat4.[0][2] = 0.0f;
-//    mat4.[0][3] = 0.0f;
-//
-//    mat4.[1][0] = 0.0f;
-//    mat4.[1][1] = 1.0f / tanHalfFOV;
-//    mat4.[1][2] = 0.0f;
-//    mat4.[1][3] = 0.0f;
-//
-//    mat4.[2][0] = 0.0f;
-//    mat4.[2][1] = 0.0f;
-//    mat4.[2][2] = (-zNear - zFar) / zRange;
-//    mat4.[2][3] = 2.0f * zFar * zNear / zRange;
-//
-//    mat4.[3][0] = 0.0f;
-//    mat4.[3][1] = 0.0f;
-//    mat4.[3][2] = 1.0f;
-//    mat4.[3][3] = 0.0f;
+    GLuint tpos_loc = glGetUniformLocation(id, "tpos");
+    glm::vec3 myVec3(.4, .0, 0.0);
+    glUniform3fv(tpos_loc, 1, glm::value_ptr(myVec3));
 }
 
 void initializeProgram(){
@@ -84,16 +61,17 @@ void initializeProgram(){
     frag_shader = *new cy::GLSLShader();
     frag_shader.CompileFile("../assets/shader.frag", GL_FRAGMENT_SHADER);
 
-    cy::Matrix4f mvp = *new cy::Matrix4f();
-
     program = *new cy::GLSLProgram();
     program.CreateProgram();
     program.AttachShader(vert_shader);
     program.AttachShader(frag_shader);
     program.Link();
     program.Bind();
-    program.RegisterUniform(0, "mvp");
-//    program.SetUniformMatrix4();
+
+
+    glUseProgram(program.GetID());
+
+    InitPerspectiveProj(program.GetID());
 }
 
 void initializeMesh(){

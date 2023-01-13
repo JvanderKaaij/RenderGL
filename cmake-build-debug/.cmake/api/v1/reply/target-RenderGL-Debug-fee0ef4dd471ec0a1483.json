@@ -29,13 +29,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 15,
-				"parent" : 0
-			},
-			{
-				"command" : 1,
-				"file" : 0,
-				"line" : 19,
+				"line" : 17,
 				"parent" : 0
 			},
 			{
@@ -45,9 +39,21 @@
 				"parent" : 0
 			},
 			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 23,
+				"parent" : 0
+			},
+			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 17,
+				"line" : 19,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 25,
 				"parent" : 0
 			}
 		]
@@ -73,6 +79,10 @@
 				{
 					"backtrace" : 3,
 					"path" : "D:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "D:/UserProjects/Joey/C++/RenderGL/libraries/glm"
 				}
 			],
 			"language" : "CXX",
@@ -106,6 +116,10 @@
 				{
 					"backtrace" : 3,
 					"path" : "D:/UserProjects/Joey/C++/RenderGL/libraries/glfw/include"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "D:/UserProjects/Joey/C++/RenderGL/libraries/glm"
 				}
 			],
 			"language" : "C",

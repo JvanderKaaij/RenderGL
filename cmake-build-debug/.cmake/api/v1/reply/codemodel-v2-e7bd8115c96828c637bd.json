@@ -8,7 +8,8 @@
 					"build" : ".",
 					"childIndexes" : 
 					[
-						1
+						1,
+						3
 					],
 					"hasInstallRule" : true,
 					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
@@ -59,6 +60,32 @@
 						1,
 						3
 					]
+				},
+				{
+					"build" : "libraries/glm",
+					"childIndexes" : 
+					[
+						4
+					],
+					"jsonFile" : "directory-libraries.glm-Debug-fe2956ee3a4f541bcd76.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 2,
+					"source" : "libraries/glm"
+				},
+				{
+					"build" : "libraries/glm/glm",
+					"jsonFile" : "directory-libraries.glm.glm-Debug-41662c9be128f00aed66.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 3,
+					"projectIndex" : 2,
+					"source" : "libraries/glm/glm"
 				}
 			],
 			"name" : "Debug",
@@ -67,7 +94,8 @@
 				{
 					"childIndexes" : 
 					[
-						1
+						1,
+						2
 					],
 					"directoryIndexes" : 
 					[
@@ -93,6 +121,15 @@
 						2,
 						3
 					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						3,
+						4
+					],
+					"name" : "glm",
+					"parentIndex" : 0
 				}
 			],
 			"targets" : 
@@ -100,7 +137,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "RenderGL::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-RenderGL-Debug-041ff0e8b9fca0b531d2.json",
+					"jsonFile" : "target-RenderGL-Debug-fee0ef4dd471ec0a1483.json",
 					"name" : "RenderGL",
 					"projectIndex" : 0
 				},
