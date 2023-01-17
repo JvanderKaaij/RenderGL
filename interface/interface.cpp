@@ -129,11 +129,12 @@ void initializeMesh(){
     int Indices[mesh.NF() * 3];
 
     for(int i=0;i<mesh.NF();i+=3){
-        Indices[i] = mesh.F(i).v[2];
+        Indices[i] = mesh.F(i).v[0];
         Indices[i+1] = mesh.F(i).v[1];
-        Indices[i+2] = mesh.F(i).v[0];
+        Indices[i+2] = mesh.F(i).v[2];
     }
 
+    std::cout << "Indices: " << sizeof(Indices) << std::endl;
 
     unsigned int indexBuffer;
     glGenBuffers(1, &indexBuffer);
