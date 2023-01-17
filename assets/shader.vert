@@ -3,8 +3,10 @@
 layout (location = 0) in vec3 position;
 
 uniform mat4 mvp;
-uniform vec3 tpos;
+uniform float timer;
 
 void main(){
-    gl_Position = vec4(tpos, 1.0); //mvp * vec4(position, 1.0);
+    vec3 pos = position;
+    vec4 new_pos =  mvp * vec4(pos, 1.0);
+    gl_Position = new_pos;
 }

@@ -16,6 +16,18 @@ unsigned int vao;
 int width = 640;
 int height = 480;
 
+GLuint programID;
+
+float xPos = 0.;
+float zPos = 0.;
+
+glm::vec3 camPosition = glm::vec3(0,0,0);
+
+glm::vec2 camRotation = glm::vec2(0,0);
+
+bool lMouseBtn = false;
+double xMousePos = 0;
+double yMousePos = 0;
 
 cy::TriMesh mesh;
 cy::GLSLShader vert_shader;
@@ -24,8 +36,10 @@ cy::GLSLProgram program;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (key == GLFW_KEY_E && action == GLFW_PRESS){
-        std::cout << "Button Pressed";
+    if (key == GLFW_KEY_A){ //for continuous, store status on GLFW_PRESS & GLFW_RELEASE
+        camPosition.x += 0.1f;
+    }else if (key == GLFW_KEY_D){
+        camPosition.x -= 0.1f;
     }else if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         throw_exit = true;
     }
@@ -33,25 +47,40 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-//    std::cout << "mouse_x: " + std::to_string(xpos) << std::endl;
-//    std::cout << "mouse_y " + std::to_string(ypos) << std::endl;
+    if(lMouseBtn){
+        camRotation.x += (xpos - xMousePos) * 0.01f;
+        camRotation.y += (ypos - yMousePos) * 0.01f;
+    }
+    xMousePos = xpos;
+    yMousePos = ypos;
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (action == GLFW_PRESS)
-        std::cout << "mouse down" << std::endl;
+    lMouseBtn = (action == GLFW_PRESS && button == 0);
 }
 
-void InitPerspectiveProj(GLuint id)
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-//    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
-//    GLuint mvp_location = glGetUniformLocation(id, "mvp");
-//    glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &projection[0][0]);
+    std::cout << yoffset << std::endl;
+    camPosition.z += yoffset;
+}
 
-    GLuint tpos_loc = glGetUniformLocation(id, "tpos");
-    glm::vec3 myVec3(.4, .0, 0.0);
-    glUniform3fv(tpos_loc, 1, glm::value_ptr(myVec3));
+void setProjection(glm::vec2 rotation, glm::vec3 translation)
+{
+    GLuint mvp_location = glGetUniformLocation(programID, "mvp");
+
+    glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.f);
+    glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), translation);
+
+    glm::mat4 ViewRotateX = glm::rotate(ViewTranslate, rotation.x, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 ViewRotateY = glm::rotate(ViewRotateX, rotation.y, glm::vec3(1.0f, 0.0f, 0.0f));
+
+    glm::mat4 Model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
+
+    glm::mat4 MVP = Projection * ViewRotateY * Model;
+
+    glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(MVP));
 }
 
 void initializeProgram(){
@@ -68,10 +97,13 @@ void initializeProgram(){
     program.Link();
     program.Bind();
 
+    programID = program.GetID();
 
-    glUseProgram(program.GetID());
+    glUseProgram(programID);
 
-    InitPerspectiveProj(program.GetID());
+    camPosition.z = -20.;
+
+    setProjection(camRotation, camPosition);
 }
 
 void initializeMesh(){
@@ -79,7 +111,7 @@ void initializeMesh(){
     mesh.LoadFromFileObj("../assets/teapot.obj");
     std::cout << mesh.NV() << " vertices loaded" << std::endl;
 
-    cy::Vec3<float> Vertices[mesh.NF()];
+    cy::Vec3<float> Vertices[mesh.NV()];
 
     for(int i=0;i<mesh.NV();i++){
         Vertices[i] = cy::Vec3<float>(mesh.V(i)[0], mesh.V(i)[1], mesh.V(i)[2]);
@@ -93,6 +125,21 @@ void initializeMesh(){
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
 
+
+    int Indices[mesh.NF() * 3];
+
+    for(int i=0;i<mesh.NF();i+=3){
+        Indices[i] = mesh.F(i).v[2];
+        Indices[i+1] = mesh.F(i).v[1];
+        Indices[i+2] = mesh.F(i).v[0];
+    }
+
+
+    unsigned int indexBuffer;
+    glGenBuffers(1, &indexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
 }
@@ -101,10 +148,21 @@ void initializeMesh(){
 void draw(GLFWwindow* window){
     timer = glfwGetTime();
 
+    GLint time_location = glGetUniformLocation(programID, "timer");
+    glUniform1f(time_location, (float)timer);
+
+    GLint x_location = glGetUniformLocation(programID, "xPos");
+    glUniform1f(x_location, xPos);
+
+    setProjection(camRotation, camPosition);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     /* Render here */
-    glDrawArrays(GL_POINTS, 0, mesh.NV());
+//    glDrawArrays(GL_POINTS, 0, mesh.NV());
+//    glDrawElements()
+
+    glDrawElements(GL_TRIANGLES, mesh.NF() * 3, GL_UNSIGNED_INT, 0);
     /* End of Render */
 
     /* Swap front and back buffers */
@@ -141,6 +199,7 @@ int run() {
     glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 
     /* TODO Initialize Buffer Objects */
     initializeMesh();
