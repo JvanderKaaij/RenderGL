@@ -113,19 +113,36 @@ void initializeMesh(){
     mesh.LoadFromFileObj("../assets/teapot.obj");
     std::cout << mesh.NV() << " vertices loaded" << std::endl;
 
+    // Vertices
+
     cy::Vec3<float> Vertices[mesh.NV()];
 
     for(int i=0;i<mesh.NV();i++){
         Vertices[i] = cy::Vec3<float>(mesh.V(i)[0], mesh.V(i)[1], mesh.V(i)[2]);
     }
 
-    glGenVertexArrays(1, &vao);
+    glGenVertexArrays(2, &vao);
     glBindVertexArray(vao);
 
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    GLuint vertexBuffer;
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+
+    //Surface Normals
+
+    cy::Vec3<float> Normals[mesh.NVN()];
+
+    for(int i=0;i<mesh.NVN();i++){
+        Normals[i] = cy::Vec3<float>(mesh.VN(i)[0], mesh.VN(i)[1], mesh.VN(i)[2]);
+    }
+
+//    GLuint normalBuffer;
+//    glGenBuffers(1, &normalBuffer);
+//    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(Normals), Normals, GL_STATIC_DRAW);
+
+    // Indices
 
     for(int i=0;i<mesh.NF();i++){
         Indices.push_back(mesh.F(i).v[0]);
@@ -142,6 +159,10 @@ void initializeMesh(){
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
 }
 
 
@@ -159,9 +180,8 @@ void draw(GLFWwindow* window){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     /* Render here */
-//    glDrawArrays(GL_POINTS, 0, mesh.NV());
 
-    glDrawElements(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElementsInstanced(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0, 2);
     /* End of Render */
 
     /* Swap front and back buffers */
