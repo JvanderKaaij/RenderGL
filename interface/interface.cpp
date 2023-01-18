@@ -2,12 +2,12 @@
 #include <iostream>
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
-#include <cmath>
 #include "cyCodeBase/cyVector.h"
 #include "cyCodeBase/cyMatrix.h"
 #include "cyCodeBase/cyTriMesh.h"
 #include "cyCodeBase/cyGL.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <iterator>
 #include "glm/ext.hpp"
 
 static bool throw_exit = false;
@@ -33,6 +33,8 @@ cy::TriMesh mesh;
 cy::GLSLShader vert_shader;
 cy::GLSLShader frag_shader;
 cy::GLSLProgram program;
+
+std::vector<int> Indices;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -125,21 +127,18 @@ void initializeMesh(){
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
 
-
-    int Indices[mesh.NF() * 3];
-
-    for(int i=0;i<mesh.NF();i+=3){
-        Indices[i] = mesh.F(i).v[0];
-        Indices[i+1] = mesh.F(i).v[1];
-        Indices[i+2] = mesh.F(i).v[2];
+    for(int i=0;i<mesh.NF();i++){
+        Indices.push_back(mesh.F(i).v[0]);
+        Indices.push_back(mesh.F(i).v[1]);
+        Indices.push_back(mesh.F(i).v[2]);
     }
 
-    std::cout << "Indices: " << sizeof(Indices) << std::endl;
+    std::cout << Indices.size();
 
     unsigned int indexBuffer;
     glGenBuffers(1, &indexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, Indices.size() * sizeof(int), Indices.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
@@ -161,9 +160,8 @@ void draw(GLFWwindow* window){
 
     /* Render here */
 //    glDrawArrays(GL_POINTS, 0, mesh.NV());
-//    glDrawElements()
 
-    glDrawElements(GL_TRIANGLES, mesh.NF() * 3, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0);
     /* End of Render */
 
     /* Swap front and back buffers */

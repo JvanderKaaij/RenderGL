@@ -23,3 +23,4 @@ target_link_libraries("${PROJECT_NAME}" OpenGL::GL)
 target_link_libraries("${PROJECT_NAME}" glfw ${OPENGL_LIBRARIES})
 
 target_link_libraries("${PROJECT_NAME}" glm)
+
