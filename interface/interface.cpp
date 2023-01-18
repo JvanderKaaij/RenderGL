@@ -7,7 +7,6 @@
 #include "cyCodeBase/cyTriMesh.h"
 #include "cyCodeBase/cyGL.h"
 #include <glm/gtc/matrix_transform.hpp>
-#include <iterator>
 #include "glm/ext.hpp"
 
 static bool throw_exit = false;
@@ -121,26 +120,25 @@ void initializeMesh(){
         Vertices[i] = cy::Vec3<float>(mesh.V(i)[0], mesh.V(i)[1], mesh.V(i)[2]);
     }
 
-    glGenVertexArrays(2, &vao);
+    glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    GLuint vertexBuffer;
+    GLuint vertexBuffer, normalBuffer;
     glGenBuffers(1, &vertexBuffer);
+    glGenBuffers(1, &normalBuffer);
+
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
 
     //Surface Normals
 
-    cy::Vec3<float> Normals[mesh.NVN()];
-
+    std::vector<glm::vec3> Normals;
     for(int i=0;i<mesh.NVN();i++){
-        Normals[i] = cy::Vec3<float>(mesh.VN(i)[0], mesh.VN(i)[1], mesh.VN(i)[2]);
+        Normals.push_back(glm::vec3(mesh.VN(i)[0], mesh.VN(i)[1], mesh.VN(i)[2]));
     }
 
-//    GLuint normalBuffer;
-//    glGenBuffers(1, &normalBuffer);
-//    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-//    glBufferData(GL_ARRAY_BUFFER, sizeof(Normals), Normals, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+    glBufferData(GL_ARRAY_BUFFER, Normals.size() * sizeof(glm::vec3), Normals.data(), GL_STATIC_DRAW);
 
     // Indices
 
@@ -150,18 +148,18 @@ void initializeMesh(){
         Indices.push_back(mesh.F(i).v[2]);
     }
 
-    std::cout << Indices.size();
-
     unsigned int indexBuffer;
     glGenBuffers(1, &indexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, Indices.size() * sizeof(int), Indices.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 }
 
@@ -219,6 +217,9 @@ int run() {
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetScrollCallback(window, scroll_callback);
+
+    glEnable (GL_DEPTH_TEST);
+
 
     /* TODO Initialize Buffer Objects */
     initializeMesh();
