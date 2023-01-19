@@ -61,6 +61,16 @@ void OnScrollCallback(glm::vec2 scrollOffset)
     camPosition.z += scrollOffset.y;
 }
 
+void RegisterInputs(GLFWwindow* window){
+    auto input = new InputInterface(window, onCursorPosition, OnMouseButtonCallback, OnScrollCallback);
+    input->Subscribe(GLFW_KEY_A, [](){moveCamera(glm::vec3(0.1, 0., 0.));});
+    input->Subscribe(GLFW_KEY_D, [](){moveCamera(glm::vec3(-0.1, 0., 0.));});
+    input->Subscribe(GLFW_KEY_W, [](){moveCamera(glm::vec3(0., -0.1, 0.));});
+    input->Subscribe(GLFW_KEY_S, [](){moveCamera(glm::vec3(0., 0.1, 0.));});
+    input->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
+    input->InitKeyCallback();
+}
+
 void setProjection(glm::vec2 rotation, glm::vec3 translation)
 {
     GLuint mvp_location = glGetUniformLocation(programID, "mvp");
@@ -99,17 +109,6 @@ void initializeProgram(){
     camPosition.z = -20.;
 
     setProjection(camRotation, camPosition);
-}
-
-
-void RegisterInputs(GLFWwindow* window){
-    InputInterface* input = new InputInterface(window, onCursorPosition, OnMouseButtonCallback, OnScrollCallback);
-    input->Subscribe(GLFW_KEY_A, [](){moveCamera(glm::vec3(0.1, 0., 0.));});
-    input->Subscribe(GLFW_KEY_D, [](){moveCamera(glm::vec3(-0.1, 0., 0.));});
-    input->Subscribe(GLFW_KEY_W, [](){moveCamera(glm::vec3(0., -0.1, 0.));});
-    input->Subscribe(GLFW_KEY_S, [](){moveCamera(glm::vec3(0., 0.1, 0.));});
-    input->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
-    input->InitKeyCallback();
 }
 
 void initializeMesh(){
@@ -167,7 +166,6 @@ void initializeMesh(){
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 }
-
 
 void draw(GLFWwindow* window){
     timer = glfwGetTime();
