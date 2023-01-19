@@ -6,9 +6,11 @@ layout (location = 1) in vec3 inSurfaceNormals;
 uniform mat4 mvp;
 uniform float timer;
 
-out vec4 SurfaceNormals;
+out vec3 SurfaceNormals;
+out vec3 WorldNormals;
 
 void main(){
-    gl_Position = mvp * vec4(position, 1.0);;
-    SurfaceNormals = vec4(inSurfaceNormals, 1.0f);
+    gl_Position = mvp * vec4(position, 1.0);
+    SurfaceNormals = inSurfaceNormals;
+    WorldNormals = normalize(mat3(mvp) * inSurfaceNormals);
 }

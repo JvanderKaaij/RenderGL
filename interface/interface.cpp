@@ -36,9 +36,8 @@ cy::GLSLProgram program;
 
 std::vector<int> Indices;
 
-void moveCamera(glm::vec3 translation){
+void OnMoveCamera(glm::vec3 translation){
     camPosition += translation;
-    std::cout << "Callback Called";
 }
 
 void onCursorPosition(glm::vec2 position)
@@ -63,10 +62,10 @@ void OnScrollCallback(glm::vec2 scrollOffset)
 
 void RegisterInputs(GLFWwindow* window){
     auto input = new InputInterface(window, onCursorPosition, OnMouseButtonCallback, OnScrollCallback);
-    input->Subscribe(GLFW_KEY_A, [](){moveCamera(glm::vec3(0.1, 0., 0.));});
-    input->Subscribe(GLFW_KEY_D, [](){moveCamera(glm::vec3(-0.1, 0., 0.));});
-    input->Subscribe(GLFW_KEY_W, [](){moveCamera(glm::vec3(0., -0.1, 0.));});
-    input->Subscribe(GLFW_KEY_S, [](){moveCamera(glm::vec3(0., 0.1, 0.));});
+    input->Subscribe(GLFW_KEY_A, [](){ OnMoveCamera(glm::vec3(0.1, 0., 0.));});
+    input->Subscribe(GLFW_KEY_D, [](){ OnMoveCamera(glm::vec3(-0.1, 0., 0.));});
+    input->Subscribe(GLFW_KEY_W, [](){ OnMoveCamera(glm::vec3(0., -0.1, 0.));});
+    input->Subscribe(GLFW_KEY_S, [](){ OnMoveCamera(glm::vec3(0., 0.1, 0.));});
     input->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
     input->InitKeyCallback();
 }
@@ -106,7 +105,7 @@ void initializeProgram(){
 
     glUseProgram(programID);
 
-    camPosition.z = -20.;
+    OnMoveCamera(glm::vec3(0., 0., -20.));
 
     setProjection(camRotation, camPosition);
 }
