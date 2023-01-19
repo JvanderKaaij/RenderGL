@@ -41,13 +41,14 @@ void moveCamera(glm::vec3 translation){
     std::cout << "Callback Called";
 }
 
-void cursor_position_callback(glm::vec2 position){
+void mouse_position_callback(GLFWwindow* window, double xpos, double ypos)
+{
     if(lMouseBtn){
-        camRotation.x += (position.x - xMousePos) * 0.01f;
-        camRotation.y += (position.y - yMousePos) * 0.01f;
+        camRotation.x += (xpos - xMousePos) * 0.01f;
+        camRotation.y += (ypos - yMousePos) * 0.01f;
     }
-    xMousePos = position.x;
-    yMousePos = position.y;
+    xMousePos = xpos;
+    yMousePos = ypos;
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -110,8 +111,9 @@ void RegisterInputs(GLFWwindow* window){
     input->Subscribe(GLFW_KEY_S, [](){moveCamera(glm::vec3(0., 0.1, 0.));});
     input->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
     input->InitKeyCallback();
-    input->InitMousePositionCallback(cursor_position_callback);
+//    input->InitMousePositionCallback(mouse_position_callback);
 
+    glfwSetCursorPosCallback(window, mouse_position_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
