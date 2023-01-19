@@ -8,6 +8,7 @@
 #include "cyCodeBase/cyGL.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/ext.hpp"
+#include "InputInterface.h"
 
 static bool throw_exit = false;
 static double timer = 0;
@@ -39,8 +40,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
     if (key == GLFW_KEY_A){ //for continuous, store status on GLFW_PRESS & GLFW_RELEASE
         camPosition.x += 0.1f;
-    }else if (key == GLFW_KEY_D){
+    }else if (key == GLFW_KEY_D) {
         camPosition.x -= 0.1f;
+    }else if (key == GLFW_KEY_W){
+            camPosition.y -= 0.1f;
+    }else if (key == GLFW_KEY_S){
+        camPosition.y += 0.1f;
     }else if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         throw_exit = true;
     }
@@ -189,6 +194,10 @@ void draw(GLFWwindow* window){
     glfwPollEvents();
 }
 
+void callMe(){
+    std::cout << "Callback Called";
+}
+
 int run() {
     if (!glfwInit())
         return -1;
@@ -212,14 +221,16 @@ int run() {
         return -1;
     }
 
+    InputInterface* input = new InputInterface(window);
+    input->Subscribe(GLFW_KEY_A, callMe);
+
     /* register input callbacks */
-    glfwSetKeyCallback(window, key_callback);
+//    glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
     glEnable (GL_DEPTH_TEST);
-
 
     /* TODO Initialize Buffer Objects */
     initializeMesh();
