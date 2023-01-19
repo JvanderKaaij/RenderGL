@@ -6,8 +6,16 @@
 
 InputInterface::InputInterface(GLFWwindow *window) {
     std::cout << "Input Initialized" << std::endl;
-    glfwSetKeyCallback(window, &InputInterface::OnKeyCallback);
+    m_window = window;
     glfwSetWindowUserPointer(window, this);
+}
+
+void InputInterface::InitKeyCallback() {
+    glfwSetKeyCallback(m_window, &InputInterface::OnKeyCallback);
+}
+
+void InputInterface::InitMousePositionCallback(std::function<void(glm::vec2)> callback) {
+//    glfwSetCursorPosCallback(m_window, callback);
 }
 
 void InputInterface::Subscribe(int key, std::function<void()> callback) {

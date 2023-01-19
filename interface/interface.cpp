@@ -41,23 +41,13 @@ void moveCamera(glm::vec3 translation){
     std::cout << "Callback Called";
 }
 
-void RegisterKeyInputs(GLFWwindow* window){
-    InputInterface* input = new InputInterface(window);
-    input->Subscribe(GLFW_KEY_A, [](){moveCamera(glm::vec3(0.1, 0., 0.));});
-    input->Subscribe(GLFW_KEY_D, [](){moveCamera(glm::vec3(-0.1, 0., 0.));});
-    input->Subscribe(GLFW_KEY_W, [](){moveCamera(glm::vec3(0., -0.1, 0.));});
-    input->Subscribe(GLFW_KEY_S, [](){moveCamera(glm::vec3(0., 0.1, 0.));});
-    input->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
-}
-
-void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
-{
+void cursor_position_callback(glm::vec2 position){
     if(lMouseBtn){
-        camRotation.x += (xpos - xMousePos) * 0.01f;
-        camRotation.y += (ypos - yMousePos) * 0.01f;
+        camRotation.x += (position.x - xMousePos) * 0.01f;
+        camRotation.y += (position.y - yMousePos) * 0.01f;
     }
-    xMousePos = xpos;
-    yMousePos = ypos;
+    xMousePos = position.x;
+    yMousePos = position.y;
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -109,6 +99,22 @@ void initializeProgram(){
     camPosition.z = -20.;
 
     setProjection(camRotation, camPosition);
+}
+
+
+void RegisterInputs(GLFWwindow* window){
+    InputInterface* input = new InputInterface(window);
+    input->Subscribe(GLFW_KEY_A, [](){moveCamera(glm::vec3(0.1, 0., 0.));});
+    input->Subscribe(GLFW_KEY_D, [](){moveCamera(glm::vec3(-0.1, 0., 0.));});
+    input->Subscribe(GLFW_KEY_W, [](){moveCamera(glm::vec3(0., -0.1, 0.));});
+    input->Subscribe(GLFW_KEY_S, [](){moveCamera(glm::vec3(0., 0.1, 0.));});
+    input->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
+    input->InitKeyCallback();
+    input->InitMousePositionCallback(cursor_position_callback);
+
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+
 }
 
 void initializeMesh(){
@@ -216,12 +222,7 @@ int run() {
         return -1;
     }
 
-    RegisterKeyInputs(window);
-
-    /* register input callbacks */
-    glfwSetCursorPosCallback(window, cursor_position_callback);
-    glfwSetMouseButtonCallback(window, mouse_button_callback);
-    glfwSetScrollCallback(window, scroll_callback);
+    RegisterInputs(window);
 
     glEnable (GL_DEPTH_TEST);
 

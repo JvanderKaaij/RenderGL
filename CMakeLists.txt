@@ -14,7 +14,7 @@ add_subdirectory("libraries/glfw")
 
 add_subdirectory("libraries/glm")
 
-add_executable("${PROJECT_NAME}" main.cpp glad.c interface/interface.cpp interface/interface.h)
+add_executable("${PROJECT_NAME}" main.cpp glad.c interface/interface.cpp interface/interface.h interface/InputInterface.cpp interface/InputInterface.h)
 
 include_directories("libraries")
 
