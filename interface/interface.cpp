@@ -36,19 +36,18 @@ cy::GLSLProgram program;
 
 std::vector<int> Indices;
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    if (key == GLFW_KEY_A){ //for continuous, store status on GLFW_PRESS & GLFW_RELEASE
-        camPosition.x += 0.1f;
-    }else if (key == GLFW_KEY_D) {
-        camPosition.x -= 0.1f;
-    }else if (key == GLFW_KEY_W){
-            camPosition.y -= 0.1f;
-    }else if (key == GLFW_KEY_S){
-        camPosition.y += 0.1f;
-    }else if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
-        throw_exit = true;
-    }
+void moveCamera(glm::vec3 translation){
+    camPosition += translation;
+    std::cout << "Callback Called";
+}
+
+void RegisterKeyInputs(GLFWwindow* window){
+    InputInterface* input = new InputInterface(window);
+    input->Subscribe(GLFW_KEY_A, [](){moveCamera(glm::vec3(0.1, 0., 0.));});
+    input->Subscribe(GLFW_KEY_D, [](){moveCamera(glm::vec3(-0.1, 0., 0.));});
+    input->Subscribe(GLFW_KEY_W, [](){moveCamera(glm::vec3(0., -0.1, 0.));});
+    input->Subscribe(GLFW_KEY_S, [](){moveCamera(glm::vec3(0., 0.1, 0.));});
+    input->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
 }
 
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
@@ -194,10 +193,6 @@ void draw(GLFWwindow* window){
     glfwPollEvents();
 }
 
-void callMe(){
-    std::cout << "Callback Called";
-}
-
 int run() {
     if (!glfwInit())
         return -1;
@@ -221,11 +216,9 @@ int run() {
         return -1;
     }
 
-    InputInterface* input = new InputInterface(window);
-    input->Subscribe(GLFW_KEY_A, callMe);
+    RegisterKeyInputs(window);
 
     /* register input callbacks */
-//    glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetScrollCallback(window, scroll_callback);
