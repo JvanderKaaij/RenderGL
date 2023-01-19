@@ -4,18 +4,35 @@
  * Now in the static OnKeyCallback I can get a reference to the instance of this class.
 */
 
-InputInterface::InputInterface(GLFWwindow *window) {
+InputInterface::InputInterface(GLFWwindow *window, std::function<void(glm::vec2)> mousePosCallback, std::function<void(int button, int action, int mods)> mouseButtonCallback, std::function<void(glm::vec2)> mouseScrollCallback) {
     std::cout << "Input Initialized" << std::endl;
     m_window = window;
+    m_mousePositionCallback = mousePosCallback;
+    m_mouseButtonCallback = mouseButtonCallback;
+    m_mouseScrollCallback = mouseScrollCallback;
     glfwSetWindowUserPointer(window, this);
+    glfwSetCursorPosCallback(window, InputInterface::OnMousePositionCallback);
+    glfwSetMouseButtonCallback(window, InputInterface::OnMouseButtonCallback);
+    glfwSetScrollCallback(window, InputInterface::OnMouseScrollCallback);
 }
 
 void InputInterface::InitKeyCallback() {
     glfwSetKeyCallback(m_window, &InputInterface::OnKeyCallback);
 }
 
-void InputInterface::InitMousePositionCallback(std::function<void(glm::vec2)> callback) {
-//    glfwSetCursorPosCallback(m_window, callback);
+void InputInterface::OnMousePositionCallback(GLFWwindow* window, double xpos, double ypos) {
+    InputInterface* self = (InputInterface*)glfwGetWindowUserPointer(window);
+    self->m_mousePositionCallback(glm::vec2(xpos, ypos));
+}
+
+void InputInterface::OnMouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    InputInterface* self = (InputInterface*)glfwGetWindowUserPointer(window);
+    self->m_mouseButtonCallback(button, action, mods);
+}
+
+void InputInterface::OnMouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    InputInterface* self = (InputInterface*)glfwGetWindowUserPointer(window);
+    self->m_mouseScrollCallback(glm::vec2(xoffset, yoffset));
 }
 
 void InputInterface::Subscribe(int key, std::function<void()> callback) {
