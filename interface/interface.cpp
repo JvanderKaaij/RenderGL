@@ -19,10 +19,8 @@ int height = 480;
 GLuint programID;
 
 float xPos = 0.;
-float zPos = 0.;
 
 glm::vec3 camPosition = glm::vec3(0,0,0);
-
 glm::vec2 camRotation = glm::vec2(0,0);
 
 bool lMouseBtn = false;
@@ -115,6 +113,9 @@ void initializeMesh(){
     mesh.LoadFromFileObj("../assets/teapot.obj");
     std::cout << mesh.NV() << " vertices loaded" << std::endl;
 
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
     // Vertices
 
     cy::Vec3<float> Vertices[mesh.NV()];
@@ -122,9 +123,6 @@ void initializeMesh(){
     for(int i=0;i<mesh.NV();i++){
         Vertices[i] = cy::Vec3<float>(mesh.V(i)[0], mesh.V(i)[1], mesh.V(i)[2]);
     }
-
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
 
     GLuint vertexBuffer, normalBuffer;
     glGenBuffers(1, &vertexBuffer);
@@ -172,15 +170,11 @@ void draw(GLFWwindow* window){
     GLint time_location = glGetUniformLocation(programID, "timer");
     glUniform1f(time_location, (float)timer);
 
-    GLint x_location = glGetUniformLocation(programID, "xPos");
-    glUniform1f(x_location, xPos);
-
     setProjection(camRotation, camPosition);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     /* Render here */
-
     glDrawElementsInstanced(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0, 2);
     /* End of Render */
 
@@ -196,7 +190,7 @@ int run() {
         return -1;
 
     GLFWwindow* window;
-    window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Hello Teapot", NULL, NULL);
 
     if (!window)
     {
