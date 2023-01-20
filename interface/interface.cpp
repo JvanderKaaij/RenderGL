@@ -19,10 +19,8 @@ int height = 480;
 GLuint programID;
 
 float xPos = 0.;
-float zPos = 0.;
 
 glm::vec3 camPosition = glm::vec3(0,0,0);
-
 glm::vec2 camRotation = glm::vec2(0,0);
 
 bool lMouseBtn = false;
@@ -36,30 +34,38 @@ cy::GLSLProgram program;
 
 std::vector<int> Indices;
 
-void moveCamera(glm::vec3 translation){
+void OnMoveCamera(glm::vec3 translation){
     camPosition += translation;
-    std::cout << "Callback Called";
 }
 
-void mouse_position_callback(GLFWwindow* window, double xpos, double ypos)
+void onCursorPosition(glm::vec2 position)
 {
     if(lMouseBtn){
-        camRotation.x += (xpos - xMousePos) * 0.01f;
-        camRotation.y += (ypos - yMousePos) * 0.01f;
+        camRotation.x += (position.x - xMousePos) * 0.01f;
+        camRotation.y += (position.y - yMousePos) * 0.01f;
     }
-    xMousePos = xpos;
-    yMousePos = ypos;
+    xMousePos = position.x;
+    yMousePos = position.y;
 }
 
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+void OnMouseButtonCallback(int button, int action, int mods)
 {
     lMouseBtn = (action == GLFW_PRESS && button == 0);
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+void OnScrollCallback(glm::vec2 scrollOffset)
 {
-    std::cout << yoffset << std::endl;
-    camPosition.z += yoffset;
+    camPosition.z += scrollOffset.y;
+}
+
+void RegisterInputs(GLFWwindow* window){
+    auto input = new InputInterface(window, onCursorPosition, OnMouseButtonCallback, OnScrollCallback);
+    input->Subscribe(GLFW_KEY_A, [](){ OnMoveCamera(glm::vec3(0.1, 0., 0.));});
+    input->Subscribe(GLFW_KEY_D, [](){ OnMoveCamera(glm::vec3(-0.1, 0., 0.));});
+    input->Subscribe(GLFW_KEY_W, [](){ OnMoveCamera(glm::vec3(0., -0.1, 0.));});
+    input->Subscribe(GLFW_KEY_S, [](){ OnMoveCamera(glm::vec3(0., 0.1, 0.));});
+    input->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
+    input->InitKeyCallback();
 }
 
 void setProjection(glm::vec2 rotation, glm::vec3 translation)
@@ -97,32 +103,18 @@ void initializeProgram(){
 
     glUseProgram(programID);
 
-    camPosition.z = -20.;
+    OnMoveCamera(glm::vec3(0., 0., -20.));
 
     setProjection(camRotation, camPosition);
-}
-
-
-void RegisterInputs(GLFWwindow* window){
-    InputInterface* input = new InputInterface(window);
-    input->Subscribe(GLFW_KEY_A, [](){moveCamera(glm::vec3(0.1, 0., 0.));});
-    input->Subscribe(GLFW_KEY_D, [](){moveCamera(glm::vec3(-0.1, 0., 0.));});
-    input->Subscribe(GLFW_KEY_W, [](){moveCamera(glm::vec3(0., -0.1, 0.));});
-    input->Subscribe(GLFW_KEY_S, [](){moveCamera(glm::vec3(0., 0.1, 0.));});
-    input->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
-    input->InitKeyCallback();
-//    input->InitMousePositionCallback(mouse_position_callback);
-
-    glfwSetCursorPosCallback(window, mouse_position_callback);
-    glfwSetMouseButtonCallback(window, mouse_button_callback);
-    glfwSetScrollCallback(window, scroll_callback);
-
 }
 
 void initializeMesh(){
     mesh = *new cy::TriMesh();
     mesh.LoadFromFileObj("../assets/teapot.obj");
     std::cout << mesh.NV() << " vertices loaded" << std::endl;
+
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
     // Vertices
 
@@ -131,9 +123,6 @@ void initializeMesh(){
     for(int i=0;i<mesh.NV();i++){
         Vertices[i] = cy::Vec3<float>(mesh.V(i)[0], mesh.V(i)[1], mesh.V(i)[2]);
     }
-
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
 
     GLuint vertexBuffer, normalBuffer;
     glGenBuffers(1, &vertexBuffer);
@@ -175,22 +164,17 @@ void initializeMesh(){
 
 }
 
-
 void draw(GLFWwindow* window){
     timer = glfwGetTime();
 
     GLint time_location = glGetUniformLocation(programID, "timer");
     glUniform1f(time_location, (float)timer);
 
-    GLint x_location = glGetUniformLocation(programID, "xPos");
-    glUniform1f(x_location, xPos);
-
     setProjection(camRotation, camPosition);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     /* Render here */
-
     glDrawElementsInstanced(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0, 2);
     /* End of Render */
 
@@ -206,7 +190,7 @@ int run() {
         return -1;
 
     GLFWwindow* window;
-    window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Hello Teapot", NULL, NULL);
 
     if (!window)
     {
