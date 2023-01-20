@@ -20,7 +20,7 @@ void main()
     float specular = pow(max(dot(WorldNormals, halfwayVector), 0.0), specularExponent);
 
     float diffuse = max(dot(WorldNormals, lightDirection), 0.0);
-    vec3 finalColor = ambientColor + diffuse * diffuseColor; // specular * specularColor;
+    vec3 finalColor = ambientColor + diffuse * diffuseColor + specular * specularColor;
 
     FragColor = vec4(finalColor, 1.);
 }

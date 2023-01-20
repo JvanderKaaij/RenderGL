@@ -88,6 +88,9 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation)
 }
 
 void initializeProgram(){
+
+    std::cout << "Initialize Program" << std::endl;
+
     vert_shader = *new cy::GLSLShader();
     vert_shader.CompileFile("../assets/shader.vert", GL_VERTEX_SHADER);
 
@@ -111,59 +114,58 @@ void initializeProgram(){
 }
 
 void initializeMeshWithAssimp(){
-    std::cout << "HELLO: ";
-    const aiScene* scene = aiImportFile( "../assets/suzanne.obj",
-                                         aiProcess_CalcTangentSpace       |
-                                         aiProcess_Triangulate            |
-                                         aiProcess_JoinIdenticalVertices  |
-                                         aiProcess_SortByPType);
+    const aiScene* scene = aiImportFile( "../assets/teapot.obj",
+                                         aiProcess_CalcTangentSpace |
+                                            aiProcess_Triangulate            |
+                                            aiProcess_GenSmoothNormals |
+                                            aiProcess_JoinIdenticalVertices  |
+                                            aiProcess_SortByPType|
+                                            aiProcess_FindInvalidData);
 
-    if (nullptr != scene) {
-        std::cout << "Error!" << std::endl;
+    if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+        std::cout << "Error loading model: " << aiGetErrorString() << std::endl;
+        return;
     }
 
-}
+    std::cout << "Number of Meshes: " << scene->mNumMeshes << std::endl;
+    std::vector<float> Vertices;
+    std::vector<float> Normals;
+    const aiMesh* mesh = scene->mMeshes[0];
 
-void initializeMesh(){
-    mesh = *new cy::TriMesh();
-    mesh.LoadFromFileObj("../assets/suzanne.obj");
-    std::cout << mesh.NV() << " vertices loaded" << std::endl;
+    std::cout << "Number of Vertices: " << mesh->mNumVertices << std::endl;
+
+    for(unsigned int j = 0; j < mesh->mNumVertices; j++) {
+        // Extract vertex position, normal, and texture coordinates
+        Vertices.push_back(mesh->mVertices[j].x);
+        Vertices.push_back(mesh->mVertices[j].y);
+        Vertices.push_back(mesh->mVertices[j].z);
+        if(mesh->mNormals) {
+            Normals.push_back(mesh->mNormals[j].x);
+            Normals.push_back(mesh->mNormals[j].y);
+            Normals.push_back(mesh->mNormals[j].z);
+        }
+        for(unsigned int k = 0; k < mesh->mNumFaces; k++) {
+            const aiFace& face = mesh->mFaces[k];
+            for(unsigned int l = 0; l < face.mNumIndices; l++) {
+                Indices.push_back(face.mIndices[l]);
+            }
+        }
+    }
+
+    std::cout << "Done Parsing Mesh " << std::endl;
 
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
-
-    // Vertices
-
-    cy::Vec3<float> Vertices[mesh.NV()];
-
-    for(int i=0;i<mesh.NV();i++){
-        Vertices[i] = cy::Vec3<float>(mesh.V(i)[0], mesh.V(i)[1], mesh.V(i)[2]);
-    }
 
     GLuint vertexBuffer, normalBuffer;
     glGenBuffers(1, &vertexBuffer);
     glGenBuffers(1, &normalBuffer);
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-
-    //Surface Normals
-
-    std::vector<glm::vec3> Normals;
-    for(int i=0;i<mesh.NVN();i++){
-        Normals.push_back(glm::vec3(mesh.VN(i)[0], mesh.VN(i)[1], mesh.VN(i)[2]));
-    }
+    glBufferData(GL_ARRAY_BUFFER, Vertices.size() * sizeof(float), Vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-    glBufferData(GL_ARRAY_BUFFER, Normals.size() * sizeof(glm::vec3), Normals.data(), GL_STATIC_DRAW);
-
-    // Indices
-
-    for(int i=0;i<mesh.NF();i++){
-        Indices.push_back(mesh.F(i).v[0]);
-        Indices.push_back(mesh.F(i).v[1]);
-        Indices.push_back(mesh.F(i).v[2]);
-    }
+    glBufferData(GL_ARRAY_BUFFER, Normals.size() * sizeof(float), Normals.data(), GL_STATIC_DRAW);
 
     unsigned int indexBuffer;
     glGenBuffers(1, &indexBuffer);
@@ -177,7 +179,6 @@ void initializeMesh(){
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
 }
 
 void draw(GLFWwindow* window){
@@ -230,7 +231,6 @@ int run() {
 
     /* TODO Initialize Buffer Objects */
     initializeMeshWithAssimp();
-    initializeMesh();
     initializeProgram();
 
     /* Loop until the user closes the window */
