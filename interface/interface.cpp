@@ -115,12 +115,10 @@ void initializeProgram(){
 
 void initializeMeshWithAssimp(){
     const aiScene* scene = aiImportFile( "../assets/teapot.obj",
-                                         aiProcess_CalcTangentSpace |
-                                            aiProcess_Triangulate            |
-                                            aiProcess_GenSmoothNormals |
-                                            aiProcess_JoinIdenticalVertices  |
-                                            aiProcess_SortByPType|
-                                            aiProcess_FindInvalidData);
+                                         aiProcess_CalcTangentSpace     |
+                                            aiProcess_Triangulate               |
+                                            aiProcess_JoinIdenticalVertices     |
+                                            aiProcess_SortByPType);
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         std::cout << "Error loading model: " << aiGetErrorString() << std::endl;
