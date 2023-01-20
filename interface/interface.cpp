@@ -9,6 +9,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/ext.hpp"
 #include "InputInterface.h"
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 
 static bool throw_exit = false;
 static double timer = 0;
@@ -17,8 +21,6 @@ int width = 640;
 int height = 480;
 
 GLuint programID;
-
-float xPos = 0.;
 
 glm::vec3 camPosition = glm::vec3(0,0,0);
 glm::vec2 camRotation = glm::vec2(0,0);
@@ -32,7 +34,7 @@ cy::GLSLShader vert_shader;
 cy::GLSLShader frag_shader;
 cy::GLSLProgram program;
 
-std::vector<int> Indices;
+std::vector<unsigned int> Indices;
 
 void OnMoveCamera(glm::vec3 translation){
     camPosition += translation;
@@ -108,9 +110,23 @@ void initializeProgram(){
     setProjection(camRotation, camPosition);
 }
 
+void initializeMeshWithAssimp(){
+    std::cout << "HELLO: ";
+    const aiScene* scene = aiImportFile( "../assets/suzanne.obj",
+                                         aiProcess_CalcTangentSpace       |
+                                         aiProcess_Triangulate            |
+                                         aiProcess_JoinIdenticalVertices  |
+                                         aiProcess_SortByPType);
+
+    if (nullptr != scene) {
+        std::cout << "Error!" << std::endl;
+    }
+
+}
+
 void initializeMesh(){
     mesh = *new cy::TriMesh();
-    mesh.LoadFromFileObj("../assets/teapot.obj");
+    mesh.LoadFromFileObj("../assets/suzanne.obj");
     std::cout << mesh.NV() << " vertices loaded" << std::endl;
 
     glGenVertexArrays(1, &vao);
@@ -152,7 +168,7 @@ void initializeMesh(){
     unsigned int indexBuffer;
     glGenBuffers(1, &indexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, Indices.size() * sizeof(int), Indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, Indices.size() * sizeof(unsigned int), Indices.data(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -213,6 +229,7 @@ int run() {
     glEnable (GL_DEPTH_TEST);
 
     /* TODO Initialize Buffer Objects */
+    initializeMeshWithAssimp();
     initializeMesh();
     initializeProgram();
 

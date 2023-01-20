@@ -1,0 +1,10 @@
+{
+  "name" : "rendergl",
+  "version-string" : "1.0.0",
+  "builtin-baseline" : "12b7cfe6109a9d68319334b56a01c44a302a13b6",
+  "dependencies" : [ {
+    "name" : "assimp",
+    "version>=" : "5.2.5",
+    "$comment" : "    # this is heuristically generated, and may not be correct\n\n    find_package(assimp CONFIG REQUIRED)\n\n    target_link_libraries(main PRIVATE assimp::assimp)\n"
+  } ]
+}

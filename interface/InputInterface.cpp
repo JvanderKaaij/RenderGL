@@ -5,8 +5,8 @@
 /*
  * This class is a wrapper around the Input and exposes simple callbacks.
  * Note that I use glfwSetWindowUserPointer to set a reference to the instance of this class.
- * Now in the static OnKeyCallback I can get a reference to the instance of this class.
- *
+ * Now in the static OnKeyCallback, etc. I can get a reference to the instance of this class.
+ *They have to be static because they are called by glfw.
 */
 
 InputInterface::InputInterface(GLFWwindow *window, std::function<void(glm::vec2)> mousePosCallback, std::function<void(int button, int action, int mods)> mouseButtonCallback, std::function<void(glm::vec2)> mouseScrollCallback) {
