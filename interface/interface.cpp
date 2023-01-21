@@ -9,9 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/ext.hpp"
 #include "InputInterface.h"
-#include <assimp/cimport.h>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include "MeshParser.h"
 
 
 static bool throw_exit = false;
@@ -34,7 +32,7 @@ cy::GLSLShader vert_shader;
 cy::GLSLShader frag_shader;
 cy::GLSLProgram program;
 
-std::vector<unsigned int> Indices;
+ParsedMesh parsedMesh;
 
 void OnMoveCamera(glm::vec3 translation){
     camPosition += translation;
@@ -114,41 +112,9 @@ void initializeProgram(){
 }
 
 void initializeMeshWithAssimp(){
-    const aiScene* scene = aiImportFile( "../assets/teapot.obj",
-                                         aiProcess_CalcTangentSpace     |
-                                            aiProcess_Triangulate               |
-                                            aiProcess_JoinIdenticalVertices     |
-                                            aiProcess_SortByPType);
 
-    if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-        std::cout << "Error loading model: " << aiGetErrorString() << std::endl;
-        return;
-    }
-
-    std::cout << "Number of Meshes: " << scene->mNumMeshes << std::endl;
-    std::vector<float> Vertices;
-    std::vector<float> Normals;
-    const aiMesh* mesh = scene->mMeshes[0];
-
-    std::cout << "Number of Vertices: " << mesh->mNumVertices << std::endl;
-
-    for(unsigned int j = 0; j < mesh->mNumVertices; j++) {
-        // Extract vertex position, normal, and texture coordinates
-        Vertices.push_back(mesh->mVertices[j].x);
-        Vertices.push_back(mesh->mVertices[j].y);
-        Vertices.push_back(mesh->mVertices[j].z);
-        if(mesh->mNormals) {
-            Normals.push_back(mesh->mNormals[j].x);
-            Normals.push_back(mesh->mNormals[j].y);
-            Normals.push_back(mesh->mNormals[j].z);
-        }
-        for(unsigned int k = 0; k < mesh->mNumFaces; k++) {
-            const aiFace& face = mesh->mFaces[k];
-            for(unsigned int l = 0; l < face.mNumIndices; l++) {
-                Indices.push_back(face.mIndices[l]);
-            }
-        }
-    }
+    const char* path = "../assets/teapot.obj";
+    parsedMesh = MeshParser::Process(path);
 
     std::cout << "Done Parsing Mesh " << std::endl;
 
@@ -160,15 +126,15 @@ void initializeMeshWithAssimp(){
     glGenBuffers(1, &normalBuffer);
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, Vertices.size() * sizeof(float), Vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, parsedMesh.Vertices.size() * sizeof(float), parsedMesh.Vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-    glBufferData(GL_ARRAY_BUFFER, Normals.size() * sizeof(float), Normals.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, parsedMesh.Normals.size() * sizeof(float), parsedMesh.Normals.data(), GL_STATIC_DRAW);
 
     unsigned int indexBuffer;
     glGenBuffers(1, &indexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, Indices.size() * sizeof(unsigned int), Indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, parsedMesh.Indices.size() * sizeof(unsigned int), parsedMesh.Indices.data(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -190,7 +156,7 @@ void draw(GLFWwindow* window){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     /* Render here */
-    glDrawElementsInstanced(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0, 2);
+    glDrawElementsInstanced(GL_TRIANGLES, parsedMesh.Indices.size(), GL_UNSIGNED_INT, 0, 2);
     /* End of Render */
 
     /* Swap front and back buffers */
