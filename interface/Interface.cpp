@@ -3,13 +3,11 @@
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
 #include "cyCodeBase/cyMatrix.h"
-#include "cyCodeBase/cyTriMesh.h"
 #include "cyCodeBase/cyGL.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/ext.hpp"
 #include "InputInterface.h"
 #include "MeshParser.h"
-
 
 static bool throw_exit = false;
 static double timer = 0;
@@ -26,7 +24,6 @@ bool lMouseBtn = false;
 double xMousePos = 0;
 double yMousePos = 0;
 
-cy::TriMesh mesh;
 cy::GLSLShader vert_shader;
 cy::GLSLShader frag_shader;
 cy::GLSLProgram program;
@@ -67,8 +64,7 @@ void RegisterInputs(GLFWwindow* window){
     input->InitKeyCallback();
 }
 
-void setProjection(glm::vec2 rotation, glm::vec3 translation)
-{
+void setProjection(glm::vec2 rotation, glm::vec3 translation){
     GLuint mvp_location = glGetUniformLocation(programID, "mvp");
 
     glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.f);
@@ -85,7 +81,6 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation)
 }
 
 void initializeProgram(){
-
     std::cout << "Initialize Program" << std::endl;
 
     vert_shader = *new cy::GLSLShader();
@@ -111,7 +106,6 @@ void initializeProgram(){
 }
 
 void initializeMeshWithAssimp(){
-
     const char* path = "../assets/suzanne.obj";
     parsedMesh = MeshParser::Process(path);
 
