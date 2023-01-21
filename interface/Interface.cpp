@@ -2,7 +2,6 @@
 #include <iostream>
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
-#include "cyCodeBase/cyVector.h"
 #include "cyCodeBase/cyMatrix.h"
 #include "cyCodeBase/cyTriMesh.h"
 #include "cyCodeBase/cyGL.h"
@@ -113,7 +112,7 @@ void initializeProgram(){
 
 void initializeMeshWithAssimp(){
 
-    const char* path = "../assets/teapot.obj";
+    const char* path = "../assets/suzanne.obj";
     parsedMesh = MeshParser::Process(path);
 
     std::cout << "Done Parsing Mesh " << std::endl;
@@ -212,4 +211,3 @@ int run() {
     glfwTerminate();
     return 0;
 }
-

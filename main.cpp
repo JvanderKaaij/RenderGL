@@ -1,4 +1,4 @@
-#include "interface/interface.h"
+#include "interface/Interface.h"
 
 int main(int argc, char** argv)
 {
