@@ -18,7 +18,7 @@ add_subdirectory("libraries/glfw")
 
 add_subdirectory("libraries/glm")
 
-add_executable("${PROJECT_NAME}" main.cpp glad.c interface/Interface.cpp interface/Interface.h interface/InputInterface.cpp interface/InputInterface.h interface/MeshParser.cpp interface/MeshParser.h interface/ParsedMesh.h)
+add_executable("${PROJECT_NAME}" main.cpp glad.c interface/Interface.cpp interface/Interface.h interface/InputInterface.cpp interface/InputInterface.h interface/MeshParser.cpp interface/MeshParser.h renderer/Mesh.h renderer/DirectionalLight.h)
 
 include_directories("libraries")
 

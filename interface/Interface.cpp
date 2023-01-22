@@ -6,8 +6,9 @@
 #include "cyCodeBase/cyGL.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/ext.hpp"
-#include "InputInterface.h"
 #include "MeshParser.h"
+#include "InputInterface.h"
+#include "../renderer/DirectionalLight.h"
 
 static bool throw_exit = false;
 static double timer = 0;
@@ -28,7 +29,8 @@ cy::GLSLShader vert_shader;
 cy::GLSLShader frag_shader;
 cy::GLSLProgram program;
 
-ParsedMesh parsedMesh;
+Mesh parsedMesh;
+DirectionalLight directional_light;
 
 void OnMoveCamera(glm::vec3 translation){
     camPosition += translation;
@@ -68,8 +70,8 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation){
     GLuint mvp_location = glGetUniformLocation(programID, "mvp");
 
     glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.f);
-    glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), translation);
 
+    glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), translation);
     glm::mat4 ViewRotateX = glm::rotate(ViewTranslate, rotation.x, glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 ViewRotateY = glm::rotate(ViewRotateX, rotation.y, glm::vec3(1.0f, 0.0f, 0.0f));
 
@@ -106,7 +108,7 @@ void initializeProgram(){
 }
 
 void initializeMeshWithAssimp(){
-    const char* path = "../assets/suzanne.obj";
+    const char* path = "../assets/teapot.obj";
     parsedMesh = MeshParser::Process(path);
 
     std::cout << "Done Parsing Mesh " << std::endl;
@@ -143,6 +145,10 @@ void draw(GLFWwindow* window){
 
     GLint time_location = glGetUniformLocation(programID, "timer");
     glUniform1f(time_location, (float)timer);
+
+    GLint directional_light_location = glGetUniformLocation(programID, "directionalLight");
+    directional_light.direction = glm::vec3(sin(timer), 0, -1.);
+    glUniform3fv(directional_light_location, 1, &directional_light.direction[0]);
 
     setProjection(camRotation, camPosition);
 
@@ -187,6 +193,9 @@ int run() {
     glEnable (GL_DEPTH_TEST);
 
     /* TODO Initialize Buffer Objects */
+    directional_light.intensity = 1.;
+    directional_light.direction = glm::vec3(0., 0., -1.);
+
     initializeMeshWithAssimp();
     initializeProgram();
 

@@ -4,16 +4,16 @@
 
 #include "MeshParser.h"
 
-ParsedMesh MeshParser::Process(const char* path) {
+Mesh MeshParser::Process(const char* path) {
     const aiScene* scene = aiImportFile( path,
                                          aiProcess_CalcTangentSpace     |
                                          aiProcess_Triangulate               |
-                                         aiProcess_JoinIdenticalVertices     |
+                                         aiProcess_GenSmoothNormals     |
                                          aiProcess_SortByPType);
 
     const aiMesh* mesh = scene->mMeshes[0];
 
-    ParsedMesh parsedMesh;
+    Mesh parsedMesh;
 
     std::cout << "Number of Vertices: " << mesh->mNumVertices << std::endl;
 
