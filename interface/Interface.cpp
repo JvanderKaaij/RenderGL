@@ -67,8 +67,6 @@ void RegisterInputs(GLFWwindow* window){
 }
 
 void setProjection(glm::vec2 rotation, glm::vec3 translation){
-    GLuint mvp_location = glGetUniformLocation(programID, "mvp");
-
     glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.f);
 
     glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), translation);
@@ -79,7 +77,9 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation){
 
     glm::mat4 MVP = Projection * ViewRotateY * Model;
 
+    GLuint mvp_location = glGetUniformLocation(programID, "mvp");
     glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(MVP));
+
 }
 
 void initializeProgram(){

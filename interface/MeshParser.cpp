@@ -8,7 +8,8 @@ Mesh MeshParser::Process(const char* path) {
     const aiScene* scene = aiImportFile( path,
                                          aiProcess_CalcTangentSpace     |
                                          aiProcess_Triangulate               |
-                                         aiProcess_GenSmoothNormals     |
+                                         aiProcess_GenSmoothNormals               |
+                                         aiProcess_JoinIdenticalVertices     |
                                          aiProcess_SortByPType);
 
     const aiMesh* mesh = scene->mMeshes[0];

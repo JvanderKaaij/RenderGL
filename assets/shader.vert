@@ -8,12 +8,10 @@ uniform float timer;
 uniform vec3 directionalLight;
 
 out vec3 SurfaceNormals;
-out vec3 WorldNormals;
 out vec3 DirectionalLight;
 
 void main(){
     gl_Position = mvp * vec4(position, 1.0);
     SurfaceNormals = inSurfaceNormals;
-    WorldNormals = normalize(mat3(mvp) * inSurfaceNormals);
     DirectionalLight = directionalLight;
 }
