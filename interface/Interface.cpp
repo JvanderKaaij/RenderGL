@@ -10,6 +10,7 @@
 #include "InputInterface.h"
 #include "../renderer/DirectionalLight.h"
 
+GLFWwindow* window;
 static bool throw_exit = false;
 static double timer = 0;
 unsigned int vao;
@@ -22,6 +23,7 @@ glm::vec3 camPosition = glm::vec3(0,0,0);
 glm::vec2 camRotation = glm::vec2(0,0);
 
 bool lMouseBtn = false;
+bool lMouseBtnCntrl = false;
 double xMousePos = 0;
 double yMousePos = 0;
 
@@ -42,13 +44,19 @@ void onCursorPosition(glm::vec2 position)
         camRotation.x += (position.x - xMousePos) * 0.01f;
         camRotation.y += (position.y - yMousePos) * 0.01f;
     }
+    if(lMouseBtnCntrl){
+        std::cout << "Mods mouse button";
+        directional_light.direction.x += (position.x - xMousePos) * 0.01f;
+        directional_light.direction.y -= (position.y - yMousePos) * 0.01f;
+    }
     xMousePos = position.x;
     yMousePos = position.y;
 }
 
 void OnMouseButtonCallback(int button, int action, int mods)
 {
-    lMouseBtn = (action == GLFW_PRESS && button == 0);
+    lMouseBtn = (action == GLFW_PRESS && button == 0 && mods == 0);
+    lMouseBtnCntrl = (action == GLFW_PRESS && button == 0 && (mods & GLFW_MOD_CONTROL) != 0);
 }
 
 void OnScrollCallback(glm::vec2 scrollOffset)
@@ -140,14 +148,13 @@ void initializeMeshWithAssimp(){
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
-void draw(GLFWwindow* window){
+void draw(){
     timer = glfwGetTime();
 
     GLint time_location = glGetUniformLocation(programID, "timer");
     glUniform1f(time_location, (float)timer);
 
     GLint directional_light_location = glGetUniformLocation(programID, "directionalLight");
-    directional_light.direction = glm::vec3(sin(timer), 0, -1.);
     glUniform3fv(directional_light_location, 1, &directional_light.direction[0]);
 
     setProjection(camRotation, camPosition);
@@ -169,7 +176,6 @@ int run() {
     if (!glfwInit())
         return -1;
 
-    GLFWwindow* window;
     window = glfwCreateWindow(width, height, "Hello Teapot", NULL, NULL);
 
     if (!window)
@@ -208,7 +214,7 @@ int run() {
             return 0;
         }
 
-        draw(window);
+        draw();
     }
 
     glfwTerminate();

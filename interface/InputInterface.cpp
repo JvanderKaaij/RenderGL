@@ -47,6 +47,7 @@ void InputInterface::Subscribe(int key, std::function<void()> callback) {
 void InputInterface::OnKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
     auto* self = (InputInterface*)glfwGetWindowUserPointer(window);
     //warning Check if callback exists - else don't call it will crash
-    self->keyCallbacks[key]();
-    std::cout << "Input Called" << std::endl;
+    if(self->keyCallbacks[key]!= nullptr){
+        self->keyCallbacks[key]();
+    }
 }
