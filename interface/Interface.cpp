@@ -91,7 +91,7 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation){
 }
 
 void initializeProgram(){
-    std::cout << "Initialize Program" << std::endl;
+    std::cout << "Initialize Program yeah" << std::endl;
 
     vert_shader = *new cy::GLSLShader();
     vert_shader.CompileFile("../assets/shader.vert", GL_VERTEX_SHADER);
