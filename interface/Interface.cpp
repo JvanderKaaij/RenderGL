@@ -34,7 +34,7 @@ cy::GLSLProgram program;
 Mesh parsedMesh;
 DirectionalLight directional_light;
 
-void OnMoveCamera(glm::vec3 translation){
+void onMoveCamera(glm::vec3 translation){
     camPosition += translation;
 }
 
@@ -53,23 +53,23 @@ void onCursorPosition(glm::vec2 position)
     yMousePos = position.y;
 }
 
-void OnMouseButtonCallback(int button, int action, int mods)
+void onMouseButtonCallback(int button, int action, int mods)
 {
     lMouseBtn = (action == GLFW_PRESS && button == 0 && mods == 0);
     lMouseBtnCntrl = (action == GLFW_PRESS && button == 0 && (mods & GLFW_MOD_CONTROL) != 0);
 }
 
-void OnScrollCallback(glm::vec2 scrollOffset)
+void onScrollCallback(glm::vec2 scrollOffset)
 {
     camPosition.z += scrollOffset.y;
 }
 
-void RegisterInputs(GLFWwindow* window){
-    auto input = new InputInterface(window, onCursorPosition, OnMouseButtonCallback, OnScrollCallback);
-    input->Subscribe(GLFW_KEY_A, [](){ OnMoveCamera(glm::vec3(0.1, 0., 0.));});
-    input->Subscribe(GLFW_KEY_D, [](){ OnMoveCamera(glm::vec3(-0.1, 0., 0.));});
-    input->Subscribe(GLFW_KEY_W, [](){ OnMoveCamera(glm::vec3(0., -0.1, 0.));});
-    input->Subscribe(GLFW_KEY_S, [](){ OnMoveCamera(glm::vec3(0., 0.1, 0.));});
+void registerInputs(GLFWwindow* window){
+    auto input = new InputInterface(window, onCursorPosition, onMouseButtonCallback, onScrollCallback);
+    input->Subscribe(GLFW_KEY_A, [](){ onMoveCamera(glm::vec3(0.1, 0., 0.));});
+    input->Subscribe(GLFW_KEY_D, [](){ onMoveCamera(glm::vec3(-0.1, 0., 0.));});
+    input->Subscribe(GLFW_KEY_W, [](){ onMoveCamera(glm::vec3(0., -0.1, 0.));});
+    input->Subscribe(GLFW_KEY_S, [](){ onMoveCamera(glm::vec3(0., 0.1, 0.));});
     input->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
     input->InitKeyCallback();
 }
@@ -87,7 +87,6 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation){
 
     GLuint mvp_location = glGetUniformLocation(programID, "mvp");
     glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(MVP));
-
 }
 
 void initializeProgram(){
@@ -109,10 +108,6 @@ void initializeProgram(){
     programID = program.GetID();
 
     glUseProgram(programID);
-
-    OnMoveCamera(glm::vec3(0., 0., -20.));
-
-    setProjection(camRotation, camPosition);
 }
 
 void initializeMeshWithAssimp(){
@@ -120,19 +115,28 @@ void initializeMeshWithAssimp(){
     parsedMesh = MeshParser::Process(path);
 
     std::cout << "Done Parsing Mesh " << std::endl;
+    std::cout << parsedMesh.TextureCoords.data() << std::endl;
 
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    GLuint vertexBuffer, normalBuffer;
+    GLuint vertexBuffer, normalBuffer, textureCoordBuffer;
     glGenBuffers(1, &vertexBuffer);
     glGenBuffers(1, &normalBuffer);
+    glGenBuffers(1, &textureCoordBuffer);
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, parsedMesh.Vertices.size() * sizeof(float), parsedMesh.Vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
     glBufferData(GL_ARRAY_BUFFER, parsedMesh.Normals.size() * sizeof(float), parsedMesh.Normals.data(), GL_STATIC_DRAW);
+
+    std::cout << "Normals Size: " << parsedMesh.Normals.size() << std::endl;
+
+    std::cout << "UV Size: " << parsedMesh.TextureCoords.size() << std::endl;
+
+    glBindBuffer(GL_ARRAY_BUFFER, textureCoordBuffer);
+    glBufferData(GL_ARRAY_BUFFER, parsedMesh.TextureCoords.size() * sizeof(float), parsedMesh.TextureCoords.data(), GL_STATIC_DRAW);
 
     unsigned int indexBuffer;
     glGenBuffers(1, &indexBuffer);
@@ -141,11 +145,27 @@ void initializeMeshWithAssimp(){
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, textureCoordBuffer);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+
+    //Assign texture
+    unsigned int texture;
+
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parsedMesh.diffTextWidth, parsedMesh.diffTextHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, parsedMesh.DiffuseTexture);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    GLint textureUnitLocation = glGetUniformLocation(programID, "textureUnit");
+    glUniform1i(textureUnitLocation, 0);
 }
 
 void draw(){
@@ -194,7 +214,7 @@ int run() {
         return -1;
     }
 
-    RegisterInputs(window);
+    registerInputs(window);
 
     glEnable (GL_DEPTH_TEST);
 
@@ -204,6 +224,8 @@ int run() {
 
     initializeMeshWithAssimp();
     initializeProgram();
+    onMoveCamera(glm::vec3(0., 0., -20.));
+    setProjection(camRotation, camPosition);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
