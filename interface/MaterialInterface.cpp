@@ -1,17 +1,13 @@
-//
-// Created by Joey on 26/01/2023.
-//
-
 #include <fstream>
 #include "MaterialInterface.h"
 #include "glad/glad.h"
 
-Shaders MaterialInterface::CompileShaders() {
+Shaders MaterialInterface::CompileShaders(std::string vertex_path, std::string fragment_path) {
 
     Shaders shaders;
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    std::ifstream vert_file("../assets/shader.vert");
+    std::ifstream vert_file(vertex_path);
     std::string vert_str((std::istreambuf_iterator<char>(vert_file)),
                     std::istreambuf_iterator<char>());
 
@@ -20,7 +16,7 @@ Shaders MaterialInterface::CompileShaders() {
     glCompileShader(vertexShader);
 
     GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
-    std::ifstream frag_file("../assets/shader.frag");
+    std::ifstream frag_file(fragment_path);
     std::string frag_str((std::istreambuf_iterator<char>(frag_file)),
                          std::istreambuf_iterator<char>());
     const char* fragmetShaderSourceCstr = frag_str.c_str();

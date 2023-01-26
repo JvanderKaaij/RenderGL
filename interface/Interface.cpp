@@ -86,7 +86,7 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation){
 
 void initializeProgram(){
     std::cout << "Initialize Program yeah" << std::endl;
-    Shaders shaders = MaterialInterface::CompileShaders();
+    Shaders shaders = MaterialInterface::CompileShaders("../assets/shader.vert", "../assets/shader.frag");
 
     programID = glCreateProgram();
     glAttachShader(programID, shaders.vertShader);
@@ -138,7 +138,6 @@ void initializeMeshWithAssimp(){
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glBindBuffer(GL_ARRAY_BUFFER, textureCoordBuffer);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
 
     //Assign texture
     unsigned int texture;
