@@ -20,7 +20,7 @@ add_subdirectory("libraries/glm")
 
 include_directories("libraries/stb")
 
-add_executable("${PROJECT_NAME}" main.cpp glad.c interface/Interface.cpp interface/Interface.h interface/InputInterface.cpp interface/InputInterface.h interface/MeshParser.cpp interface/MeshParser.h renderer/Mesh.h renderer/DirectionalLight.h interface/MaterialInterface.cpp interface/MaterialInterface.h renderer/Shaders.h)
+add_executable("${PROJECT_NAME}" main.cpp glad.c interface/Interface.cpp interface/Interface.h interface/InputInterface.cpp interface/InputInterface.h interface/MeshParser.cpp interface/MeshParser.h renderer/Mesh.h renderer/DirectionalLight.h interface/MaterialInterface.cpp interface/MaterialInterface.h renderer/Shaders.h renderer/Material.h renderer/Texture.h)
 
 include_directories("libraries")
 

@@ -27,6 +27,8 @@ double xMousePos = 0;
 double yMousePos = 0;
 
 Mesh parsedMesh;
+Material parsedMaterial;
+
 DirectionalLight directional_light;
 
 void onMoveCamera(glm::vec3 translation){
@@ -85,12 +87,24 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation){
 }
 
 void initializeProgram(){
-    std::cout << "Initialize Program yeah" << std::endl;
-    Shaders shaders = MaterialInterface::CompileShaders("../assets/shader.vert", "../assets/shader.frag");
+    parsedMaterial.shaders = MaterialInterface::CompileShaders("../assets/shader.vert", "../assets/shader.frag");
+    parsedMaterial.texture = MaterialInterface::LoadTexture(parsedMesh.meshMaterial);
+
+    //Assign texture
+    unsigned int texture;
+
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parsedMaterial.texture.width, parsedMaterial.texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, parsedMaterial.texture.data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    GLint textureUnitLocation = glGetUniformLocation(programID, "textureUnit");
+    glUniform1i(textureUnitLocation, 0);
 
     programID = glCreateProgram();
-    glAttachShader(programID, shaders.vertShader);
-    glAttachShader(programID, shaders.fragShader);
+    glAttachShader(programID, parsedMaterial.shaders.vertShader);
+    glAttachShader(programID, parsedMaterial.shaders.fragShader);
     glLinkProgram(programID);
     glUseProgram(programID);
 }
@@ -116,10 +130,7 @@ void initializeMeshWithAssimp(){
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
     glBufferData(GL_ARRAY_BUFFER, parsedMesh.Normals.size() * sizeof(float), parsedMesh.Normals.data(), GL_STATIC_DRAW);
 
-    std::cout << "Normals Size: " << parsedMesh.Normals.size() << std::endl;
-
-    std::cout << "UV Size: " << parsedMesh.TextureCoords.size() << std::endl;
-
+    //Textures
     glBindBuffer(GL_ARRAY_BUFFER, textureCoordBuffer);
     glBufferData(GL_ARRAY_BUFFER, parsedMesh.TextureCoords.size() * sizeof(float), parsedMesh.TextureCoords.data(), GL_STATIC_DRAW);
 
@@ -138,18 +149,6 @@ void initializeMeshWithAssimp(){
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glBindBuffer(GL_ARRAY_BUFFER, textureCoordBuffer);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
-    //Assign texture
-    unsigned int texture;
-
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parsedMesh.diffTextWidth, parsedMesh.diffTextHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, parsedMesh.DiffuseTexture);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    GLint textureUnitLocation = glGetUniformLocation(programID, "textureUnit");
-    glUniform1i(textureUnitLocation, 0);
 }
 
 void draw(){
@@ -206,8 +205,12 @@ int run() {
     directional_light.intensity = 1.;
     directional_light.direction = glm::vec3(0., 0., -1.);
 
+
+    //I need a parsedMesh to get the materials, so order matters here
     initializeMeshWithAssimp();
     initializeProgram();
+
+
     onMoveCamera(glm::vec3(0., 0., -20.));
     setProjection(camRotation, camPosition);
 

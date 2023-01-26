@@ -37,21 +37,9 @@ Mesh MeshParser::Process(const char* path) {
             }
         }
     }
-    //Materials
 
-    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-    aiString texture_path;
-    if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path) == AI_SUCCESS)
-    {
-        int width, height, nrChannels;
-        std::string image_path = texture_path.data;
-        std::string full_path = "F:/Projects/CPP/RenderGL/assets/" + image_path;
-        std::cout << "Trying to load texture: " << full_path << std::endl;
-        unsigned char* imgData = stbi_load(full_path.c_str(), &width, &height, &nrChannels, 0);
-        parsedMesh.DiffuseTexture = imgData;
-        parsedMesh.diffTextWidth = width;
-        parsedMesh.diffTextHeight = height;
-    }
+    //What if there are more materials?
+    parsedMesh.meshMaterial = scene->mMaterials[mesh->mMaterialIndex];
 
     return parsedMesh;
 }

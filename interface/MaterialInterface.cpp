@@ -1,6 +1,6 @@
-#include <fstream>
+
 #include "MaterialInterface.h"
-#include "glad/glad.h"
+
 
 Shaders MaterialInterface::CompileShaders(std::string vertex_path, std::string fragment_path) {
 
@@ -27,4 +27,22 @@ Shaders MaterialInterface::CompileShaders(std::string vertex_path, std::string f
     shaders.fragShader = fragShader;
 
     return shaders;
+}
+
+Texture MaterialInterface::LoadTexture(aiMaterial* material){
+    Texture texture;
+    aiString texture_path;
+
+    if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path) == AI_SUCCESS)
+    {
+        int width, height, nrChannels;
+        std::string image_path = texture_path.data;
+        std::string full_path = "../assets/" + image_path;
+        std::cout << "Trying to load texture: " << full_path << std::endl;
+        unsigned char* imgData = stbi_load(full_path.c_str(), &width, &height, &nrChannels, 0);
+        texture.data = imgData;
+        texture.width = width;
+        texture.height = height;
+    }
+    return texture;
 }
