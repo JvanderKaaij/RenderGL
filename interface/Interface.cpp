@@ -2,13 +2,12 @@
 #include <iostream>
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
-#include "cyCodeBase/cyMatrix.h"
-#include "cyCodeBase/cyGL.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/ext.hpp"
 #include "MeshParser.h"
 #include "InputInterface.h"
 #include "../renderer/DirectionalLight.h"
+#include "MaterialInterface.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -26,10 +25,6 @@ bool lMouseBtn = false;
 bool lMouseBtnCntrl = false;
 double xMousePos = 0;
 double yMousePos = 0;
-
-cy::GLSLShader vert_shader;
-cy::GLSLShader frag_shader;
-cy::GLSLProgram program;
 
 Mesh parsedMesh;
 DirectionalLight directional_light;
@@ -91,22 +86,12 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation){
 
 void initializeProgram(){
     std::cout << "Initialize Program yeah" << std::endl;
+    Shaders shaders = MaterialInterface::CompileShaders();
 
-    vert_shader = *new cy::GLSLShader();
-    vert_shader.CompileFile("../assets/shader.vert", GL_VERTEX_SHADER);
-
-    frag_shader = *new cy::GLSLShader();
-    frag_shader.CompileFile("../assets/shader.frag", GL_FRAGMENT_SHADER);
-
-    program = *new cy::GLSLProgram();
-    program.CreateProgram();
-    program.AttachShader(vert_shader);
-    program.AttachShader(frag_shader);
-    program.Link();
-    program.Bind();
-
-    programID = program.GetID();
-
+    programID = glCreateProgram();
+    glAttachShader(programID, shaders.vertShader);
+    glAttachShader(programID, shaders.fragShader);
+    glLinkProgram(programID);
     glUseProgram(programID);
 }
 
