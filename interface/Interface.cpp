@@ -88,19 +88,43 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation){
 
 void initializeProgram(){
     parsedMaterial.shaders = MaterialInterface::CompileShaders("../assets/shader.vert", "../assets/shader.frag");
-    parsedMaterial.texture = MaterialInterface::LoadTexture(parsedMesh.meshMaterial);
+    parsedMaterial.diffuseTexture = MaterialInterface::LoadTexture(aiTextureType_DIFFUSE, parsedMesh.meshMaterial);
+    parsedMaterial.specularTexture = MaterialInterface::LoadTexture(aiTextureType_SPECULAR, parsedMesh.meshMaterial);
 
-    //Assign texture
-    unsigned int texture;
+    //Assign diffuseTexture
+    unsigned int diffuseTexture;
 
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+    glGenTextures(1, &diffuseTexture);
+    glActiveTexture(GL_TEXTURE0);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parsedMaterial.texture.width, parsedMaterial.texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, parsedMaterial.texture.data);
+    glBindTexture(GL_TEXTURE_2D, diffuseTexture); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parsedMaterial.diffuseTexture.width, parsedMaterial.diffuseTexture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, parsedMaterial.diffuseTexture.data);
     glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);//generate bilinear filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//What to do with outside coordinates
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    GLint textureUnitLocation = glGetUniformLocation(programID, "textureUnit");
-    glUniform1i(textureUnitLocation, 0);
+    GLint diffuseTextureUnitLocation = glGetUniformLocation(programID, "diffuseTexture");
+    glUniform1i(diffuseTextureUnitLocation, 0);
+
+    //Assign specularTexture
+    unsigned int specularTexture;
+
+    glGenTextures(1, &specularTexture);
+    glActiveTexture(GL_TEXTURE1);//Activate the new texture
+    glBindTexture(GL_TEXTURE_2D, specularTexture); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parsedMaterial.specularTexture.width, parsedMaterial.specularTexture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, parsedMaterial.specularTexture.data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);//generate bilinear filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//What to do with outside coordinates
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    GLint specularTextureUnitLocation = glGetUniformLocation(programID, "specularTexture");
+    glUniform1i(specularTextureUnitLocation, 0);
 
     programID = glCreateProgram();
     glAttachShader(programID, parsedMaterial.shaders.vertShader);

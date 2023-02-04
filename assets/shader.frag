@@ -7,7 +7,8 @@ in vec2 TextureCoords;
 
 uniform mat4 mvp;
 uniform float timer;
-uniform sampler2D textureUnit;
+uniform sampler2D diffuseTexture;
+uniform sampler2D specularTexture;
 
 out vec4 FragColor;
 
@@ -26,11 +27,15 @@ void main()
     vec3 halfwayVector = normalize(DirectionalLight + viewDirection);
     float specular = pow(max(dot(world, halfwayVector), 0.0), specularExponent);
 
+    float specularIntensity = texture(specularTexture, TextureCoords).r;
+
+    vec3 finalSpecular = (specular * specularIntensity) * specularColor;
+
     float diffuse = max(dot(world, DirectionalLight), 0.0);
+    vec4 texelColor = texture(diffuseTexture, TextureCoords);
+    vec3 finalDiffuse = ambientColor + diffuse * diffuseColor * texelColor.xyz;
 
-    vec4 texelColor = texture(textureUnit, TextureCoords);
-
-    vec3 finalColor = (ambientColor + diffuse * diffuseColor + specular * specularColor) * texelColor.xyz;
+    vec3 finalColor = (finalDiffuse + finalSpecular);
 
     FragColor = vec4(finalColor, 1.);
 }

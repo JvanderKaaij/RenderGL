@@ -6,7 +6,8 @@
 
 struct Material {
     Shaders shaders;
-    Texture texture;
+    Texture diffuseTexture;
+    Texture specularTexture;
 };
 
 #endif
