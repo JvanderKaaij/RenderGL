@@ -12,6 +12,6 @@ newmtl default
 	Kd 0.50980395 0.00000000 0.00000000
 	Ks 0.80099994 0.80099994 0.80099994
 	Ke 0.00000000 0.00000000 0.00000000
-	map_Ka brick.png
-	map_Kd brick.png
+	map_Ka wood.jpg
+	map_Kd wood.jpg
 	map_Ks brick-specular.png

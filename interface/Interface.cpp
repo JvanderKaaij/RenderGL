@@ -91,12 +91,18 @@ void initializeProgram(){
     parsedMaterial.diffuseTexture = MaterialInterface::LoadTexture(aiTextureType_DIFFUSE, parsedMesh.meshMaterial);
     parsedMaterial.specularTexture = MaterialInterface::LoadTexture(aiTextureType_SPECULAR, parsedMesh.meshMaterial);
 
+
+    programID = glCreateProgram();
+    glAttachShader(programID, parsedMaterial.shaders.vertShader);
+    glAttachShader(programID, parsedMaterial.shaders.fragShader);
+    glLinkProgram(programID);
+    glUseProgram(programID);
+
     //Assign diffuseTexture
     unsigned int diffuseTexture;
-
-    glGenTextures(1, &diffuseTexture);
     glActiveTexture(GL_TEXTURE0);
 
+    glGenTextures(1, &diffuseTexture);
     glBindTexture(GL_TEXTURE_2D, diffuseTexture); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parsedMaterial.diffuseTexture.width, parsedMaterial.diffuseTexture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, parsedMaterial.diffuseTexture.data);
@@ -112,8 +118,9 @@ void initializeProgram(){
     //Assign specularTexture
     unsigned int specularTexture;
 
+    glActiveTexture(GL_TEXTURE1);
+
     glGenTextures(1, &specularTexture);
-    glActiveTexture(GL_TEXTURE1);//Activate the new texture
     glBindTexture(GL_TEXTURE_2D, specularTexture); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parsedMaterial.specularTexture.width, parsedMaterial.specularTexture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, parsedMaterial.specularTexture.data);
@@ -124,13 +131,7 @@ void initializeProgram(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     GLint specularTextureUnitLocation = glGetUniformLocation(programID, "specularTexture");
-    glUniform1i(specularTextureUnitLocation, 0);
-
-    programID = glCreateProgram();
-    glAttachShader(programID, parsedMaterial.shaders.vertShader);
-    glAttachShader(programID, parsedMaterial.shaders.fragShader);
-    glLinkProgram(programID);
-    glUseProgram(programID);
+    glUniform1i(specularTextureUnitLocation, 1);
 }
 
 void initializeMeshWithAssimp(){
@@ -220,7 +221,7 @@ int run() {
         glfwTerminate();
         return -1;
     }
-
+    printf("OpenGL version supported by this platform (%s): \n", glGetString(GL_VERSION));
     registerInputs(window);
 
     glEnable (GL_DEPTH_TEST);
