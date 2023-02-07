@@ -29,11 +29,11 @@ Shaders MaterialInterface::CompileShaders(std::string vertex_path, std::string f
     return shaders;
 }
 
-Texture MaterialInterface::LoadTexture(aiMaterial* material){
+Texture MaterialInterface::LoadTexture(aiTextureType type, aiMaterial* material){
     Texture texture;
     aiString texture_path;
 
-    if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path) == AI_SUCCESS)
+    if (material->GetTexture(type, 0, &texture_path) == AI_SUCCESS)
     {
         int width, height, nrChannels;
         std::string image_path = texture_path.data;
