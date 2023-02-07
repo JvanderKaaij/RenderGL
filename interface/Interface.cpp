@@ -8,6 +8,8 @@
 #include "InputInterface.h"
 #include "../renderer/DirectionalLight.h"
 #include "MaterialInterface.h"
+#include "../renderer/Mesh.h"
+#include "../renderer/Material.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -27,7 +29,6 @@ double xMousePos = 0;
 double yMousePos = 0;
 
 Mesh parsedMesh;
-Material parsedMaterial;
 
 DirectionalLight directional_light;
 
@@ -87,51 +88,8 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation){
 }
 
 void initializeProgram(){
-    parsedMaterial.shaders = MaterialInterface::CompileShaders("../assets/shader.vert", "../assets/shader.frag");
-    parsedMaterial.diffuseTexture = MaterialInterface::LoadTexture(aiTextureType_DIFFUSE, parsedMesh.meshMaterial);
-    parsedMaterial.specularTexture = MaterialInterface::LoadTexture(aiTextureType_SPECULAR, parsedMesh.meshMaterial);
-
-
-    programID = glCreateProgram();
-    glAttachShader(programID, parsedMaterial.shaders.vertShader);
-    glAttachShader(programID, parsedMaterial.shaders.fragShader);
-    glLinkProgram(programID);
-    glUseProgram(programID);
-
-    //Assign diffuseTexture
-    unsigned int diffuseTexture;
-    glActiveTexture(GL_TEXTURE0);
-
-    glGenTextures(1, &diffuseTexture);
-    glBindTexture(GL_TEXTURE_2D, diffuseTexture); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parsedMaterial.diffuseTexture.width, parsedMaterial.diffuseTexture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, parsedMaterial.diffuseTexture.data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);//generate bilinear filtering
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//What to do with outside coordinates
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    GLint diffuseTextureUnitLocation = glGetUniformLocation(programID, "diffuseTexture");
-    glUniform1i(diffuseTextureUnitLocation, 0);
-
-    //Assign specularTexture
-    unsigned int specularTexture;
-
-    glActiveTexture(GL_TEXTURE1);
-
-    glGenTextures(1, &specularTexture);
-    glBindTexture(GL_TEXTURE_2D, specularTexture); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parsedMaterial.specularTexture.width, parsedMaterial.specularTexture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, parsedMaterial.specularTexture.data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);//generate bilinear filtering
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//What to do with outside coordinates
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    GLint specularTextureUnitLocation = glGetUniformLocation(programID, "specularTexture");
-    glUniform1i(specularTextureUnitLocation, 1);
+    Material parsedMaterial = Material(parsedMesh);
+    programID = parsedMaterial.programID;
 }
 
 void initializeMeshWithAssimp(){

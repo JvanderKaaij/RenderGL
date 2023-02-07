@@ -4,7 +4,10 @@
 #ifndef RENDERGL_MATERIAL_H
 #define RENDERGL_MATERIAL_H
 
-struct Material {
+class Material {
+public:
+    Material(Mesh mesh);
+    GLuint programID;
     Shaders shaders;
     Texture diffuseTexture;
     Texture specularTexture;

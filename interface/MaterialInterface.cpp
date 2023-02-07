@@ -3,7 +3,6 @@
 
 
 Shaders MaterialInterface::CompileShaders(std::string vertex_path, std::string fragment_path) {
-
     Shaders shaders;
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
