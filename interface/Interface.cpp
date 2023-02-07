@@ -91,7 +91,6 @@ void initializeProgram(){
     parsedMaterial.diffuseTexture = MaterialInterface::LoadTexture(aiTextureType_DIFFUSE, parsedMesh.meshMaterial);
     parsedMaterial.specularTexture = MaterialInterface::LoadTexture(aiTextureType_SPECULAR, parsedMesh.meshMaterial);
 
-
     programID = glCreateProgram();
     glAttachShader(programID, parsedMaterial.shaders.vertShader);
     glAttachShader(programID, parsedMaterial.shaders.fragShader);
@@ -176,6 +175,48 @@ void initializeMeshWithAssimp(){
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
+void InitFrameBuffer(){
+
+    int textureWidth = 1024;
+    int textureHeight = 1024;
+
+    GLuint frameBuffer;
+    glGenFramebuffers(1, &frameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+    GLuint renderedTexture;
+    glGenTextures(1, &renderedTexture);
+    glBindTexture(GL_TEXTURE_2D, renderedTexture);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    GLuint depthBuffer;
+    glGenRenderbuffers(1, &depthBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, textureWidth, textureHeight);
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
+    GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, drawBuffers);
+
+    //Wait until done
+    bool checking = true;
+    while(checking){
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE){
+            checking = false;
+        }
+    }
+
+    // bind the standard frame buffer again
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+}
+
+
+
 void draw(){
     timer = glfwGetTime();
 
@@ -230,11 +271,10 @@ int run() {
     directional_light.intensity = 1.;
     directional_light.direction = glm::vec3(0., 0., -1.);
 
-
     //I need a parsedMesh to get the materials, so order matters here
+    InitFrameBuffer();
     initializeMeshWithAssimp();
     initializeProgram();
-
 
     onMoveCamera(glm::vec3(0., 0., -20.));
     setProjection(camRotation, camPosition);
