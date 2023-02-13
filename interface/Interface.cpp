@@ -17,6 +17,7 @@ int width = 640;
 int height = 480;
 
 GLuint programID;
+GLuint frameBufferID;
 
 glm::vec3 camPosition = glm::vec3(0,0,0);
 glm::vec2 camRotation = glm::vec2(0,0);
@@ -26,6 +27,7 @@ bool lMouseBtnCntrl = false;
 double xMousePos = 0;
 double yMousePos = 0;
 
+std::vector<Mesh> meshes;
 Mesh parsedMesh;
 Material parsedMaterial;
 
@@ -88,8 +90,8 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation){
 
 void initializeProgram(){
     parsedMaterial.shaders = MaterialInterface::CompileShaders("../assets/shader.vert", "../assets/shader.frag");
-    parsedMaterial.diffuseTexture = MaterialInterface::LoadTexture(aiTextureType_DIFFUSE, parsedMesh.meshMaterial);
-    parsedMaterial.specularTexture = MaterialInterface::LoadTexture(aiTextureType_SPECULAR, parsedMesh.meshMaterial);
+    parsedMaterial.diffuseTexture = MaterialInterface::LoadTexture(aiTextureType_DIFFUSE, meshes[0].meshMaterial);
+    parsedMaterial.specularTexture = MaterialInterface::LoadTexture(aiTextureType_SPECULAR, meshes[0].meshMaterial);
 
     programID = glCreateProgram();
     glAttachShader(programID, parsedMaterial.shaders.vertShader);
@@ -133,12 +135,11 @@ void initializeProgram(){
     glUniform1i(specularTextureUnitLocation, 1);
 }
 
-void initializeMeshWithAssimp(){
-    const char* path = "../assets/teapot.obj";
-    parsedMesh = MeshParser::Process(path);
+void initializeMeshWithAssimp(std::string path){
+    Mesh mesh = MeshParser::Process(path.c_str());
 
     std::cout << "Done Parsing Mesh " << std::endl;
-    std::cout << parsedMesh.TextureCoords.data() << std::endl;
+    std::cout << mesh.TextureCoords.data() << std::endl;
 
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -149,19 +150,19 @@ void initializeMeshWithAssimp(){
     glGenBuffers(1, &textureCoordBuffer);
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, parsedMesh.Vertices.size() * sizeof(float), parsedMesh.Vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh.Vertices.size() * sizeof(float), mesh.Vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-    glBufferData(GL_ARRAY_BUFFER, parsedMesh.Normals.size() * sizeof(float), parsedMesh.Normals.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh.Normals.size() * sizeof(float), mesh.Normals.data(), GL_STATIC_DRAW);
 
     //Textures
     glBindBuffer(GL_ARRAY_BUFFER, textureCoordBuffer);
-    glBufferData(GL_ARRAY_BUFFER, parsedMesh.TextureCoords.size() * sizeof(float), parsedMesh.TextureCoords.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh.TextureCoords.size() * sizeof(float), mesh.TextureCoords.data(), GL_STATIC_DRAW);
 
     unsigned int indexBuffer;
     glGenBuffers(1, &indexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, parsedMesh.Indices.size() * sizeof(unsigned int), parsedMesh.Indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.Indices.size() * sizeof(unsigned int), mesh.Indices.data(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -173,6 +174,10 @@ void initializeMeshWithAssimp(){
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glBindBuffer(GL_ARRAY_BUFFER, textureCoordBuffer);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+
+    meshes.push_back(mesh);
+
 }
 
 void InitFrameBuffer(){
@@ -180,9 +185,8 @@ void InitFrameBuffer(){
     int textureWidth = 1024;
     int textureHeight = 1024;
 
-    GLuint frameBuffer;
-    glGenFramebuffers(1, &frameBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    glGenFramebuffers(1, &frameBufferID);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
 
     GLuint renderedTexture;
     glGenTextures(1, &renderedTexture);
@@ -210,12 +214,10 @@ void InitFrameBuffer(){
         }
     }
 
-    // bind the standard frame buffer again
+    // bind the standard frame buffer again (WARNING THIS CAN THROW OFF WIP)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 }
-
-
 
 void draw(){
     timer = glfwGetTime();
@@ -231,7 +233,7 @@ void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     /* Render here */
-    glDrawElementsInstanced(GL_TRIANGLES, parsedMesh.Indices.size(), GL_UNSIGNED_INT, 0, 2);
+    glDrawElementsInstanced(GL_TRIANGLES, meshes[0].Indices.size(), GL_UNSIGNED_INT, 0, 2);
     /* End of Render */
 
     /* Swap front and back buffers */
@@ -273,7 +275,8 @@ int run() {
 
     //I need a parsedMesh to get the materials, so order matters here
     InitFrameBuffer();
-    initializeMeshWithAssimp();
+    initializeMeshWithAssimp("../assets/teapot.obj");
+//    initializeMeshWithAssimp("../assets/cube.obj");
     initializeProgram();
 
     onMoveCamera(glm::vec3(0., 0., -20.));
