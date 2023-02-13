@@ -8,11 +8,11 @@
 #include "InputInterface.h"
 #include "../renderer/DirectionalLight.h"
 #include "MaterialInterface.h"
+#include "../renderer/Material.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
 static double timer = 0;
-unsigned int vao;
 int width = 640;
 int height = 480;
 
@@ -28,7 +28,6 @@ double xMousePos = 0;
 double yMousePos = 0;
 
 std::vector<Mesh> meshes;
-Mesh parsedMesh;
 Material parsedMaterial;
 
 DirectionalLight directional_light;
@@ -141,8 +140,8 @@ void initializeMeshWithAssimp(std::string path){
     std::cout << "Done Parsing Mesh " << std::endl;
     std::cout << mesh.TextureCoords.data() << std::endl;
 
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    glGenVertexArrays(1, &mesh.vaoID);
+    glBindVertexArray(mesh.vaoID);
 
     GLuint vertexBuffer, normalBuffer, textureCoordBuffer;
     glGenBuffers(1, &vertexBuffer);
@@ -150,6 +149,7 @@ void initializeMeshWithAssimp(std::string path){
     glGenBuffers(1, &textureCoordBuffer);
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    std::cout << "Index of Vertex Buffer" << vertexBuffer << std::endl;
     glBufferData(GL_ARRAY_BUFFER, mesh.Vertices.size() * sizeof(float), mesh.Vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
@@ -177,6 +177,7 @@ void initializeMeshWithAssimp(std::string path){
 
 
     meshes.push_back(mesh);
+    std::cout << "Loaded " << meshes.size() << " meshes";
 
 }
 
@@ -232,8 +233,15 @@ void draw(){
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+    unsigned int length = meshes.size();
+
+    for(unsigned int i = 0; i < length; i++){
+        glBindVertexArray(meshes[i].vaoID);
+        glDrawElementsInstanced(GL_TRIANGLES, meshes[i].Indices.size(), GL_UNSIGNED_INT, 0, 2);
+    }
+
     /* Render here */
-    glDrawElementsInstanced(GL_TRIANGLES, meshes[0].Indices.size(), GL_UNSIGNED_INT, 0, 2);
     /* End of Render */
 
     /* Swap front and back buffers */
@@ -275,8 +283,8 @@ int run() {
 
     //I need a parsedMesh to get the materials, so order matters here
     InitFrameBuffer();
+    initializeMeshWithAssimp("../assets/suzanne.obj");
     initializeMeshWithAssimp("../assets/teapot.obj");
-//    initializeMeshWithAssimp("../assets/cube.obj");
     initializeProgram();
 
     onMoveCamera(glm::vec3(0., 0., -20.));
