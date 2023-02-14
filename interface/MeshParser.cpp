@@ -39,7 +39,7 @@ Mesh MeshParser::Process(const char* path) {
     }
 
     //What if there are more materials?
-    parsedMesh.meshMaterial = scene->mMaterials[mesh->mMaterialIndex];
+    parsedMesh.meshMaterialData = scene->mMaterials[mesh->mMaterialIndex];
 
     return parsedMesh;
 }

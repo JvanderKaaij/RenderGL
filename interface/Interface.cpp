@@ -12,11 +12,9 @@
 
 GLFWwindow* window;
 static bool throw_exit = false;
-static double timer = 0;
 int width = 640;
 int height = 480;
 
-GLuint programID;
 GLuint frameBufferID;
 
 glm::vec3 camPosition = glm::vec3(0,0,0);
@@ -27,8 +25,8 @@ bool lMouseBtnCntrl = false;
 double xMousePos = 0;
 double yMousePos = 0;
 
-std::vector<Mesh> meshes;
-Material parsedMaterial;
+std::vector<Mesh> frameBufferMeshes;
+std::vector<Mesh> backBufferMeshes;
 
 DirectionalLight directional_light;
 
@@ -72,7 +70,7 @@ void registerInputs(GLFWwindow* window){
     input->InitKeyCallback();
 }
 
-void setProjection(glm::vec2 rotation, glm::vec3 translation){
+glm::mat4 GetProjection(glm::vec2 rotation, glm::vec3 translation){
     glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.f);
 
     glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), translation);
@@ -83,58 +81,58 @@ void setProjection(glm::vec2 rotation, glm::vec3 translation){
 
     glm::mat4 MVP = Projection * ViewRotateY * Model;
 
-    GLuint mvp_location = glGetUniformLocation(programID, "mvp");
-    glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(MVP));
+    return MVP;
 }
 
-void initializeProgram(){
-    parsedMaterial.shaders = MaterialInterface::CompileShaders("../assets/shader.vert", "../assets/shader.frag");
-    parsedMaterial.diffuseTexture = MaterialInterface::LoadTexture(aiTextureType_DIFFUSE, meshes[0].meshMaterial);
-    parsedMaterial.specularTexture = MaterialInterface::LoadTexture(aiTextureType_SPECULAR, meshes[0].meshMaterial);
+void initializeProgram(Mesh &mesh, std::string vertex_path, std::string fragment_path){
+    Material material;
+    material.shaders = MaterialInterface::CompileShaders(vertex_path.c_str(), fragment_path.c_str());
 
-    programID = glCreateProgram();
-    glAttachShader(programID, parsedMaterial.shaders.vertShader);
-    glAttachShader(programID, parsedMaterial.shaders.fragShader);
-    glLinkProgram(programID);
-    glUseProgram(programID);
+    mesh.material = &material;
+
+    //TODO - This is a hack, I need to fix this - can be deleted after assignment etc.
+    Texture diffuse = MaterialInterface::LoadTexture(aiTextureType_DIFFUSE, mesh.meshMaterialData);
+    Texture specular = MaterialInterface::LoadTexture(aiTextureType_SPECULAR, mesh.meshMaterialData);
+
+    mesh.programID = glCreateProgram();
+    glAttachShader(mesh.programID, material.shaders.vertShader);
+    glAttachShader(mesh.programID, material.shaders.fragShader);
+    glLinkProgram(mesh.programID);
+    glUseProgram(mesh.programID);
 
     //Assign diffuseTexture
-    unsigned int diffuseTexture;
     glActiveTexture(GL_TEXTURE0);
 
-    glGenTextures(1, &diffuseTexture);
-    glBindTexture(GL_TEXTURE_2D, diffuseTexture); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
+    glGenTextures(1, &mesh.diffuseID);
+    glBindTexture(GL_TEXTURE_2D, mesh.diffuseID); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parsedMaterial.diffuseTexture.width, parsedMaterial.diffuseTexture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, parsedMaterial.diffuseTexture.data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, diffuse.width, diffuse.height, 0, GL_RGB, GL_UNSIGNED_BYTE, diffuse.data);
     glGenerateMipmap(GL_TEXTURE_2D);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);//generate bilinear filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//What to do with outside coordinates
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    GLint diffuseTextureUnitLocation = glGetUniformLocation(programID, "diffuseTexture");
-    glUniform1i(diffuseTextureUnitLocation, 0);
-
     //Assign specularTexture
-    unsigned int specularTexture;
 
     glActiveTexture(GL_TEXTURE1);
 
-    glGenTextures(1, &specularTexture);
-    glBindTexture(GL_TEXTURE_2D, specularTexture); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
+    glGenTextures(1, &mesh.specularID);
+    glBindTexture(GL_TEXTURE_2D, mesh.specularID); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parsedMaterial.specularTexture.width, parsedMaterial.specularTexture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, parsedMaterial.specularTexture.data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, specular.width, specular.height, 0, GL_RGB, GL_UNSIGNED_BYTE, specular.data);
     glGenerateMipmap(GL_TEXTURE_2D);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);//generate bilinear filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//What to do with outside coordinates
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    GLint specularTextureUnitLocation = glGetUniformLocation(programID, "specularTexture");
-    glUniform1i(specularTextureUnitLocation, 1);
+    std::cout << "Diffuse ID To Init: " << mesh.diffuseID << std::endl;
+    std::cout << "Specular ID To Init: " << mesh.specularID << std::endl;
+
 }
 
-void initializeMeshWithAssimp(std::string path){
+void initializeMeshWithAssimp(std::string path, std::vector<Mesh> &meshList){
     Mesh mesh = MeshParser::Process(path.c_str());
 
     std::cout << "Done Parsing Mesh " << std::endl;
@@ -175,9 +173,8 @@ void initializeMeshWithAssimp(std::string path){
     glBindBuffer(GL_ARRAY_BUFFER, textureCoordBuffer);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-
-    meshes.push_back(mesh);
-    std::cout << "Loaded " << meshes.size() << " meshes";
+    meshList.push_back(mesh);
+    std::cout << "Loaded " << meshList.size() << " meshes" << std::endl;
 
 }
 
@@ -215,33 +212,64 @@ void InitFrameBuffer(){
         }
     }
 
-    // bind the standard frame buffer again (WARNING THIS CAN THROW OFF WIP)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void drawFrameBuffer(){
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
+    glViewport(0,0,1024,1024);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    for(unsigned int i = 0; i < frameBufferMeshes.size(); i++){
+        glBindVertexArray(frameBufferMeshes[i].vaoID);
+        glDrawElementsInstanced(GL_TRIANGLES, frameBufferMeshes[i].Indices.size(), GL_UNSIGNED_INT, 0, 2);
+    }
 
 }
 
-void draw(){
-    timer = glfwGetTime();
-
-    GLint time_location = glGetUniformLocation(programID, "timer");
-    glUniform1f(time_location, (float)timer);
-
-    GLint directional_light_location = glGetUniformLocation(programID, "directionalLight");
-    glUniform3fv(directional_light_location, 1, &directional_light.direction[0]);
-
-    setProjection(camRotation, camPosition);
-
+void drawBackBuffer(){
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0,0,width,height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    unsigned int length = backBufferMeshes.size();
 
-    unsigned int length = meshes.size();
-
+    glm::mat4 MVP = GetProjection(camRotation, camPosition);
+    static double timer = glfwGetTime();
     for(unsigned int i = 0; i < length; i++){
-        glBindVertexArray(meshes[i].vaoID);
-        glDrawElementsInstanced(GL_TRIANGLES, meshes[i].Indices.size(), GL_UNSIGNED_INT, 0, 2);
-    }
+        Mesh mesh = backBufferMeshes[i];
+        glUseProgram(mesh.programID);
 
-    /* Render here */
+        std::cout << "Diffuse ID To DRAW: " << mesh.diffuseID << std::endl;
+
+        glBindTexture(GL_TEXTURE_2D, mesh.diffuseID);
+        GLuint diffuseLocation = glGetUniformLocation(mesh.programID, "diffuseTexture");
+        glUniform1i(diffuseLocation, 0);
+
+        glBindTexture(GL_TEXTURE_2D, mesh.specularID);
+        GLuint specularLocation = glGetUniformLocation(mesh.programID, "specularTexture");
+        glUniform1i(specularLocation, 1);
+
+        GLint time_location = glGetUniformLocation(mesh.programID, "timer");
+        glUniform1f(time_location, (float)timer);
+
+        GLint directional_light_location = glGetUniformLocation(mesh.programID, "directionalLight");
+        glUniform3fv(directional_light_location, 1, &directional_light.direction[0]);
+
+        glBindVertexArray(backBufferMeshes[i].vaoID);
+        glDrawElementsInstanced(GL_TRIANGLES, backBufferMeshes[i].Indices.size(), GL_UNSIGNED_INT, 0, 2);
+
+        GLuint mvp_location = glGetUniformLocation(mesh.programID, "mvp");
+        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(MVP));
+    }
+}
+
+
+void draw(){
+
+//    drawFrameBuffer();
+    drawBackBuffer();
+
     /* End of Render */
 
     /* Swap front and back buffers */
@@ -282,13 +310,15 @@ int run() {
     directional_light.direction = glm::vec3(0., 0., -1.);
 
     //I need a parsedMesh to get the materials, so order matters here
-    InitFrameBuffer();
-    initializeMeshWithAssimp("../assets/suzanne.obj");
-    initializeMeshWithAssimp("../assets/teapot.obj");
-    initializeProgram();
+//    InitFrameBuffer();
+    initializeMeshWithAssimp("../assets/suzanne.obj", backBufferMeshes);
+    initializeMeshWithAssimp("../assets/teapot.obj", backBufferMeshes);
+//    initializeMeshWithAssimp("../assets/plane.obj", backBufferMeshes);
+
+    initializeProgram(backBufferMeshes[0], "../shaders/lit.vert", "../shaders/lit.frag");
+    initializeProgram(backBufferMeshes[1], "../shaders/lit.vert", "../shaders/lit.frag");
 
     onMoveCamera(glm::vec3(0., 0., -20.));
-    setProjection(camRotation, camPosition);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

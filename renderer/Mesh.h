@@ -1,4 +1,5 @@
 #include <vector>
+#include "Material.h"
 
 #ifndef RENDERGL_MESH_H
 #define RENDERGL_MESH_H
@@ -13,7 +14,12 @@ struct Mesh {
 
     unsigned int vaoID;
 
-    aiMaterial* meshMaterial;
+    aiMaterial* meshMaterialData;
+    Material* material;
+    unsigned int programID;
+
+    unsigned int diffuseID;
+    unsigned int specularID;
 };
 
 
