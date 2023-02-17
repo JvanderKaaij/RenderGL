@@ -238,14 +238,19 @@ void drawBackBuffer(){
     static double timer = glfwGetTime();
     for(unsigned int i = 0; i < length; i++){
         Mesh mesh = backBufferMeshes[i];
+
+        std::cout << "Current Mesh program ID: " << mesh.programID << std::endl;
+
         glUseProgram(mesh.programID);
 
         std::cout << "Diffuse ID To DRAW: " << mesh.diffuseID << std::endl;
 
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, mesh.diffuseID);
         GLuint diffuseLocation = glGetUniformLocation(mesh.programID, "diffuseTexture");
         glUniform1i(diffuseLocation, 0);
 
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, mesh.specularID);
         GLuint specularLocation = glGetUniformLocation(mesh.programID, "specularTexture");
         glUniform1i(specularLocation, 1);

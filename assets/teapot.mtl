@@ -14,4 +14,4 @@ newmtl default
 	Ke 0.00000000 0.00000000 0.00000000
 	map_Ka wood.jpg
 	map_Kd wood.jpg
-	map_Ks brick-specular.png
+	map_Ks cobble-specular.png
