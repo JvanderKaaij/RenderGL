@@ -85,7 +85,7 @@ glm::mat4 GetProjection(glm::vec2 rotation, glm::vec3 translation){
     return MVP;
 }
 
-void initializeMeshWithAssimp(std::string path, std::vector<Mesh> &meshList){
+void InitMesh(std::string path, std::vector<Mesh> &meshList){
     Mesh mesh = MeshParser::Process(path.c_str());
 
     std::cout << "Done Parsing Mesh " << std::endl;
@@ -153,23 +153,13 @@ void InitProgram(Mesh &mesh, std::string vertex_path, std::string fragment_path)
     Material material;
     material.shaders = MaterialInterface::CompileShaders(vertex_path.c_str(), fragment_path.c_str());
 
-    mesh.material = &material;
+    mesh.material = material;
 
-    mesh.programID = glCreateProgram();
-    glAttachShader(mesh.programID, material.shaders.vertShader);
-    glAttachShader(mesh.programID, material.shaders.fragShader);
-    glLinkProgram(mesh.programID);
-    glUseProgram(mesh.programID);
-
-    //TODO - This is a hack, I need to fix this - can be deleted after assignment etc.
-    //Assign diffuseTexture
-    InitStandardTexture(mesh, aiTextureType_DIFFUSE, GL_TEXTURE0, mesh.diffuseID);
-
-    //Assign specularTexture
-    InitStandardTexture(mesh, aiTextureType_SPECULAR, GL_TEXTURE1, mesh.specularID);
-
-    std::cout << "Diffuse ID To Init: " << mesh.diffuseID << std::endl;
-    std::cout << "Specular ID To Init: " << mesh.specularID << std::endl;
+    mesh.material.programID = glCreateProgram();
+    glAttachShader(mesh.material.programID, material.shaders.vertShader);
+    glAttachShader(mesh.material.programID, material.shaders.fragShader);
+    glLinkProgram(mesh.material.programID);
+    glUseProgram(mesh.material.programID);
 
 }
 
@@ -221,28 +211,28 @@ void drawFrameBuffer(){
     static double timer = glfwGetTime();
     for(unsigned int i = 0; i < length; i++){
         Mesh mesh = frameBufferMeshes[i];
-        glUseProgram(mesh.programID);
+        glUseProgram(mesh.material.programID);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mesh.diffuseID);
-        GLuint diffuseLocation = glGetUniformLocation(mesh.programID, "diffuseTexture");
+        glBindTexture(GL_TEXTURE_2D, mesh.material.diffuseID);
+        GLuint diffuseLocation = glGetUniformLocation(mesh.material.programID, "diffuseTexture");
         glUniform1i(diffuseLocation, 0);
 
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, mesh.specularID);
-        GLuint specularLocation = glGetUniformLocation(mesh.programID, "specularTexture");
+        glBindTexture(GL_TEXTURE_2D, mesh.material.specularID);
+        GLuint specularLocation = glGetUniformLocation(mesh.material.programID, "specularTexture");
         glUniform1i(specularLocation, 1);
 
-        GLint time_location = glGetUniformLocation(mesh.programID, "timer");
+        GLint time_location = glGetUniformLocation(mesh.material.programID, "timer");
         glUniform1f(time_location, (float)timer);
 
-        GLint directional_light_location = glGetUniformLocation(mesh.programID, "directionalLight");
+        GLint directional_light_location = glGetUniformLocation(mesh.material.programID, "directionalLight");
         glUniform3fv(directional_light_location, 1, &directional_light.direction[0]);
 
         glBindVertexArray(frameBufferMeshes[i].vaoID);
         glDrawElementsInstanced(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, 0, 2);
 
-        GLuint mvp_location = glGetUniformLocation(mesh.programID, "mvp");
+        GLuint mvp_location = glGetUniformLocation(mesh.material.programID, "mvp");
         glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(MVP));
     }
     //Regerate MipMap Levels for render texture
@@ -258,17 +248,17 @@ void drawBackBuffer(){
     for(unsigned int i = 0; i < backBufferMeshes.size(); i++){
 
         Mesh mesh = backBufferMeshes[i];
-        glUseProgram(mesh.programID);
+        glUseProgram(mesh.material.programID);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, renderedTextureID);
-        GLuint renderLocation = glGetUniformLocation(mesh.programID, "renderTexture");
+        GLuint renderLocation = glGetUniformLocation(mesh.material.programID, "renderTexture");
         glUniform1i(renderLocation, 0);
 
         glBindVertexArray(mesh.vaoID);
         glDrawElementsInstanced(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, 0, 2);
 
-        GLuint mvp_location = glGetUniformLocation(mesh.programID, "mvp");
+        GLuint mvp_location = glGetUniformLocation(mesh.material.programID, "mvp");
         glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(MVP));
     }
 }
@@ -318,14 +308,22 @@ int run() {
     directional_light.direction = glm::vec3(0., 0., -1.);
 
     //I need a parsedMesh to get the materials, so order matters here
-    initializeMeshWithAssimp("../assets/suzanne.obj", frameBufferMeshes);
-    initializeMeshWithAssimp("../assets/teapot.obj", frameBufferMeshes);
-    initializeMeshWithAssimp("../assets/plane.obj", backBufferMeshes);
 
     InitBackBuffer();
+
+    InitMesh("../assets/suzanne.obj", frameBufferMeshes);
     InitProgram(frameBufferMeshes[0], "../shaders/lit.vert", "../shaders/lit.frag");
+    InitStandardTexture(frameBufferMeshes[0], aiTextureType_DIFFUSE, GL_TEXTURE0, frameBufferMeshes[0].material.diffuseID);
+    InitStandardTexture(frameBufferMeshes[0], aiTextureType_SPECULAR, GL_TEXTURE1, frameBufferMeshes[0].material.specularID);
+
+    InitMesh("../assets/teapot.obj", frameBufferMeshes);
     InitProgram(frameBufferMeshes[1], "../shaders/lit.vert", "../shaders/lit.frag");
+    InitStandardTexture(frameBufferMeshes[1], aiTextureType_DIFFUSE, GL_TEXTURE0, frameBufferMeshes[1].material.diffuseID);
+    InitStandardTexture(frameBufferMeshes[1], aiTextureType_SPECULAR, GL_TEXTURE1, frameBufferMeshes[1].material.specularID);
+
+    InitMesh("../assets/plane.obj", backBufferMeshes);
     InitProgram(backBufferMeshes[0], "../shaders/lit.vert", "../shaders/unlit.frag");
+
 
     onMoveCamera(glm::vec3(0., 0., -20.));
 

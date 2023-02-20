@@ -11,15 +11,10 @@ struct Mesh {
     std::vector<float> Normals;
     std::vector<float> TextureCoords;
     std::vector<unsigned int> Indices;
-
     unsigned int vaoID;
 
     aiMaterial* meshMaterialData;
-    Material* material;
-    unsigned int programID;
-
-    unsigned int diffuseID;
-    unsigned int specularID;
+    Material material;
 };
 
 
