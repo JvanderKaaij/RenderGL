@@ -326,6 +326,7 @@ int run() {
 
 
     onMoveCamera(glm::vec3(0., 0., -20.));
+    camRotation.y = 1.0f;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
