@@ -5,12 +5,12 @@ in vec3 WorldNormals;
 in vec3 DirectionalLight;
 in vec2 TextureCoords;
 
-uniform mat4 mvp;
-uniform float timer;
+layout(binding = 0) uniform sampler2D renderTexture;
 
 out vec4 FragColor;
 
 void main()
 {
-    FragColor = vec4(1., 0., 0., 1.);
+    vec4 txtrColor = texture(renderTexture, TextureCoords);
+    FragColor = txtrColor;
 }
