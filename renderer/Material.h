@@ -6,10 +6,9 @@
 
 class Material {
 public:
-    Material();
     Material(std::string vertex_path, std::string fragment_path);
 
-    virtual void Draw();
+    void virtual Draw();
 
     Shaders shaders;
     unsigned int programID;

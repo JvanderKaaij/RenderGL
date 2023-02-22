@@ -7,11 +7,11 @@
 
 class StandardMaterial: public Material {
 public:
-    StandardMaterial(std::string vertex_path, std::string fragment_path){
-        this->shaders = MaterialInterface::CompileShaders(vertex_path.c_str(), fragment_path.c_str());
+    StandardMaterial(std::string vertex_path, std::string fragment_path): Material(vertex_path, fragment_path){
+        std::cout << "Material created from Standard Material" << std::endl;
     }
 
-    void Draw(){
+    void Draw() override{
         std::cout << "Draw from Standard Mat" << std::endl;
         glUseProgram(this->programID);
 

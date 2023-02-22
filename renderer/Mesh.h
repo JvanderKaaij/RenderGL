@@ -7,6 +7,11 @@
 struct aiMaterial; //I need to forward declare aiMaterial here for some reason
 
 struct Mesh {
+//
+//    ~Mesh() {
+//        delete material;
+//    }
+
     std::vector<float> Vertices;
     std::vector<float> Normals;
     std::vector<float> TextureCoords;
@@ -14,7 +19,7 @@ struct Mesh {
     unsigned int vaoID;
 
     aiMaterial* meshMaterialData;
-    Material material;
+    Material* material;
 };
 
 
