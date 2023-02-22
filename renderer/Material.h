@@ -14,5 +14,7 @@ public:
     unsigned int programID;
     unsigned int diffuseID;
     unsigned int specularID;
+    unsigned int renderedTextureID;
+
 };
 #endif

@@ -7,10 +7,6 @@
 struct aiMaterial; //I need to forward declare aiMaterial here for some reason
 
 struct Mesh {
-//
-//    ~Mesh() {
-//        delete material;
-//    }
 
     std::vector<float> Vertices;
     std::vector<float> Normals;

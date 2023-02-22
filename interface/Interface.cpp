@@ -10,6 +10,7 @@
 #include "MaterialInterface.h"
 #include "../renderer/Material.h"
 #include "../renderer/StandardMaterial.h"
+#include "../renderer/RenderMaterial.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -17,7 +18,6 @@ int width = 640;
 int height = 480;
 
 GLuint frameBufferID;
-GLuint renderedTextureID;
 
 glm::vec3 camPosition = glm::vec3(0,0,0);
 glm::vec2 camRotation = glm::vec2(0,0);
@@ -150,11 +150,17 @@ void InitStandardTexture(Mesh &mesh, aiTextureType type, GLenum textureLocation,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-void InitProgram(Mesh &mesh, std::string vertex_path, std::string fragment_path){
+
+void InitProgramAsStandard(Mesh &mesh, std::string vertex_path, std::string fragment_path){
     mesh.material = new StandardMaterial(vertex_path, fragment_path);
 }
 
-void InitBackBuffer(){
+void InitProgramAsRender(Mesh &mesh, std::string vertex_path, std::string fragment_path){
+    mesh.material = new RenderMaterial(vertex_path, fragment_path);
+}
+
+void InitRenderTexture(Mesh &mesh){
+    GLuint renderedTextureID;
 
     int textureWidth = 1024;
     int textureHeight = 1024;
@@ -187,7 +193,7 @@ void InitBackBuffer(){
         }
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    mesh.material->renderedTextureID = renderedTextureID;
 }
 
 void drawFrameBuffer(){
@@ -199,31 +205,17 @@ void drawFrameBuffer(){
     unsigned int length = frameBufferMeshes.size();
 
     glm::mat4 MVP = GetProjection(camRotation, camPosition);
-    static double timer = glfwGetTime();
     for(unsigned int i = 0; i < length; i++){
-        Mesh mesh = frameBufferMeshes[i];
-        glUseProgram(mesh.material->programID);
+        Mesh* mesh = &frameBufferMeshes[i];
+        mesh->material->Draw();
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mesh.material->diffuseID);
-        GLuint diffuseLocation = glGetUniformLocation(mesh.material->programID, "diffuseTexture");
-        glUniform1i(diffuseLocation, 0);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, mesh.material->specularID);
-        GLuint specularLocation = glGetUniformLocation(mesh.material->programID, "specularTexture");
-        glUniform1i(specularLocation, 1);
-
-        GLint time_location = glGetUniformLocation(mesh.material->programID, "timer");
-        glUniform1f(time_location, (float)timer);
-
-        GLint directional_light_location = glGetUniformLocation(mesh.material->programID, "directionalLight");
+        GLint directional_light_location = glGetUniformLocation(mesh->material->programID, "directionalLight");
         glUniform3fv(directional_light_location, 1, &directional_light.direction[0]);
 
         glBindVertexArray(frameBufferMeshes[i].vaoID);
-        glDrawElementsInstanced(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, 0, 2);
+        glDrawElementsInstanced(GL_TRIANGLES, mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
 
-        GLuint mvp_location = glGetUniformLocation(mesh.material->programID, "mvp");
+        GLuint mvp_location = glGetUniformLocation(mesh->material->programID, "mvp");
         glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(MVP));
     }
     //Regerate MipMap Levels for render texture
@@ -239,12 +231,7 @@ void drawBackBuffer(){
     for(unsigned int i = 0; i < backBufferMeshes.size(); i++){
 
         Mesh mesh = backBufferMeshes[i];
-        glUseProgram(mesh.material->programID);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, renderedTextureID);
-        GLuint renderLocation = glGetUniformLocation(mesh.material->programID, "renderTexture");
-        glUniform1i(renderLocation, 0);
+        mesh.material->Draw();
 
         glBindVertexArray(mesh.vaoID);
         glDrawElementsInstanced(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, 0, 2);
@@ -255,7 +242,6 @@ void drawBackBuffer(){
 }
 
 void draw(){
-
     drawFrameBuffer();
     drawBackBuffer();
 
@@ -300,21 +286,19 @@ int run() {
 
     //I need a parsedMesh to get the materials, so order matters here
 
-    InitBackBuffer();
-
     InitMesh("../assets/suzanne.obj", frameBufferMeshes);
-    InitProgram(frameBufferMeshes[0], "../shaders/lit.vert", "../shaders/lit.frag");
+    InitProgramAsStandard(frameBufferMeshes[0], "../shaders/lit.vert", "../shaders/lit.frag");
     InitStandardTexture(frameBufferMeshes[0], aiTextureType_DIFFUSE, GL_TEXTURE0, frameBufferMeshes[0].material->diffuseID);
     InitStandardTexture(frameBufferMeshes[0], aiTextureType_SPECULAR, GL_TEXTURE1, frameBufferMeshes[0].material->specularID);
 
     InitMesh("../assets/teapot.obj", frameBufferMeshes);
-    InitProgram(frameBufferMeshes[1], "../shaders/lit.vert", "../shaders/lit.frag");
+    InitProgramAsStandard(frameBufferMeshes[1], "../shaders/lit.vert", "../shaders/lit.frag");
     InitStandardTexture(frameBufferMeshes[1], aiTextureType_DIFFUSE, GL_TEXTURE0, frameBufferMeshes[1].material->diffuseID);
     InitStandardTexture(frameBufferMeshes[1], aiTextureType_SPECULAR, GL_TEXTURE1, frameBufferMeshes[1].material->specularID);
 
     InitMesh("../assets/plane.obj", backBufferMeshes);
-    InitProgram(backBufferMeshes[0], "../shaders/lit.vert", "../shaders/unlit.frag");
-
+    InitProgramAsRender(backBufferMeshes[0], "../shaders/lit.vert", "../shaders/unlit.frag");
+    InitRenderTexture(backBufferMeshes[0]);
 
     onMoveCamera(glm::vec3(0., 0., -20.));
     camRotation.y = 1.0f;

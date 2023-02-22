@@ -15,4 +15,5 @@ Material::Material(std::string vertex_path, std::string fragment_path) {
 
 void Material::Draw() {
     std::cout << "Draw from Material" << std::endl;
+
 }
