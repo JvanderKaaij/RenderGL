@@ -7,6 +7,8 @@
 
 class StandardMaterial: public Material {
 public:
+
+
     StandardMaterial(std::string vertex_path, std::string fragment_path): Material(vertex_path, fragment_path){}
 
     void Draw() override{
