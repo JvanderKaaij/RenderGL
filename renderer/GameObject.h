@@ -3,7 +3,8 @@
 
 
 class GameObject {
-
+public:
+    void Draw();
 };
 
 

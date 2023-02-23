@@ -12,6 +12,7 @@
 #include "../renderer/StandardMaterial.h"
 #include "../renderer/RenderMaterial.h"
 #include "../renderer/Scene.h"
+#include "../renderer/GameObject.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -31,8 +32,7 @@ double yMousePos = 0;
 std::vector<Mesh> frameBufferMeshes;
 std::vector<Mesh> backBufferMeshes;
 
-DirectionalLight Scene::directional_light = DirectionalLight{glm::vec3(0,0,-1), 1.0f};
-glm::mat4 Scene::CameraMatrix = glm::mat4(1.0f);
+std::vector<GameObject> gameObjects;
 
 void onMoveCamera(glm::vec3 translation){
     camPosition += translation;
@@ -85,6 +85,11 @@ glm::mat4 GetCameraProjection(glm::vec2 rotation, glm::vec3 translation){
     glm::mat4 MVP = Projection * ViewRotateY * Model;
 
     return MVP;
+}
+
+void InitGameObject(){
+    GameObject newGameObject = GameObject();
+
 }
 
 void InitMesh(std::string path, std::vector<Mesh> &meshList){
@@ -271,6 +276,7 @@ int run() {
 
     //I need a parsedMesh to get the materials, so order matters here
 
+    InitGameObject();
     InitMesh("../assets/suzanne.obj", frameBufferMeshes);
     InitProgramAsStandard(frameBufferMeshes[0], "../shaders/lit.vert", "../shaders/lit.frag");
     InitStandardTexture(frameBufferMeshes[0], aiTextureType_DIFFUSE, GL_TEXTURE0, frameBufferMeshes[0].material->diffuseID);
