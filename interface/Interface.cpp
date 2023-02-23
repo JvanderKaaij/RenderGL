@@ -87,55 +87,16 @@ glm::mat4 GetCameraProjection(glm::vec2 rotation, glm::vec3 translation){
     return MVP;
 }
 
-void InitGameObject(){
+GameObject InitGameObject(){
     GameObject newGameObject = GameObject();
-
+    return newGameObject;
 }
 
 void InitMesh(std::string path, std::vector<Mesh> &meshList){
-    Mesh mesh = MeshParser::Process(path.c_str());
-
-    std::cout << "Done Parsing Mesh " << std::endl;
-    std::cout << mesh.TextureCoords.data() << std::endl;
-
-    glGenVertexArrays(1, &mesh.vaoID);
-    glBindVertexArray(mesh.vaoID);
-
-    GLuint vertexBuffer, normalBuffer, textureCoordBuffer;
-    glGenBuffers(1, &vertexBuffer);
-    glGenBuffers(1, &normalBuffer);
-    glGenBuffers(1, &textureCoordBuffer);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    std::cout << "Index of Vertex Buffer" << vertexBuffer << std::endl;
-    glBufferData(GL_ARRAY_BUFFER, mesh.Vertices.size() * sizeof(float), mesh.Vertices.data(), GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-    glBufferData(GL_ARRAY_BUFFER, mesh.Normals.size() * sizeof(float), mesh.Normals.data(), GL_STATIC_DRAW);
-
-    //Textures
-    glBindBuffer(GL_ARRAY_BUFFER, textureCoordBuffer);
-    glBufferData(GL_ARRAY_BUFFER, mesh.TextureCoords.size() * sizeof(float), mesh.TextureCoords.data(), GL_STATIC_DRAW);
-
-    unsigned int indexBuffer;
-    glGenBuffers(1, &indexBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.Indices.size() * sizeof(unsigned int), mesh.Indices.data(), GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, textureCoordBuffer);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    Mesh mesh = *new Mesh(path.c_str());
 
     meshList.push_back(mesh);
     std::cout << "Loaded " << meshList.size() << " meshes" << std::endl;
-
 }
 
 void InitStandardTexture(Mesh &mesh, aiTextureType type, GLenum textureLocation, unsigned int &id){
@@ -276,7 +237,7 @@ int run() {
 
     //I need a parsedMesh to get the materials, so order matters here
 
-    InitGameObject();
+    GameObject obj = InitGameObject();
     InitMesh("../assets/suzanne.obj", frameBufferMeshes);
     InitProgramAsStandard(frameBufferMeshes[0], "../shaders/lit.vert", "../shaders/lit.frag");
     InitStandardTexture(frameBufferMeshes[0], aiTextureType_DIFFUSE, GL_TEXTURE0, frameBufferMeshes[0].material->diffuseID);
