@@ -6,13 +6,18 @@
 
 struct aiMaterial; //I need to forward declare aiMaterial here for some reason
 
-struct Mesh {
-
+class Mesh {
+public:
+    Mesh(const char* path);
     std::vector<float> Vertices;
     std::vector<float> Normals;
     std::vector<float> TextureCoords;
     std::vector<unsigned int> Indices;
     unsigned int vaoID;
+
+    GLuint vertexBuffer;
+    GLuint normalBuffer;
+    GLuint textureCoordBuffer;
 
     aiMaterial* meshMaterialData;
     Material* material;

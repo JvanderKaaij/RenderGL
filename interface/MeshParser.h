@@ -11,7 +11,7 @@
 
 class MeshParser {
 public:
-    static Mesh Process(const char* str);
+    static Mesh* Process(const char* str, Mesh* parsedMesh);
 };
 
 
