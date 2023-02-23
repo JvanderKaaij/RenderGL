@@ -15,6 +15,9 @@ public:
     void Draw() override{
         glUseProgram(this->programID);
 
+        GLuint mvp_location = glGetUniformLocation(this->programID, "mvp");
+        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(Scene::CameraMatrix));
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->renderedTextureID);
         GLuint renderLocation = glGetUniformLocation(this->programID, "renderTexture");

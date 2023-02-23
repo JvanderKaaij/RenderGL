@@ -11,6 +11,7 @@
 #include "../renderer/Material.h"
 #include "../renderer/StandardMaterial.h"
 #include "../renderer/RenderMaterial.h"
+#include "../renderer/Scene.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -30,7 +31,8 @@ double yMousePos = 0;
 std::vector<Mesh> frameBufferMeshes;
 std::vector<Mesh> backBufferMeshes;
 
-DirectionalLight directional_light;
+DirectionalLight Scene::directional_light = DirectionalLight{glm::vec3(0,0,-1), 1.0f};
+glm::mat4 Scene::CameraMatrix = glm::mat4(1.0f);
 
 void onMoveCamera(glm::vec3 translation){
     camPosition += translation;
@@ -43,9 +45,8 @@ void onCursorPosition(glm::vec2 position)
         camRotation.y += (position.y - yMousePos) * 0.01f;
     }
     if(lMouseBtnCntrl){
-        std::cout << "Mods mouse button";
-        directional_light.direction.x += (position.x - xMousePos) * 0.01f;
-        directional_light.direction.y -= (position.y - yMousePos) * 0.01f;
+        Scene::directional_light.direction.x += (position.x - xMousePos) * 0.01f;
+        Scene::directional_light.direction.y -= (position.y - yMousePos) * 0.01f;
     }
     xMousePos = position.x;
     yMousePos = position.y;
@@ -72,7 +73,7 @@ void registerInputs(GLFWwindow* window){
     input->InitKeyCallback();
 }
 
-glm::mat4 GetProjection(glm::vec2 rotation, glm::vec3 translation){
+glm::mat4 GetCameraProjection(glm::vec2 rotation, glm::vec3 translation){
     glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.f);
 
     glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), translation);
@@ -204,19 +205,12 @@ void drawFrameBuffer(){
 
     unsigned int length = frameBufferMeshes.size();
 
-    glm::mat4 MVP = GetProjection(camRotation, camPosition);
     for(unsigned int i = 0; i < length; i++){
         Mesh* mesh = &frameBufferMeshes[i];
         mesh->material->Draw();
 
-        GLint directional_light_location = glGetUniformLocation(mesh->material->programID, "directionalLight");
-        glUniform3fv(directional_light_location, 1, &directional_light.direction[0]);
-
         glBindVertexArray(frameBufferMeshes[i].vaoID);
         glDrawElementsInstanced(GL_TRIANGLES, mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
-
-        GLuint mvp_location = glGetUniformLocation(mesh->material->programID, "mvp");
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(MVP));
     }
     //Regerate MipMap Levels for render texture
 }
@@ -227,7 +221,6 @@ void drawBackBuffer(){
     glClearColor(.0f, .0f, .0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::mat4 MVP = GetProjection(camRotation, camPosition);
     for(unsigned int i = 0; i < backBufferMeshes.size(); i++){
 
         Mesh mesh = backBufferMeshes[i];
@@ -235,17 +228,13 @@ void drawBackBuffer(){
 
         glBindVertexArray(mesh.vaoID);
         glDrawElementsInstanced(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, 0, 2);
-
-        GLuint mvp_location = glGetUniformLocation(mesh.material->programID, "mvp");
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(MVP));
     }
 }
 
 void draw(){
+    Scene::CameraMatrix = GetCameraProjection(camRotation, camPosition);
     drawFrameBuffer();
     drawBackBuffer();
-
-    /* End of Render */
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
@@ -279,10 +268,6 @@ int run() {
     registerInputs(window);
 
     glEnable (GL_DEPTH_TEST);
-
-    /* TODO Initialize Buffer Objects */
-    directional_light.intensity = 1.;
-    directional_light.direction = glm::vec3(0., 0., -1.);
 
     //I need a parsedMesh to get the materials, so order matters here
 

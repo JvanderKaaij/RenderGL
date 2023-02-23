@@ -4,10 +4,10 @@
 
 #include "Material.h"
 #include "../interface/MaterialInterface.h"
+#include "Scene.h"
 
 class StandardMaterial: public Material {
 public:
-
 
     StandardMaterial(std::string vertex_path, std::string fragment_path): Material(vertex_path, fragment_path){}
 
@@ -17,6 +17,11 @@ public:
         GLint time_location = glGetUniformLocation(this->programID, "timer");
         glUniform1f(time_location, (float)glfwGetTime());
 
+        GLuint mvp_location = glGetUniformLocation(this->programID, "mvp");
+        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(Scene::CameraMatrix));
+
+        GLint directional_light_location = glGetUniformLocation(this->programID, "directionalLight");
+        glUniform3fv(directional_light_location, 1, &Scene::directional_light.direction[0]);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->diffuseID);
