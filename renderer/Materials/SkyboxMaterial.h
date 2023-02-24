@@ -15,9 +15,11 @@ public:
     SkyboxMaterial(std::string vertex_path, std::string fragment_path): Material(std::move(vertex_path), std::move(fragment_path)){}
 
     void Draw(Transform transform) override{
-        std::cout << "Draw from SkyboxMaterial with program ID: " << this->programID << std::endl;
         glUseProgram(this->programID);
+        glm::mat4 ModelMatrix = glm::rotate(glm::mat4(1.0f), transform.rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
 
+        GLuint mvp_location = glGetUniformLocation(this->programID, "mvp");
+        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
 
     }
 };

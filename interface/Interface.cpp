@@ -31,6 +31,7 @@ double yMousePos = 0;
 
 std::vector<GameObject*> frameBufferObjects;
 std::vector<GameObject*> backBufferObjects;
+std::vector<GameObject*> skyboxBufferObjects;
 
 void onMoveCamera(glm::vec3 translation){
     camPosition += translation;
@@ -93,7 +94,7 @@ Mesh* InitMesh(const std::string& path){
 
 GameObject* InitGameObject(const std::string& meshPath){
     auto* go = new GameObject();
-    go->transform.position = glm::linearRand(glm::vec3(-50), glm::vec3(50));
+//    go->transform.position = glm::linearRand(glm::vec3(-50), glm::vec3(50));
     go->mesh = InitMesh(meshPath);
     return go;
 }
@@ -190,12 +191,23 @@ void drawFrameBuffer(){
 void drawBackBuffer(){
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,width,height);
-    glClearColor(.0f, .0f, .0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//    glClearColor(.0f, .0f, .0f, 1.0f);
+//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for(unsigned int i = 0; i < backBufferObjects.size(); i++){
 
         GameObject* gObj = backBufferObjects[i];
+        gObj->Draw();
+
+        glBindVertexArray(gObj->mesh->vaoID);
+        glDrawElementsInstanced(GL_TRIANGLES, gObj->mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
+    }
+}
+
+void drawSkyboxBuffer(){
+    for(unsigned int i = 0; i < skyboxBufferObjects.size(); i++){
+
+        GameObject* gObj = skyboxBufferObjects[i];
         gObj->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
@@ -210,7 +222,12 @@ void draw(){
 //    backBufferObjects[0]->transform.scale -= glm::vec3(0.001f, 0.001f, 0.001f);
 //    backBufferObjects[0]->transform.rotation -= glm::vec3(0.0f, 0.1f, 0.0f);
 
-    drawFrameBuffer();
+//    drawFrameBuffer();
+    glClearColor(.0f, .0f, .0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDepthMask(GL_FALSE);
+    drawSkyboxBuffer();
+    glDepthMask(GL_TRUE);
     drawBackBuffer();
 
     /* Swap front and back buffers */
@@ -248,19 +265,18 @@ int run() {
 
     //I need a parsedMesh to get the materials, so order matters here
 
-    for(int i=0;i<10;i++){
-        auto* suzanne = InitGameObject("../assets/suzanne.obj");
-        InitProgramAsStandard(suzanne, "../shaders/lit.vert", "../shaders/lit.frag");
-        backBufferObjects.push_back(suzanne);
-    }
+    auto* suzanne = InitGameObject("../assets/suzanne.obj");
+    InitProgramAsStandard(suzanne, "../shaders/lit.vert", "../shaders/lit.frag");
+    backBufferObjects.push_back(suzanne);
 
 //    auto* teapot = InitGameObject("../assets/teapot.obj");
 //    InitProgramAsStandard(teapot, "../shaders/lit.vert", "../shaders/lit.frag");
 //    backBufferObjects.push_back(teapot);
 
-//    auto* plane = InitGameObject("../assets/plane.obj");
-//    InitProgramAsSkybox(plane, "../shaders/skybox.vert", "../shaders/skybox.frag");
-//    backBufferObjects.push_back(plane);
+    auto* plane = InitGameObject("../assets/plane.obj");
+    InitProgramAsSkybox(plane, "../shaders/skybox.vert", "../shaders/skybox.frag");
+    plane->transform.rotation.x = 0.5f * M_PI;
+    skyboxBufferObjects.push_back(plane);
 
     onMoveCamera(glm::vec3(0., 0., -40.));
     //camRotation.y = 1.0f;
