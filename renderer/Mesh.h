@@ -1,14 +1,18 @@
-#include <vector>
-#include "Material.h"
+
 
 #ifndef RENDERGL_MESH_H
 #define RENDERGL_MESH_H
+
+#include <vector>
+#include "Material.h"
 
 struct aiMaterial; //I need to forward declare aiMaterial here for some reason
 
 class Mesh {
 public:
-    Mesh(const char* path);
+    void Parse(const char* path);
+    void InitBuffers();
+
     std::vector<float> Vertices;
     std::vector<float> Normals;
     std::vector<float> TextureCoords;

@@ -2,13 +2,12 @@
 #include "Mesh.h"
 #include "../interface/MeshParser.h"
 
-Mesh::Mesh(const char* path){
 
+void Mesh::Parse(const char* path){
     MeshParser::Process(path, this);
+}
 
-    std::cout << "Done Parsing Mesh " << std::endl;
-    std::cout << this->TextureCoords.data() << std::endl;
-
+void Mesh::InitBuffers(){
     glGenVertexArrays(1, &this->vaoID);
     glBindVertexArray(this->vaoID);
 

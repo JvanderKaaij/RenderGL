@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <utility>
 #include "glm/ext.hpp"
 #include "MeshParser.h"
 #include "InputInterface.h"
@@ -29,8 +30,8 @@ bool lMouseBtnCntrl = false;
 double xMousePos = 0;
 double yMousePos = 0;
 
-std::vector<Mesh> frameBufferMeshes;
-std::vector<Mesh> backBufferMeshes;
+std::vector<GameObject*> frameBufferMeshes;
+std::vector<GameObject*> backBufferMeshes;
 
 std::vector<GameObject> gameObjects;
 
@@ -87,21 +88,22 @@ glm::mat4 GetCameraProjection(glm::vec2 rotation, glm::vec3 translation){
     return MVP;
 }
 
-GameObject InitGameObject(){
-    GameObject newGameObject = GameObject();
-    return newGameObject;
+Mesh* InitMesh(const std::string& path){
+    auto* mesh = new Mesh();
+    mesh->Parse(path.c_str());
+    mesh->InitBuffers();
+    return mesh;
 }
 
-void InitMesh(std::string path, std::vector<Mesh> &meshList){
-    Mesh mesh = *new Mesh(path.c_str());
-
-    meshList.push_back(mesh);
-    std::cout << "Loaded " << meshList.size() << " meshes" << std::endl;
+GameObject* InitGameObject(const std::string& meshPath){
+    auto* go = new GameObject();
+    go->mesh = InitMesh(meshPath);
+    return go;
 }
 
-void InitStandardTexture(Mesh &mesh, aiTextureType type, GLenum textureLocation, unsigned int &id){
+void InitStandardTexture(Mesh* mesh, aiTextureType type, GLenum textureLocation, unsigned int &id){
     //TODO - This is a hack, I need to fix this - can be deleted after assignment etc.
-    Texture texture = MaterialInterface::LoadTexture(type, mesh.meshMaterialData);
+    Texture texture = MaterialInterface::LoadTexture(type, mesh->meshMaterialData);
 
     //Assign diffuseTexture
     glActiveTexture(textureLocation);
@@ -118,15 +120,15 @@ void InitStandardTexture(Mesh &mesh, aiTextureType type, GLenum textureLocation,
 }
 
 
-void InitProgramAsStandard(Mesh &mesh, std::string vertex_path, std::string fragment_path){
-    mesh.material = new StandardMaterial(vertex_path, fragment_path);
+void InitProgramAsStandard(Mesh* mesh, std::string vertex_path, std::string fragment_path){
+    mesh->material = new StandardMaterial(vertex_path, fragment_path);
 }
 
-void InitProgramAsRender(Mesh &mesh, std::string vertex_path, std::string fragment_path){
-    mesh.material = new RenderMaterial(vertex_path, fragment_path);
+void InitProgramAsRender(Mesh* mesh, std::string vertex_path, std::string fragment_path){
+    mesh->material = new RenderMaterial(vertex_path, fragment_path);
 }
 
-void InitRenderTexture(Mesh &mesh){
+void InitRenderTexture(Mesh* mesh){
     GLuint renderedTextureID;
 
     int textureWidth = 1024;
@@ -160,7 +162,7 @@ void InitRenderTexture(Mesh &mesh){
         }
     }
 
-    mesh.material->renderedTextureID = renderedTextureID;
+    mesh->material->renderedTextureID = renderedTextureID;
 }
 
 void drawFrameBuffer(){
@@ -172,10 +174,10 @@ void drawFrameBuffer(){
     unsigned int length = frameBufferMeshes.size();
 
     for(unsigned int i = 0; i < length; i++){
-        Mesh* mesh = &frameBufferMeshes[i];
+        Mesh* mesh = frameBufferMeshes[i]->mesh;
         mesh->material->Draw();
 
-        glBindVertexArray(frameBufferMeshes[i].vaoID);
+        glBindVertexArray(mesh->vaoID);
         glDrawElementsInstanced(GL_TRIANGLES, mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
     }
     //Regerate MipMap Levels for render texture
@@ -189,11 +191,11 @@ void drawBackBuffer(){
 
     for(unsigned int i = 0; i < backBufferMeshes.size(); i++){
 
-        Mesh mesh = backBufferMeshes[i];
-        mesh.material->Draw();
+        Mesh* mesh = backBufferMeshes[i]->mesh;
+        mesh->material->Draw();
 
-        glBindVertexArray(mesh.vaoID);
-        glDrawElementsInstanced(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, 0, 2);
+        glBindVertexArray(mesh->vaoID);
+        glDrawElementsInstanced(GL_TRIANGLES, mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
     }
 }
 
@@ -237,20 +239,22 @@ int run() {
 
     //I need a parsedMesh to get the materials, so order matters here
 
-    GameObject obj = InitGameObject();
-    InitMesh("../assets/suzanne.obj", frameBufferMeshes);
-    InitProgramAsStandard(frameBufferMeshes[0], "../shaders/lit.vert", "../shaders/lit.frag");
-    InitStandardTexture(frameBufferMeshes[0], aiTextureType_DIFFUSE, GL_TEXTURE0, frameBufferMeshes[0].material->diffuseID);
-    InitStandardTexture(frameBufferMeshes[0], aiTextureType_SPECULAR, GL_TEXTURE1, frameBufferMeshes[0].material->specularID);
+    auto* suzanne = InitGameObject("../assets/suzanne.obj");
+    InitProgramAsStandard(suzanne->mesh, "../shaders/lit.vert", "../shaders/lit.frag");
+    InitStandardTexture(suzanne->mesh, aiTextureType_DIFFUSE, GL_TEXTURE0, suzanne->mesh->material->diffuseID);
+    InitStandardTexture(suzanne->mesh, aiTextureType_SPECULAR, GL_TEXTURE1, suzanne->mesh->material->specularID);
+    frameBufferMeshes.push_back(suzanne);
 
-    InitMesh("../assets/teapot.obj", frameBufferMeshes);
-    InitProgramAsStandard(frameBufferMeshes[1], "../shaders/lit.vert", "../shaders/lit.frag");
-    InitStandardTexture(frameBufferMeshes[1], aiTextureType_DIFFUSE, GL_TEXTURE0, frameBufferMeshes[1].material->diffuseID);
-    InitStandardTexture(frameBufferMeshes[1], aiTextureType_SPECULAR, GL_TEXTURE1, frameBufferMeshes[1].material->specularID);
+    auto* teapot = InitGameObject("../assets/teapot.obj");
+    InitProgramAsStandard(teapot->mesh, "../shaders/lit.vert", "../shaders/lit.frag");
+    InitStandardTexture(teapot->mesh, aiTextureType_DIFFUSE, GL_TEXTURE0, teapot->mesh->material->diffuseID);
+    InitStandardTexture(teapot->mesh, aiTextureType_SPECULAR, GL_TEXTURE1, teapot->mesh->material->specularID);
+    frameBufferMeshes.push_back(teapot);
 
-    InitMesh("../assets/plane.obj", backBufferMeshes);
-    InitProgramAsRender(backBufferMeshes[0], "../shaders/lit.vert", "../shaders/unlit.frag");
-    InitRenderTexture(backBufferMeshes[0]);
+    auto* plane = InitGameObject("../assets/plane.obj");
+    InitProgramAsRender(plane->mesh, "../shaders/lit.vert", "../shaders/unlit.frag");
+    InitRenderTexture(plane->mesh);
+    backBufferMeshes.push_back(plane);
 
     onMoveCamera(glm::vec3(0., 0., -20.));
     camRotation.y = 1.0f;

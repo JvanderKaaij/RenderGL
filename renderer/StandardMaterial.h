@@ -3,13 +3,15 @@
 #define RENDERGL_STANDARDMATERIAL_H
 
 #include "Material.h"
+
+#include <utility>
 #include "../interface/MaterialInterface.h"
 #include "Scene.h"
 
 class StandardMaterial: public Material {
 public:
 
-    StandardMaterial(std::string vertex_path, std::string fragment_path): Material(vertex_path, fragment_path){}
+    StandardMaterial(std::string vertex_path, std::string fragment_path): Material(std::move(vertex_path), std::move(fragment_path)){}
 
     void Draw() override{
         glUseProgram(this->programID);

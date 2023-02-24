@@ -6,11 +6,12 @@
 #define RENDERGL_RENDERMATERIAL_H
 
 #include <string>
+#include <utility>
 #include "Material.h"
 
 class RenderMaterial: public Material {
 public:
-    RenderMaterial(std::string vertex_path, std::string fragment_path): Material(vertex_path, fragment_path){}
+    RenderMaterial(std::string vertex_path, std::string fragment_path): Material(std::move(vertex_path), std::move(fragment_path)){}
 
     void Draw() override{
         glUseProgram(this->programID);
