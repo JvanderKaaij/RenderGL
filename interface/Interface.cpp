@@ -4,16 +4,15 @@
 #include "GLFW/glfw3.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <utility>
-#include "glm/ext.hpp"
 #include "MeshParser.h"
 #include "InputInterface.h"
 #include "../renderer/DirectionalLight.h"
 #include "MaterialInterface.h"
-#include "../renderer/Material.h"
-#include "../renderer/StandardMaterial.h"
-#include "../renderer/RenderMaterial.h"
-#include "../renderer/Scene.h"
+#include "../renderer/Materials/Material.h"
+#include "../renderer/Materials/StandardMaterial.h"
+#include "../renderer/Materials/RenderMaterial.h"
 #include "../renderer/GameObject.h"
+#include "../renderer/Materials/SkyboxMaterial.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -30,10 +29,8 @@ bool lMouseBtnCntrl = false;
 double xMousePos = 0;
 double yMousePos = 0;
 
-std::vector<GameObject*> frameBufferMeshes;
-std::vector<GameObject*> backBufferMeshes;
-
-std::vector<GameObject> gameObjects;
+std::vector<GameObject*> frameBufferObjects;
+std::vector<GameObject*> backBufferObjects;
 
 void onMoveCamera(glm::vec3 translation){
     camPosition += translation;
@@ -119,15 +116,6 @@ void InitStandardTexture(GameObject* gObj, aiTextureType type, GLenum textureLoc
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-
-void InitProgramAsStandard(GameObject* gameObj, std::string vertex_path, std::string fragment_path){
-    gameObj->material = new StandardMaterial(vertex_path, fragment_path);
-}
-
-void InitProgramAsRender(GameObject* gameObj, std::string vertex_path, std::string fragment_path){
-    gameObj->material = new RenderMaterial(vertex_path, fragment_path);
-}
-
 void InitRenderTexture(GameObject* gObj){
     GLuint renderedTextureID;
 
@@ -165,16 +153,32 @@ void InitRenderTexture(GameObject* gObj){
     gObj->material->renderedTextureID = renderedTextureID;
 }
 
+void InitProgramAsStandard(GameObject* gameObj, std::string vertex_path, std::string fragment_path){
+    gameObj->material = new StandardMaterial(std::move(vertex_path), std::move(fragment_path));
+    InitStandardTexture(gameObj, aiTextureType_DIFFUSE, GL_TEXTURE0, gameObj->material->diffuseID);
+    InitStandardTexture(gameObj, aiTextureType_SPECULAR, GL_TEXTURE1, gameObj->material->specularID);
+}
+
+void InitProgramAsRender(GameObject* gameObj, std::string vertex_path, std::string fragment_path){
+    gameObj->material = new RenderMaterial(std::move(vertex_path), std::move(fragment_path));
+    InitRenderTexture(gameObj);
+}
+
+void InitProgramAsSkybox(GameObject* gameObj, std::string vertex_path, std::string fragment_path){
+    gameObj->material = new SkyboxMaterial(std::move(vertex_path), std::move(fragment_path));
+
+}
+
 void drawFrameBuffer(){
     glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
     glViewport(0,0,1024,1024);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    unsigned int length = frameBufferMeshes.size();
+    unsigned int length = frameBufferObjects.size();
 
     for(unsigned int i = 0; i < length; i++){
-        GameObject* gObj = frameBufferMeshes[i];
+        GameObject* gObj = frameBufferObjects[i];
         gObj->material->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
@@ -189,9 +193,9 @@ void drawBackBuffer(){
     glClearColor(.0f, .0f, .0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for(unsigned int i = 0; i < backBufferMeshes.size(); i++){
+    for(unsigned int i = 0; i < backBufferObjects.size(); i++){
 
-        GameObject* gObj = backBufferMeshes[i];
+        GameObject* gObj = backBufferObjects[i];
         gObj->material->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
@@ -241,23 +245,18 @@ int run() {
 
     auto* suzanne = InitGameObject("../assets/suzanne.obj");
     InitProgramAsStandard(suzanne, "../shaders/lit.vert", "../shaders/lit.frag");
-    InitStandardTexture(suzanne, aiTextureType_DIFFUSE, GL_TEXTURE0, suzanne->material->diffuseID);
-    InitStandardTexture(suzanne, aiTextureType_SPECULAR, GL_TEXTURE1, suzanne->material->specularID);
-    frameBufferMeshes.push_back(suzanne);
-
-    auto* teapot = InitGameObject("../assets/teapot.obj");
-    InitProgramAsStandard(teapot, "../shaders/lit.vert", "../shaders/lit.frag");
-    InitStandardTexture(teapot, aiTextureType_DIFFUSE, GL_TEXTURE0, teapot->material->diffuseID);
-    InitStandardTexture(teapot, aiTextureType_SPECULAR, GL_TEXTURE1, teapot->material->specularID);
-    frameBufferMeshes.push_back(teapot);
+    backBufferObjects.push_back(suzanne);
+//
+//    auto* teapot = InitGameObject("../assets/teapot.obj");
+//    InitProgramAsStandard(teapot, "../shaders/lit.vert", "../shaders/lit.frag");
+//    backBufferObjects.push_back(teapot);
 
     auto* plane = InitGameObject("../assets/plane.obj");
-    InitProgramAsRender(plane, "../shaders/lit.vert", "../shaders/unlit.frag");
-    InitRenderTexture(plane);
-    backBufferMeshes.push_back(plane);
+    InitProgramAsSkybox(plane, "../shaders/skybox.vert", "../shaders/skybox.frag");
+    backBufferObjects.push_back(plane);
 
     onMoveCamera(glm::vec3(0., 0., -20.));
-    camRotation.y = 1.0f;
+    //camRotation.y = 1.0f;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

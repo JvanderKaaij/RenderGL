@@ -2,11 +2,13 @@
 #ifndef RENDERGL_STANDARDMATERIAL_H
 #define RENDERGL_STANDARDMATERIAL_H
 
-#include "Material.h"
 
 #include <utility>
-#include "../interface/MaterialInterface.h"
-#include "Scene.h"
+#include "../../interface/MaterialInterface.h"
+#include "../Scene.h"
+#include "GLFW/glfw3.h"
+#include "glm/gtc/type_ptr.hpp"
+#include "Material.h"
 
 class StandardMaterial: public Material {
 public:

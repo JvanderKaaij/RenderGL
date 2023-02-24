@@ -1,7 +1,3 @@
-//
-// Created by Joey on 22/02/2023.
-//
-
 #ifndef RENDERGL_RENDERMATERIAL_H
 #define RENDERGL_RENDERMATERIAL_H
 

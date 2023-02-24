@@ -4,7 +4,7 @@
 #define RENDERGL_MESH_H
 
 #include <vector>
-#include "Material.h"
+#include "Materials/Material.h"
 
 struct aiMaterial; //I need to forward declare aiMaterial here for some reason
 

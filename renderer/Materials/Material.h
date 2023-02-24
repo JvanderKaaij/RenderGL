@@ -1,5 +1,5 @@
-#include "Shaders.h"
-#include "Texture.h"
+#include "../Shaders.h"
+#include "../Texture.h"
 
 #ifndef RENDERGL_MATERIAL_H
 #define RENDERGL_MATERIAL_H
