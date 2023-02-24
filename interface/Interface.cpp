@@ -72,15 +72,14 @@ void registerInputs(GLFWwindow* window){
 }
 
 glm::mat4 GetCameraProjection(glm::vec2 rotation, glm::vec3 translation){
-    glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.f);
+    glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.f);
 
     glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), translation);
-    glm::mat4 ViewRotateX = glm::rotate(ViewTranslate, rotation.x, glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 ViewRotateY = glm::rotate(ViewRotateX, rotation.y, glm::vec3(1.0f, 0.0f, 0.0f));
 
-    glm::mat4 Model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
+    glm::mat4 ViewRotate = glm::rotate(ViewTranslate, rotation.x, glm::vec3(0.0f, 1.0f, 0.0f));
+    ViewRotate = glm::rotate(ViewRotate, rotation.y, glm::vec3(1.0f, 0.0f, 0.0f));
 
-    glm::mat4 MVP = Projection * ViewRotateY * Model;
+    glm::mat4 MVP = Projection * ViewRotate;
 
     return MVP;
 }
@@ -94,6 +93,7 @@ Mesh* InitMesh(const std::string& path){
 
 GameObject* InitGameObject(const std::string& meshPath){
     auto* go = new GameObject();
+    go->transform.position = glm::linearRand(glm::vec3(-50), glm::vec3(50));
     go->mesh = InitMesh(meshPath);
     return go;
 }
@@ -179,7 +179,7 @@ void drawFrameBuffer(){
 
     for(unsigned int i = 0; i < length; i++){
         GameObject* gObj = frameBufferObjects[i];
-        gObj->material->Draw();
+        gObj->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
         glDrawElementsInstanced(GL_TRIANGLES, gObj->mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
@@ -196,7 +196,7 @@ void drawBackBuffer(){
     for(unsigned int i = 0; i < backBufferObjects.size(); i++){
 
         GameObject* gObj = backBufferObjects[i];
-        gObj->material->Draw();
+        gObj->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
         glDrawElementsInstanced(GL_TRIANGLES, gObj->mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
@@ -204,7 +204,12 @@ void drawBackBuffer(){
 }
 
 void draw(){
-    Scene::CameraMatrix = GetCameraProjection(camRotation, camPosition);
+    Scene::ViewMatrix = GetCameraProjection(camRotation, camPosition);
+
+//    backBufferObjects[0]->transform.position -= glm::vec3(0.0f, 0.1f, 0.0f);
+//    backBufferObjects[0]->transform.scale -= glm::vec3(0.001f, 0.001f, 0.001f);
+//    backBufferObjects[0]->transform.rotation -= glm::vec3(0.0f, 0.1f, 0.0f);
+
     drawFrameBuffer();
     drawBackBuffer();
 
@@ -243,19 +248,21 @@ int run() {
 
     //I need a parsedMesh to get the materials, so order matters here
 
-    auto* suzanne = InitGameObject("../assets/suzanne.obj");
-    InitProgramAsStandard(suzanne, "../shaders/lit.vert", "../shaders/lit.frag");
-    backBufferObjects.push_back(suzanne);
-//
+    for(int i=0;i<10;i++){
+        auto* suzanne = InitGameObject("../assets/suzanne.obj");
+        InitProgramAsStandard(suzanne, "../shaders/lit.vert", "../shaders/lit.frag");
+        backBufferObjects.push_back(suzanne);
+    }
+
 //    auto* teapot = InitGameObject("../assets/teapot.obj");
 //    InitProgramAsStandard(teapot, "../shaders/lit.vert", "../shaders/lit.frag");
 //    backBufferObjects.push_back(teapot);
 
-    auto* plane = InitGameObject("../assets/plane.obj");
-    InitProgramAsSkybox(plane, "../shaders/skybox.vert", "../shaders/skybox.frag");
-    backBufferObjects.push_back(plane);
+//    auto* plane = InitGameObject("../assets/plane.obj");
+//    InitProgramAsSkybox(plane, "../shaders/skybox.vert", "../shaders/skybox.frag");
+//    backBufferObjects.push_back(plane);
 
-    onMoveCamera(glm::vec3(0., 0., -20.));
+    onMoveCamera(glm::vec3(0., 0., -40.));
     //camRotation.y = 1.0f;
 
     /* Loop until the user closes the window */

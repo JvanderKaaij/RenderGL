@@ -16,7 +16,7 @@ Material::Material(std::string vertex_path, std::string fragment_path) {
     glUseProgram(this->programID);
 }
 
-void Material::Draw() {
+void Material::Draw(Transform transform) {
     std::cout << "Draw from Material" << std::endl;
 
 }

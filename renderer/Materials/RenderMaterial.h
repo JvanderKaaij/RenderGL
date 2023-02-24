@@ -9,11 +9,11 @@ class RenderMaterial: public Material {
 public:
     RenderMaterial(std::string vertex_path, std::string fragment_path): Material(std::move(vertex_path), std::move(fragment_path)){}
 
-    void Draw() override{
+    void Draw(Transform transform) override{
         glUseProgram(this->programID);
 
         GLuint mvp_location = glGetUniformLocation(this->programID, "mvp");
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(Scene::CameraMatrix));
+        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(Scene::ViewMatrix));
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->renderedTextureID);

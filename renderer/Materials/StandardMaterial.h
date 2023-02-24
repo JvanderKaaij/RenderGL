@@ -15,14 +15,20 @@ public:
 
     StandardMaterial(std::string vertex_path, std::string fragment_path): Material(std::move(vertex_path), std::move(fragment_path)){}
 
-    void Draw() override{
+    void Draw(Transform transform) override{
         glUseProgram(this->programID);
 
         GLint time_location = glGetUniformLocation(this->programID, "timer");
         glUniform1f(time_location, (float)glfwGetTime());
 
+        glm::mat4 ModelMatrix = glm::translate(Scene::ViewMatrix, transform.position);
+        ModelMatrix = glm::scale(ModelMatrix, transform.scale);
+        ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+        ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+        ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+
         GLuint mvp_location = glGetUniformLocation(this->programID, "mvp");
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(Scene::CameraMatrix));
+        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
 
         GLint directional_light_location = glGetUniformLocation(this->programID, "directionalLight");
         glUniform3fv(directional_light_location, 1, &Scene::directional_light.direction[0]);
