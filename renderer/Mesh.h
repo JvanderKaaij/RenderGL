@@ -24,7 +24,6 @@ public:
     GLuint textureCoordBuffer;
 
     aiMaterial* meshMaterialData;
-    Material* material;
 };
 
 

@@ -6,6 +6,7 @@
 class GameObject {
 public:
     Mesh* mesh;
+    Material* material;
     void Draw();
 };
 
