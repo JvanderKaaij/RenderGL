@@ -9,6 +9,7 @@ class Scene {
 public:
     static DirectionalLight directional_light;
     static glm::mat4 ViewMatrix;
+    static glm::mat4 ProjectionMatrix;
 };
 
 

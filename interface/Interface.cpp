@@ -72,17 +72,18 @@ void registerInputs(GLFWwindow* window){
     input->InitKeyCallback();
 }
 
+glm::mat4 GetProjection(){
+    return glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.f);
+}
+
 glm::mat4 GetCameraProjection(glm::vec2 rotation, glm::vec3 translation){
-    glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.f);
 
     glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), translation);
 
     glm::mat4 ViewRotate = glm::rotate(ViewTranslate, rotation.x, glm::vec3(0.0f, 1.0f, 0.0f));
     ViewRotate = glm::rotate(ViewRotate, rotation.y, glm::vec3(1.0f, 0.0f, 0.0f));
 
-    glm::mat4 MVP = Projection * ViewRotate;
-
-    return MVP;
+    return ViewRotate;
 }
 
 Mesh* InitMesh(const std::string& path){
@@ -265,6 +266,7 @@ void drawSkyboxBuffer(){
 }
 
 void draw(){
+    Scene::ProjectionMatrix = GetProjection();
     Scene::ViewMatrix = GetCameraProjection(camRotation, camPosition);
 
 //    backBufferObjects[0]->transform.position -= glm::vec3(0.0f, 0.1f, 0.0f);
@@ -326,7 +328,6 @@ int run() {
 
     auto* plane = InitGameObject("../assets/plane.obj");
     InitProgramAsSkybox(plane, "../shaders/skybox.vert", "../shaders/skybox.frag");
-//    plane->transform.rotation.x = 0.5f * M_PI;
     skyboxBufferObjects.push_back(plane);
 
     onMoveCamera(glm::vec3(0., 0., -40.));

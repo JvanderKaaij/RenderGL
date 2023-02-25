@@ -21,14 +21,20 @@ public:
         GLint time_location = glGetUniformLocation(this->programID, "timer");
         glUniform1f(time_location, (float)glfwGetTime());
 
-        glm::mat4 ModelMatrix = glm::translate(Scene::ViewMatrix, transform.position);
+        glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), transform.position);
         ModelMatrix = glm::scale(ModelMatrix, transform.scale);
         ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
         ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
         ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
-        GLuint mvp_location = glGetUniformLocation(this->programID, "mvp");
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+        GLuint m_location = glGetUniformLocation(this->programID, "model");
+        glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+
+        GLuint v_location = glGetUniformLocation(this->programID, "view");
+        glUniformMatrix4fv(v_location, 1, GL_FALSE, glm::value_ptr(Scene::ViewMatrix));
+
+        GLuint p_location = glGetUniformLocation(this->programID, "projection");
+        glUniformMatrix4fv(p_location, 1, GL_FALSE, glm::value_ptr(Scene::ProjectionMatrix));
 
         GLint directional_light_location = glGetUniformLocation(this->programID, "directionalLight");
         glUniform3fv(directional_light_location, 1, &Scene::directional_light.direction[0]);

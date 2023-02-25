@@ -5,7 +5,10 @@ in vec3 WorldNormals;
 in vec3 DirectionalLight;
 in vec2 TextureCoords;
 
-uniform mat4 mvp;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
 uniform float timer;
 layout(binding = 0) uniform sampler2D diffuseTexture;
 layout(binding = 1) uniform sampler2D specularTexture;
@@ -14,7 +17,7 @@ out vec4 FragColor;
 
 void main()
 {
-    vec3 world = normalize(mat3(mvp) * SurfaceNormals);
+    vec3 world = normalize(mat3(projection * view * model) * SurfaceNormals);
 
     vec3 ambientColor = vec3(.1, 0., 0.);
     vec3 diffuseColor = vec3(1.,1., 1.);

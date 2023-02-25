@@ -12,8 +12,16 @@ public:
     void Draw(Transform transform) override{
         glUseProgram(this->programID);
 
-        GLuint mvp_location = glGetUniformLocation(this->programID, "mvp");
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(Scene::ViewMatrix));
+        glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), transform.position);
+
+        GLuint m_location = glGetUniformLocation(this->programID, "model");
+        glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+
+        GLuint v_location = glGetUniformLocation(this->programID, "view");
+        glUniformMatrix4fv(v_location, 1, GL_FALSE, glm::value_ptr(Scene::ViewMatrix));
+
+        GLuint p_location = glGetUniformLocation(this->programID, "projection");
+        glUniformMatrix4fv(p_location, 1, GL_FALSE, glm::value_ptr(Scene::ProjectionMatrix));
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->renderedTextureID);

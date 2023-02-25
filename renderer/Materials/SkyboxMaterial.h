@@ -17,12 +17,22 @@ public:
     void Draw(Transform transform) override{
         glUseProgram(this->programID);
 
-//        std::cout << "Draw Skybox: " << this->cubemapID << std::endl;
+        glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), transform.position);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, this->cubemapID);
         GLuint skyboxLocation = glGetUniformLocation(this->programID, "skyboxTexture");
         glUniform1i(skyboxLocation, 0);
+
+        GLuint m_location = glGetUniformLocation(this->programID, "model");
+        glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+
+        GLuint v_location = glGetUniformLocation(this->programID, "view");
+        glUniformMatrix4fv(v_location, 1, GL_FALSE, glm::value_ptr(Scene::ViewMatrix));
+
+        GLuint p_location = glGetUniformLocation(this->programID, "projection");
+        glUniformMatrix4fv(p_location, 1, GL_FALSE, glm::value_ptr(Scene::ProjectionMatrix));
+
     }
 };
 #endif //RENDERGL_SKYBOXMATERIAL_H
