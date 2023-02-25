@@ -45,3 +45,14 @@ Texture MaterialInterface::LoadTexture(aiTextureType type, aiMaterial* material)
     }
     return texture;
 }
+
+Texture MaterialInterface::LoadTexture(std::string full_path){
+    Texture texture;
+    std::cout << "Trying to load texture: " << full_path << std::endl;
+    int width, height, nrChannels;
+    unsigned char* imgData = stbi_load(full_path.c_str(), &width, &height, &nrChannels, 0);
+    texture.data = imgData;
+    texture.width = width;
+    texture.height = height;
+    return texture;
+}

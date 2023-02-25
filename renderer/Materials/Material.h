@@ -16,6 +16,7 @@ public:
     unsigned int diffuseID;
     unsigned int specularID;
     unsigned int renderedTextureID;
+    unsigned int cubemapID;
     
 };
 #endif

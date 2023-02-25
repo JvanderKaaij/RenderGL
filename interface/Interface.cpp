@@ -154,6 +154,55 @@ void InitRenderTexture(GameObject* gObj){
     gObj->material->renderedTextureID = renderedTextureID;
 }
 
+void InitCubeMapTexture(GameObject* gObj){
+    GLuint cubemapTextureID;
+    glGenTextures(1, &cubemapTextureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureID);
+
+    int width, height, nrChannels;
+    unsigned char *data;
+
+// Load positive X
+    data = stbi_load("../assets/cubemap/cubemap_posx.png", &width, &height, &nrChannels, 0);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+// Load negative X
+    data = stbi_load("../assets/cubemap/cubemap_negx.png", &width, &height, &nrChannels, 0);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+// Load positive Y
+    data = stbi_load("../assets/cubemap/cubemap_posy.png", &width, &height, &nrChannels, 0);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+// Load negative Y
+    data = stbi_load("../assets/cubemap/cubemap_negy.png", &width, &height, &nrChannels, 0);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+// Load positive Z
+    data = stbi_load("../assets/cubemap/cubemap_posz.png", &width, &height, &nrChannels, 0);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+// Load negative Z
+    data = stbi_load("../assets/cubemap/cubemap_negz.png", &width, &height, &nrChannels, 0);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    std::cout << "Cubemap Texture ID: " << cubemapTextureID << std::endl;
+
+    gObj->material->cubemapID = cubemapTextureID;
+}
+
 void InitProgramAsStandard(GameObject* gameObj, std::string vertex_path, std::string fragment_path){
     gameObj->material = new StandardMaterial(std::move(vertex_path), std::move(fragment_path));
     InitStandardTexture(gameObj, aiTextureType_DIFFUSE, GL_TEXTURE0, gameObj->material->diffuseID);
@@ -167,7 +216,7 @@ void InitProgramAsRender(GameObject* gameObj, std::string vertex_path, std::stri
 
 void InitProgramAsSkybox(GameObject* gameObj, std::string vertex_path, std::string fragment_path){
     gameObj->material = new SkyboxMaterial(std::move(vertex_path), std::move(fragment_path));
-
+    InitCubeMapTexture(gameObj);
 }
 
 void drawFrameBuffer(){
@@ -225,6 +274,8 @@ void draw(){
 //    drawFrameBuffer();
     glClearColor(.0f, .0f, .0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //Not the most optimal way but good for now
     glDepthMask(GL_FALSE);
     drawSkyboxBuffer();
     glDepthMask(GL_TRUE);
@@ -275,7 +326,7 @@ int run() {
 
     auto* plane = InitGameObject("../assets/plane.obj");
     InitProgramAsSkybox(plane, "../shaders/skybox.vert", "../shaders/skybox.frag");
-    plane->transform.rotation.x = 0.5f * M_PI;
+//    plane->transform.rotation.x = 0.5f * M_PI;
     skyboxBufferObjects.push_back(plane);
 
     onMoveCamera(glm::vec3(0., 0., -40.));

@@ -1,7 +1,12 @@
 #version 450 core
 
+uniform samplerCube skyboxTexture;
+
+in vec3 TexCoords;
 out vec4 FragColor;
 
 void main() {
-    FragColor = vec4(1.0, 0.0, 1.0, 1.0);
+    vec3 direction = normalize(TexCoords);
+    vec4 color = texture(skyboxTexture, direction);
+    FragColor = color;
 }
