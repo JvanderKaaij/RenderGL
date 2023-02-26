@@ -1,4 +1,5 @@
 
+#include <vector>
 #include "MaterialInterface.h"
 
 
@@ -6,6 +7,7 @@ Shaders MaterialInterface::CompileShaders(std::string vertex_path, std::string f
     Shaders shaders;
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
     std::ifstream vert_file(vertex_path);
     std::string vert_str((std::istreambuf_iterator<char>(vert_file)),
                     std::istreambuf_iterator<char>());

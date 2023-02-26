@@ -24,9 +24,6 @@ public:
         GLuint skyboxLocation = glGetUniformLocation(this->programID, "skyboxTexture");
         glUniform1i(skyboxLocation, 0);
 
-        GLuint m_location = glGetUniformLocation(this->programID, "model");
-        glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
-
         GLuint v_location = glGetUniformLocation(this->programID, "view");
         glUniformMatrix4fv(v_location, 1, GL_FALSE, glm::value_ptr(Scene::ViewMatrix));
 
