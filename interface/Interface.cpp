@@ -73,7 +73,7 @@ void registerInputs(GLFWwindow* window){
 }
 
 glm::mat4 GetProjection(){
-    return glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.f);
+    return glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.f);
 }
 
 glm::mat4 GetCameraProjection(glm::vec2 rotation, glm::vec3 translation){
@@ -326,9 +326,9 @@ int run() {
 //    InitProgramAsStandard(teapot, "../shaders/lit.vert", "../shaders/lit.frag");
 //    backBufferObjects.push_back(teapot);
 
-    auto* plane = InitGameObject("../assets/plane.obj");
-    InitProgramAsSkybox(plane, "../shaders/skybox.vert", "../shaders/skybox.frag");
-    skyboxBufferObjects.push_back(plane);
+    auto* cube = InitGameObject("../assets/cube.obj");
+    InitProgramAsSkybox(cube, "../shaders/skybox.vert", "../shaders/skybox.frag");
+    skyboxBufferObjects.push_back(cube);
 
     onMoveCamera(glm::vec3(0., 0., -40.));
     //camRotation.y = 1.0f;
