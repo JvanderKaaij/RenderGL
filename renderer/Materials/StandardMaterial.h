@@ -49,6 +49,11 @@ public:
         GLuint specularLocation = glGetUniformLocation(this->programID, "specularTexture");
         glUniform1i(specularLocation, 1);
 
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, this->cubemapID);
+        GLuint skyboxLocation = glGetUniformLocation(this->programID, "skyboxTexture");
+        glUniform1i(skyboxLocation, 0);
+
     }
 };
 #endif //RENDERGL_STANDARDMATERIAL_H

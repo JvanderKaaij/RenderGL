@@ -95,7 +95,6 @@ Mesh* InitMesh(const std::string& path){
 
 GameObject* InitGameObject(){
     auto* go = new GameObject();
-    go->transform.position = glm::linearRand(glm::vec3(-50), glm::vec3(50));
     return go;
 }
 
@@ -243,6 +242,7 @@ void drawBackBuffer(){
     for(unsigned int i = 0; i < backBufferObjects.size(); i++){
 
         GameObject* gObj = backBufferObjects[i];
+        gObj->transform.rotation.y += 0.01f;
         gObj->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
@@ -314,26 +314,24 @@ int run() {
 
     //I need a parsedMesh to get the materials, so order matters here
 
-//    auto* suzanne = InitGameObject("../assets/suzanne.obj");
-//    auto* brickTexture = InitStandardTextureByPath("../assets/brick.png", GL_TEXTURE0);
-//    InitProgramAsStandard(suzanne, "../shaders/lit.vert", "../shaders/lit.frag");
-//    backBufferObjects.push_back(suzanne);
+    GLuint cubemapTextureID = InitCubeMapTexture();
 
     auto* woodTexture = InitStandardTextureByPath("../assets/wood.jpg");
     auto* cobbleSpecTexture = InitStandardTextureByPath("../assets/cobble-specular.png");
     auto* standardMat = InitProgramAsStandard("../shaders/lit.vert", "../shaders/lit.frag");
     standardMat->diffuseID = woodTexture->textureID;
     standardMat->specularID = cobbleSpecTexture->textureID;
+    standardMat->cubemapID = cubemapTextureID;
     auto* teapotMesh = InitMesh("../assets/teapot.obj");
 
     auto* teapot = InitGameObject();
     teapot->mesh = teapotMesh;
     teapot->material = standardMat;
     backBufferObjects.push_back(teapot);
-
+//    teapot->transform.rotation = glm::vec3(-0.5*M_PI, 0.0, 0.0);
 
     auto* skyboxMat = InitProgramAsSkybox("../shaders/skybox.vert", "../shaders/skybox.frag");
-    skyboxMat->cubemapID = InitCubeMapTexture();
+    skyboxMat->cubemapID = cubemapTextureID;
 
     auto* cube = InitMesh("../assets/cube.obj");
     auto* skybox = InitGameObject();
@@ -342,7 +340,6 @@ int run() {
     skyboxBufferObjects.push_back(skybox);
 
     onMoveCamera(glm::vec3(0., 0., -40.));
-    //camRotation.y = 1.0f;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
