@@ -5,6 +5,8 @@
 struct Texture {
     unsigned char* data;
     int width, height, channels;
+    GLenum location;
+    GLuint textureID;
 };
 
 #endif

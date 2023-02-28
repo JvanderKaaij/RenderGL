@@ -73,7 +73,7 @@ void registerInputs(GLFWwindow* window){
 }
 
 glm::mat4 GetProjection(){
-    return glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.f);
+    return glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.f);
 }
 
 glm::mat4 GetCameraProjection(glm::vec2 rotation, glm::vec3 translation){
@@ -93,29 +93,28 @@ Mesh* InitMesh(const std::string& path){
     return mesh;
 }
 
-GameObject* InitGameObject(const std::string& meshPath){
+GameObject* InitGameObject(){
     auto* go = new GameObject();
-//    go->transform.position = glm::linearRand(glm::vec3(-50), glm::vec3(50));
-    go->mesh = InitMesh(meshPath);
+    go->transform.position = glm::linearRand(glm::vec3(-50), glm::vec3(50));
     return go;
 }
 
-void InitStandardTexture(GameObject* gObj, aiTextureType type, GLenum textureLocation, unsigned int &id){
-    //TODO - This is a hack, I need to fix this - can be deleted after assignment etc.
-    Texture texture = MaterialInterface::LoadTexture(type, gObj->mesh->meshMaterialData);
+Texture* InitStandardTextureByPath(std::string full_path){
+    Texture* texture = MaterialInterface::LoadTexture(full_path);
 
-    //Assign diffuseTexture
-    glActiveTexture(textureLocation);
+    glGenTextures(1, &texture->textureID);
+    glBindTexture(GL_TEXTURE_2D, texture->textureID); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
 
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width, texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture->width, texture->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture->data);
     glGenerateMipmap(GL_TEXTURE_2D);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);//generate bilinear filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//What to do with outside coordinates
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    //TODO texture->data can be emptied
+
+    return texture;
 }
 
 void InitRenderTexture(GameObject* gObj){
@@ -155,7 +154,7 @@ void InitRenderTexture(GameObject* gObj){
     gObj->material->renderedTextureID = renderedTextureID;
 }
 
-void InitCubeMapTexture(GameObject* gObj){
+GLuint InitCubeMapTexture(){
     GLuint cubemapTextureID;
     glGenTextures(1, &cubemapTextureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureID);
@@ -201,13 +200,11 @@ void InitCubeMapTexture(GameObject* gObj){
 
     std::cout << "Cubemap Texture ID: " << cubemapTextureID << std::endl;
 
-    gObj->material->cubemapID = cubemapTextureID;
+    return cubemapTextureID;
 }
 
-void InitProgramAsStandard(GameObject* gameObj, std::string vertex_path, std::string fragment_path){
-    gameObj->material = new StandardMaterial(std::move(vertex_path), std::move(fragment_path));
-    InitStandardTexture(gameObj, aiTextureType_DIFFUSE, GL_TEXTURE0, gameObj->material->diffuseID);
-    InitStandardTexture(gameObj, aiTextureType_SPECULAR, GL_TEXTURE1, gameObj->material->specularID);
+Material* InitProgramAsStandard(std::string vertex_path, std::string fragment_path){
+    return new StandardMaterial(std::move(vertex_path), std::move(fragment_path));
 }
 
 void InitProgramAsRender(GameObject* gameObj, std::string vertex_path, std::string fragment_path){
@@ -215,9 +212,8 @@ void InitProgramAsRender(GameObject* gameObj, std::string vertex_path, std::stri
     InitRenderTexture(gameObj);
 }
 
-void InitProgramAsSkybox(GameObject* gameObj, std::string vertex_path, std::string fragment_path){
-    gameObj->material = new SkyboxMaterial(std::move(vertex_path), std::move(fragment_path));
-    InitCubeMapTexture(gameObj);
+Material* InitProgramAsSkybox(std::string vertex_path, std::string fragment_path){
+    return new SkyboxMaterial(std::move(vertex_path), std::move(fragment_path));
 }
 
 void drawFrameBuffer(){
@@ -318,17 +314,32 @@ int run() {
 
     //I need a parsedMesh to get the materials, so order matters here
 
-    auto* suzanne = InitGameObject("../assets/suzanne.obj");
-    InitProgramAsStandard(suzanne, "../shaders/lit.vert", "../shaders/lit.frag");
-    backBufferObjects.push_back(suzanne);
+//    auto* suzanne = InitGameObject("../assets/suzanne.obj");
+//    auto* brickTexture = InitStandardTextureByPath("../assets/brick.png", GL_TEXTURE0);
+//    InitProgramAsStandard(suzanne, "../shaders/lit.vert", "../shaders/lit.frag");
+//    backBufferObjects.push_back(suzanne);
 
-//    auto* teapot = InitGameObject("../assets/teapot.obj");
-//    InitProgramAsStandard(teapot, "../shaders/lit.vert", "../shaders/lit.frag");
-//    backBufferObjects.push_back(teapot);
+    auto* woodTexture = InitStandardTextureByPath("../assets/wood.jpg");
+    auto* cobbleSpecTexture = InitStandardTextureByPath("../assets/cobble-specular.png");
+    auto* standardMat = InitProgramAsStandard("../shaders/lit.vert", "../shaders/lit.frag");
+    standardMat->diffuseID = woodTexture->textureID;
+    standardMat->specularID = cobbleSpecTexture->textureID;
+    auto* teapotMesh = InitMesh("../assets/teapot.obj");
 
-    auto* cube = InitGameObject("../assets/cube.obj");
-    InitProgramAsSkybox(cube, "../shaders/skybox.vert", "../shaders/skybox.frag");
-    skyboxBufferObjects.push_back(cube);
+    auto* teapot = InitGameObject();
+    teapot->mesh = teapotMesh;
+    teapot->material = standardMat;
+    backBufferObjects.push_back(teapot);
+
+
+    auto* skyboxMat = InitProgramAsSkybox("../shaders/skybox.vert", "../shaders/skybox.frag");
+    skyboxMat->cubemapID = InitCubeMapTexture();
+
+    auto* cube = InitMesh("../assets/cube.obj");
+    auto* skybox = InitGameObject();
+    skybox->material = skyboxMat;
+    skybox->mesh = cube;
+    skyboxBufferObjects.push_back(skybox);
 
     onMoveCamera(glm::vec3(0., 0., -40.));
     //camRotation.y = 1.0f;
