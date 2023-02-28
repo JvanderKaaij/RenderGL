@@ -1,5 +1,6 @@
 
 #include <string>
+#include <vector>
 #include "Material.h"
 #include "../../interface/MaterialInterface.h"
 
@@ -13,6 +14,29 @@ Material::Material(std::string vertex_path, std::string fragment_path) {
     glAttachShader(this->programID, this->shaders.vertShader);
     glAttachShader(this->programID, this->shaders.fragShader);
     glLinkProgram(this->programID);
+
+    GLint isLinked = 0;
+    glGetProgramiv(this->programID, GL_LINK_STATUS, &isLinked);
+    if (isLinked == GL_FALSE)
+    {
+        GLint maxLength = 0;
+        glGetProgramiv(this->programID, GL_INFO_LOG_LENGTH, &maxLength);
+
+        // The maxLength includes the NULL character
+        GLchar* infoLog = new GLchar[maxLength + 1];
+        glGetProgramInfoLog(this->programID, maxLength, &maxLength, &infoLog[0]);
+
+        std::cout << std::endl << "SHADER ERROR: " << std::endl;
+        std::cout << infoLog << std::endl;
+
+        // The program is useless now. So delete it.
+        glDeleteProgram(this->programID);
+
+        // Provide the infolog in whatever manner you deem best.
+        // Exit with failure.
+        return;
+    }
+
     glUseProgram(this->programID);
 }
 
