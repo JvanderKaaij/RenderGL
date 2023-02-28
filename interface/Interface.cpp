@@ -95,6 +95,7 @@ Mesh* InitMesh(const std::string& path){
 
 GameObject* InitGameObject(){
     auto* go = new GameObject();
+//    go->transform.position = glm::linearRand(glm::vec3(-50), glm::vec3(50));
     return go;
 }
 
@@ -234,8 +235,8 @@ void drawFrameBuffer(){
 }
 
 void drawBackBuffer(){
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0,0,width,height);
+//    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//    glViewport(0,0,width,height);
 //    glClearColor(.0f, .0f, .0f, 1.0f);
 //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -274,9 +275,9 @@ void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //Not the most optimal way but good for now
-    glDepthMask(GL_FALSE);
-    drawSkyboxBuffer();
-    glDepthMask(GL_TRUE);
+//    glDepthMask(GL_FALSE);
+//    drawSkyboxBuffer();
+//    glDepthMask(GL_TRUE);
     drawBackBuffer();
 
     /* Swap front and back buffers */
@@ -310,7 +311,15 @@ int run() {
     printf("OpenGL version supported by this platform (%s): \n", glGetString(GL_VERSION));
     registerInputs(window);
 
-    glEnable (GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glDepthRange(0.0f, 1.0f);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_DEPTH_CLAMP);
+    glEnable(GL_FRAMEBUFFER_SRGB);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     //I need a parsedMesh to get the materials, so order matters here
 
@@ -323,12 +332,10 @@ int run() {
     standardMat->specularID = cobbleSpecTexture->textureID;
     standardMat->cubemapID = cubemapTextureID;
     auto* teapotMesh = InitMesh("../assets/teapot.obj");
-
     auto* teapot = InitGameObject();
     teapot->mesh = teapotMesh;
     teapot->material = standardMat;
     backBufferObjects.push_back(teapot);
-//    teapot->transform.rotation = glm::vec3(-0.5*M_PI, 0.0, 0.0);
 
     auto* skyboxMat = InitProgramAsSkybox("../shaders/skybox.vert", "../shaders/skybox.frag");
     skyboxMat->cubemapID = cubemapTextureID;

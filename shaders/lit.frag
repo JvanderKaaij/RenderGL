@@ -45,7 +45,6 @@ void main()
 
     //REFLECTION
     vec3 reflection = texture(skyboxTexture, viewProj).rgb;
-
     //FINAL SUMMING
     vec3 finalColor = finalDiffuse + finalSpecular + reflection;
 
