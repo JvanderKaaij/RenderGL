@@ -37,6 +37,9 @@ Material::Material(std::string vertex_path, std::string fragment_path) {
         return;
     }
 
+    glDeleteShader(this->shaders.vertShader);
+    glDeleteShader(this->shaders.fragShader);
+
     glUseProgram(this->programID);
 }
 

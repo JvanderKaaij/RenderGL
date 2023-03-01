@@ -112,7 +112,7 @@ Texture* InitStandardTextureByPath(std::string full_path){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//What to do with outside coordinates
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    //TODO texture->data can be emptied
+    stbi_image_free(texture->data);
 
     return texture;
 }
@@ -275,9 +275,9 @@ void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //Not the most optimal way but good for now
-//    glDepthMask(GL_FALSE);
-//    drawSkyboxBuffer();
-//    glDepthMask(GL_TRUE);
+    glDepthMask(GL_FALSE);
+    drawSkyboxBuffer();
+    glDepthMask(GL_TRUE);
     drawBackBuffer();
 
     /* Swap front and back buffers */
@@ -312,14 +312,13 @@ int run() {
     registerInputs(window);
 
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glDepthRange(0.0f, 1.0f);
-    glDepthMask(GL_TRUE);
-    glEnable(GL_DEPTH_CLAMP);
-    glEnable(GL_FRAMEBUFFER_SRGB);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+//    glDepthFunc(GL_LESS);
+//    glDepthRange(0.0f, 1.0f);
+//    glEnable(GL_DEPTH_CLAMP);
+//    glEnable(GL_FRAMEBUFFER_SRGB);
+//    glEnable(GL_CULL_FACE);
+//    glCullFace(GL_BACK);
+//    glFrontFace(GL_CCW);
 
     //I need a parsedMesh to get the materials, so order matters here
 
