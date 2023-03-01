@@ -48,5 +48,5 @@ void main()
     //FINAL SUMMING
     vec3 finalColor = finalDiffuse + finalSpecular + reflection;
 
-    FragColor = vec4(reflection, 1.0);
+    FragColor = vec4(finalColor, 1.0);
 }

@@ -312,13 +312,6 @@ int run() {
     registerInputs(window);
 
     glEnable(GL_DEPTH_TEST);
-//    glDepthFunc(GL_LESS);
-//    glDepthRange(0.0f, 1.0f);
-//    glEnable(GL_DEPTH_CLAMP);
-//    glEnable(GL_FRAMEBUFFER_SRGB);
-//    glEnable(GL_CULL_FACE);
-//    glCullFace(GL_BACK);
-//    glFrontFace(GL_CCW);
 
     //I need a parsedMesh to get the materials, so order matters here
 
@@ -334,6 +327,7 @@ int run() {
     auto* teapot = InitGameObject();
     teapot->mesh = teapotMesh;
     teapot->material = standardMat;
+    teapot->transform.rotation = glm::vec3(0.5*M_PI, 0.0, 0.0);
     backBufferObjects.push_back(teapot);
 
     auto* skyboxMat = InitProgramAsSkybox("../shaders/skybox.vert", "../shaders/skybox.frag");

@@ -52,7 +52,7 @@ public:
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_CUBE_MAP, this->cubemapID);
         GLuint skyboxLocation = glGetUniformLocation(this->programID, "skyboxTexture");
-        glUniform1i(skyboxLocation, 0);
+        glUniform1i(skyboxLocation, 2);
 
     }
 };
