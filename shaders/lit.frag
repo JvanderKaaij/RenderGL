@@ -17,6 +17,13 @@ layout(binding = 2) uniform samplerCube skyboxTexture;
 out vec4 FragColor;
 
 float reflectionFactor = 0.2;
+float specularExponent = 100.;
+
+vec3 ambientColor = vec3(.1, 0., 0.);
+vec3 diffuseColor = vec3(1.,1., 1.);
+
+vec3 viewDirection = vec3(0., 0., -1.);
+vec3 specularColor = vec3(1.);
 
 void main()
 {
@@ -24,20 +31,10 @@ void main()
 
     vec3 viewProj = reflect(mat3(projection * model) * SurfaceNormals, vec3(1.0, 0.0, 0.0));
 
-    vec3 ambientColor = vec3(.1, 0., 0.);
-    vec3 diffuseColor = vec3(1.,1., 1.);
-
-    vec3 viewDirection = vec3(0., 0., -1.);
-
     //SPECULAR
-    vec3 specularColor = vec3(1.);
-    float specularExponent = 100.;
-
     vec3 halfwayVector = normalize(DirectionalLight + viewDirection);
     float specular = pow(max(dot(world, halfwayVector), 0.0), specularExponent);
-
     float specularIntensity = texture(specularTexture, TextureCoords).r;
-
     vec3 finalSpecular = (specular * specularIntensity) * specularColor;
 
     //DIFFUSE
@@ -47,6 +44,7 @@ void main()
 
     //REFLECTION
     vec3 reflection = texture(skyboxTexture, viewProj).rgb * reflectionFactor;
+
     //FINAL SUMMING
     vec3 finalColor = finalDiffuse + finalSpecular + reflection;
 
