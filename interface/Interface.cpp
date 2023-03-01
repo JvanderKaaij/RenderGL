@@ -243,7 +243,7 @@ void drawBackBuffer(){
     for(unsigned int i = 0; i < backBufferObjects.size(); i++){
 
         GameObject* gObj = backBufferObjects[i];
-        gObj->transform.rotation.y += 0.01f;
+        gObj->transform.rotation.z += 0.01f;
         gObj->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
@@ -327,7 +327,7 @@ int run() {
     auto* teapot = InitGameObject();
     teapot->mesh = teapotMesh;
     teapot->material = standardMat;
-    teapot->transform.rotation = glm::vec3(0.5*M_PI, 0.0, 0.0);
+    teapot->transform.rotation = glm::vec3(-0.5*M_PI, 0.0, 0.0);
     backBufferObjects.push_back(teapot);
 
     auto* skyboxMat = InitProgramAsSkybox("../shaders/skybox.vert", "../shaders/skybox.frag");

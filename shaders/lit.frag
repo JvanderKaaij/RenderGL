@@ -16,6 +16,8 @@ layout(binding = 1) uniform sampler2D specularTexture;
 layout(binding = 2) uniform samplerCube skyboxTexture;
 out vec4 FragColor;
 
+float reflectionFactor = 0.2;
+
 void main()
 {
     vec3 world = normalize(mat3(projection * view * model) * SurfaceNormals);
@@ -44,7 +46,7 @@ void main()
     vec3 finalDiffuse = ambientColor + diffuse * diffuseColor * texelColor.xyz;
 
     //REFLECTION
-    vec3 reflection = texture(skyboxTexture, viewProj).rgb;
+    vec3 reflection = texture(skyboxTexture, viewProj).rgb * reflectionFactor;
     //FINAL SUMMING
     vec3 finalColor = finalDiffuse + finalSpecular + reflection;
 
