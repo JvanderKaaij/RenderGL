@@ -4,12 +4,14 @@
 
 #include "DirectionalLight.h"
 #include "glm/fwd.hpp"
+#include "Transform.h"
 
 class Scene {
 public:
     static DirectionalLight directional_light;
     static glm::mat4 ViewMatrix;
     static glm::mat4 ProjectionMatrix;
+    static Transform CameraTransform;
 };
 
 

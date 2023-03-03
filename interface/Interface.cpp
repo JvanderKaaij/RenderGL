@@ -21,9 +21,6 @@ int height = 480;
 
 GLuint frameBufferID;
 
-glm::vec3 camPosition = glm::vec3(0,0,0);
-glm::vec2 camRotation = glm::vec2(0,0);
-
 bool lMouseBtn = false;
 bool lMouseBtnCntrl = false;
 double xMousePos = 0;
@@ -34,14 +31,14 @@ std::vector<GameObject*> backBufferObjects;
 std::vector<GameObject*> skyboxBufferObjects;
 
 void onMoveCamera(glm::vec3 translation){
-    camPosition += translation;
+    Scene::CameraTransform.position += translation;
 }
 
 void onCursorPosition(glm::vec2 position)
 {
     if(lMouseBtn){
-        camRotation.x += (position.x - xMousePos) * 0.01f;
-        camRotation.y += (position.y - yMousePos) * 0.01f;
+        Scene::CameraTransform.rotation.x += (position.x - xMousePos) * 0.01f;
+        Scene::CameraTransform.rotation.y += (position.y - yMousePos) * 0.01f;
     }
     if(lMouseBtnCntrl){
         Scene::directional_light.direction.x += (position.x - xMousePos) * 0.01f;
@@ -59,7 +56,7 @@ void onMouseButtonCallback(int button, int action, int mods)
 
 void onScrollCallback(glm::vec2 scrollOffset)
 {
-    camPosition.z += scrollOffset.y;
+    Scene::CameraTransform.position.z += scrollOffset.y;
 }
 
 void registerInputs(GLFWwindow* window){
@@ -76,12 +73,12 @@ glm::mat4 GetProjection(){
     return glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.f);
 }
 
-glm::mat4 GetCameraProjection(glm::vec2 rotation, glm::vec3 translation){
+glm::mat4 GetCameraProjection(Transform cameraTransform){
 
-    glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), translation);
+    glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), cameraTransform.position);
 
-    glm::mat4 ViewRotate = glm::rotate(ViewTranslate, rotation.x, glm::vec3(0.0f, 1.0f, 0.0f));
-    ViewRotate = glm::rotate(ViewRotate, rotation.y, glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::mat4 ViewRotate = glm::rotate(ViewTranslate, cameraTransform.rotation.x, glm::vec3(0.0f, 1.0f, 0.0f));
+    ViewRotate = glm::rotate(ViewRotate, cameraTransform.rotation.y, glm::vec3(1.0f, 0.0f, 0.0f));
 
     return ViewRotate;
 }
@@ -154,6 +151,16 @@ void InitRenderTexture(GameObject* gObj){
     gObj->material->renderedTextureID = renderedTextureID;
 }
 
+
+unsigned char* FlipImage(unsigned char* image_data){
+    unsigned char* flipped_data;
+    flipped_data = new unsigned char[width * height * 4];
+    for (int y = 0; y < height; ++y) {
+        memcpy(&flipped_data[(height - 1 - y) * width * 4], &image_data[y * width * 4], width * 4);
+    }
+    return flipped_data;
+}
+
 GLuint InitCubeMapTexture(){
     GLuint cubemapTextureID;
     glGenTextures(1, &cubemapTextureID);
@@ -163,32 +170,32 @@ GLuint InitCubeMapTexture(){
     unsigned char *data;
 
 // Load positive X
-    data = stbi_load("../assets/cubemap/cubemap_posx.png", &width, &height, &nrChannels, 0);
+    data = stbi_load("../assets/flipcubemap/cubemap_posx.png", &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
 // Load negative X
-    data = stbi_load("../assets/cubemap/cubemap_negx.png", &width, &height, &nrChannels, 0);
+    data = stbi_load("../assets/flipcubemap/cubemap_negx.png", &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
 // Load positive Y
-    data = stbi_load("../assets/cubemap/cubemap_posy.png", &width, &height, &nrChannels, 0);
+    data = stbi_load("../assets/flipcubemap/cubemap_posy.png", &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
 // Load negative Y
-    data = stbi_load("../assets/cubemap/cubemap_negy.png", &width, &height, &nrChannels, 0);
+    data = stbi_load("../assets/flipcubemap/cubemap_negy.png", &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
 // Load positive Z
-    data = stbi_load("../assets/cubemap/cubemap_posz.png", &width, &height, &nrChannels, 0);
+    data = stbi_load("../assets/flipcubemap/cubemap_posz.png", &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
 // Load negative Z
-    data = stbi_load("../assets/cubemap/cubemap_negz.png", &width, &height, &nrChannels, 0);
+    data = stbi_load("../assets/flipcubemap/cubemap_negz.png", &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
@@ -243,7 +250,6 @@ void drawBackBuffer(){
     for(unsigned int i = 0; i < backBufferObjects.size(); i++){
 
         GameObject* gObj = backBufferObjects[i];
-        gObj->transform.rotation.z += 0.01f;
         gObj->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
@@ -264,7 +270,7 @@ void drawSkyboxBuffer(){
 
 void draw(){
     Scene::ProjectionMatrix = GetProjection();
-    Scene::ViewMatrix = GetCameraProjection(camRotation, camPosition);
+    Scene::ViewMatrix = GetCameraProjection(Scene::CameraTransform);
 
 //    backBufferObjects[0]->transform.position -= glm::vec3(0.0f, 0.1f, 0.0f);
 //    backBufferObjects[0]->transform.scale -= glm::vec3(0.001f, 0.001f, 0.001f);
@@ -327,7 +333,6 @@ int run() {
     auto* teapot = InitGameObject();
     teapot->mesh = teapotMesh;
     teapot->material = standardMat;
-    teapot->transform.rotation = glm::vec3(-0.5*M_PI, 0.0, 0.0);
     backBufferObjects.push_back(teapot);
 
     auto* skyboxMat = InitProgramAsSkybox("../shaders/skybox.vert", "../shaders/skybox.frag");

@@ -25,7 +25,6 @@ public:
         glUniform1i(skyboxLocation, 0);
 
         GLuint v_location = glGetUniformLocation(this->programID, "view");
-
         glUniformMatrix4fv(v_location, 1, GL_FALSE, glm::value_ptr(glm::inverse(Scene::ViewMatrix)));
 
         GLuint p_location = glGetUniformLocation(this->programID, "projection");

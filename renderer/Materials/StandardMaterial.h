@@ -54,6 +54,9 @@ public:
         GLuint skyboxLocation = glGetUniformLocation(this->programID, "skyboxTexture");
         glUniform1i(skyboxLocation, 2);
 
+        GLuint cam_location = glGetUniformLocation(this->programID, "cameraPosition");
+        glUniform3fv(cam_location, 1, glm::value_ptr(Scene::CameraTransform.position));
+
     }
 };
 #endif //RENDERGL_STANDARDMATERIAL_H
