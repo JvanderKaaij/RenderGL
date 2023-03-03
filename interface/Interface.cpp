@@ -169,33 +169,35 @@ GLuint InitCubeMapTexture(){
     int width, height, nrChannels;
     unsigned char *data;
 
+    stbi_set_flip_vertically_on_load(true);
+
 // Load positive X
-    data = stbi_load("../assets/flipcubemap/cubemap_posx.png", &width, &height, &nrChannels, 0);
+    data = stbi_load("../assets/cubemap/cubemap_posx.png", &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
 // Load negative X
-    data = stbi_load("../assets/flipcubemap/cubemap_negx.png", &width, &height, &nrChannels, 0);
+    data = stbi_load("../assets/cubemap/cubemap_negx.png", &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
 // Load positive Y
-    data = stbi_load("../assets/flipcubemap/cubemap_posy.png", &width, &height, &nrChannels, 0);
+    data = stbi_load("../assets/cubemap/cubemap_posy.png", &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
 // Load negative Y
-    data = stbi_load("../assets/flipcubemap/cubemap_negy.png", &width, &height, &nrChannels, 0);
+    data = stbi_load("../assets/cubemap/cubemap_negy.png", &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
 // Load positive Z
-    data = stbi_load("../assets/flipcubemap/cubemap_posz.png", &width, &height, &nrChannels, 0);
+    data = stbi_load("../assets/cubemap/cubemap_posz.png", &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
 // Load negative Z
-    data = stbi_load("../assets/flipcubemap/cubemap_negz.png", &width, &height, &nrChannels, 0);
+    data = stbi_load("../assets/cubemap/cubemap_negz.png", &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
@@ -204,6 +206,9 @@ GLuint InitCubeMapTexture(){
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+
+    stbi_set_flip_vertically_on_load(false);
 
     std::cout << "Cubemap Texture ID: " << cubemapTextureID << std::endl;
 
