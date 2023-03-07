@@ -17,8 +17,6 @@ public:
     void Draw(Transform transform) override{
         glUseProgram(this->programID);
 
-        glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), transform.position);
-
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, this->cubemapID);
         GLuint skyboxLocation = glGetUniformLocation(this->programID, "skyboxTexture");
