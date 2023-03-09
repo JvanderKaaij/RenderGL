@@ -391,6 +391,14 @@ int run() {
     skybox->mesh = cube;
     skyboxBufferObjects.push_back(skybox);
 
+    auto* planeMesh = InitMesh("../assets/plane.obj");
+    auto* floor = InitGameObject();
+    floor->mesh = planeMesh;
+    floor->material = standardMat;
+    floor->depthMaterial = depthMat;
+    backBufferObjects.push_back(floor);
+
+
     onMoveCamera(glm::vec3(0., 0., -40.));
 
     /* Loop until the user closes the window */
