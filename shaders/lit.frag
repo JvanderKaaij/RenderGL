@@ -27,9 +27,13 @@ vec3 diffuseColor = vec3(.4,.4,.4);
 vec3 viewDirection = vec3(0., 0., -1.);
 vec3 specularColor = vec3(1.);
 
+
+//(This is not following the render equation yet)
+//and messed up in all sorts of ways
 void main()
 {
     vec3 world = normalize(mat3(projection * view * model) * WorldNormal);
+    vec3 worldM = normalize(mat3(projection * model) * WorldNormal);
 //
     //SPECULAR
     vec3 halfwayVector = normalize(DirectionalLight + viewDirection);
@@ -37,8 +41,8 @@ void main()
     float specularIntensity = texture(specularTexture, TextureCoords).r;
     vec3 finalSpecular = (specular * specularIntensity) * specularColor;
 
-    //DIFFUSE (This is not following the render equation yet)
-    float diffuse = dot(WorldNormal, DirectionalLight);
+    //DIFFUSE
+    float diffuse = dot(worldM, DirectionalLight);
     vec4 texelColor = texture(diffuseTexture, TextureCoords);
     vec3 finalDiffuse = diffuse * diffuseColor * texelColor.xyz;
 
