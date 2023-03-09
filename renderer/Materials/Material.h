@@ -17,6 +17,8 @@ public:
     unsigned int specularID;
     unsigned int renderedTextureID;
     unsigned int cubemapID;
-    
+
+    glm::vec3 diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
+
 };
 #endif

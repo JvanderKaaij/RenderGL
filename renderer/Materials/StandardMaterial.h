@@ -57,6 +57,9 @@ public:
         GLuint cam_location = glGetUniformLocation(this->programID, "cameraPosition");
         glUniform3fv(cam_location, 1, glm::value_ptr(Scene::CameraTransform.position));
 
+        GLuint diffuse_color_location = glGetUniformLocation(this->programID, "diffuseColor");
+        glUniform3fv(diffuse_color_location, 1, glm::value_ptr(this->diffuseColor));
+
     }
 };
 #endif //RENDERGL_STANDARDMATERIAL_H

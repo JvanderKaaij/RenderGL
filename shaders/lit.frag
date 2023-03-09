@@ -13,6 +13,8 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform float timer;
 uniform vec3 cameraPosition;
+uniform vec3 diffuseColor;
+
 
 layout(binding = 0) uniform sampler2D diffuseTexture;
 layout(binding = 1) uniform sampler2D specularTexture;
@@ -22,11 +24,8 @@ out vec4 FragColor;
 float reflectionFactor = 0.2;
 float specularExponent = 100.;
 
-vec3 diffuseColor = vec3(.4,.4,.4);
-
 vec3 viewDirection = vec3(0., 0., -1.);
 vec3 specularColor = vec3(1.);
-
 
 //(This is not following the render equation yet)
 //and messed up in all sorts of ways

@@ -374,6 +374,7 @@ int run() {
     standardMat->diffuseID = woodTexture->textureID;
     standardMat->specularID = cobbleSpecTexture->textureID;
     standardMat->cubemapID = cubemapTextureID;
+    standardMat->diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
     auto* teapotMesh = InitMesh("../assets/teapot.obj");
     auto* teapot = InitGameObject();
@@ -397,7 +398,6 @@ int run() {
     floor->material = standardMat;
     floor->depthMaterial = depthMat;
     backBufferObjects.push_back(floor);
-
 
     onMoveCamera(glm::vec3(0., 0., -40.));
 
