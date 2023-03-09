@@ -22,7 +22,7 @@ out vec4 FragColor;
 float reflectionFactor = 0.2;
 float specularExponent = 100.;
 
-vec3 diffuseColor = vec3(1.,0., 0.);
+vec3 diffuseColor = vec3(.4,.4,.4);
 
 vec3 viewDirection = vec3(0., 0., -1.);
 vec3 specularColor = vec3(1.);
@@ -37,10 +37,10 @@ void main()
     float specularIntensity = texture(specularTexture, TextureCoords).r;
     vec3 finalSpecular = (specular * specularIntensity) * specularColor;
 
-
-    //DIFFUSE (took out some part)
+    //DIFFUSE (This is not following the render equation yet)
+    float diffuse = dot(WorldNormal, DirectionalLight);
     vec4 texelColor = texture(diffuseTexture, TextureCoords);
-    vec3 finalDiffuse = diffuseColor * texelColor.xyz;
+    vec3 finalDiffuse = diffuse * diffuseColor * texelColor.xyz;
 
     //REFLECTION
     vec3 I = normalize(Position - cameraPosition * mat3(view));

@@ -13,6 +13,7 @@
 #include "../renderer/Materials/RenderMaterial.h"
 #include "../renderer/GameObject.h"
 #include "../renderer/Materials/SkyboxMaterial.h"
+#include "../renderer/Materials/DepthMaterial.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -25,6 +26,9 @@ bool lMouseBtn = false;
 bool lMouseBtnCntrl = false;
 double xMousePos = 0;
 double yMousePos = 0;
+
+const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+unsigned int depthMapFBO;
 
 std::vector<GameObject*> frameBufferObjects;
 std::vector<GameObject*> backBufferObjects;
@@ -41,8 +45,8 @@ void onCursorPosition(glm::vec2 position)
         Scene::CameraTransform.rotation.y += (position.y - yMousePos) * 0.01f;
     }
     if(lMouseBtnCntrl){
-        Scene::directional_light.direction.x += (position.x - xMousePos) * 0.01f;
-        Scene::directional_light.direction.y -= (position.y - yMousePos) * 0.01f;
+        Scene::directional_light.direction.x += (position.x - xMousePos) * 0.1f;
+        Scene::directional_light.direction.y -= (position.y - yMousePos) * 0.1f;
     }
     xMousePos = position.x;
     yMousePos = position.y;
@@ -152,13 +156,25 @@ void InitRenderTexture(GameObject* gObj){
 }
 
 
-unsigned char* FlipImage(unsigned char* image_data){
-    unsigned char* flipped_data;
-    flipped_data = new unsigned char[width * height * 4];
-    for (int y = 0; y < height; ++y) {
-        memcpy(&flipped_data[(height - 1 - y) * width * 4], &image_data[y * width * 4], width * 4);
-    }
-    return flipped_data;
+//TODO: Render this to a Quad to be able to see it
+void InitDepthMap(){
+    glGenFramebuffers(1, &depthMapFBO);
+
+    unsigned int depthMap;
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 }
 
 GLuint InitCubeMapTexture(){
@@ -228,6 +244,10 @@ Material* InitProgramAsSkybox(std::string vertex_path, std::string fragment_path
     return new SkyboxMaterial(std::move(vertex_path), std::move(fragment_path));
 }
 
+Material* InitProgramAsDepth(std::string vertex_path, std::string fragment_path){
+    return new DepthMaterial(std::move(vertex_path), std::move(fragment_path));
+}
+
 void drawFrameBuffer(){
     glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
     glViewport(0,0,1024,1024);
@@ -247,8 +267,8 @@ void drawFrameBuffer(){
 }
 
 void drawBackBuffer(){
-//    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-//    glViewport(0,0,width,height);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0,0,width,height);
 //    glClearColor(.0f, .0f, .0f, 1.0f);
 //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -260,6 +280,22 @@ void drawBackBuffer(){
         glBindVertexArray(gObj->mesh->vaoID);
         glDrawElementsInstanced(GL_TRIANGLES, gObj->mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
     }
+}
+
+void drawShadowBuffer(){
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    for(unsigned int i = 0; i < backBufferObjects.size(); i++){
+
+        GameObject* gObj = backBufferObjects[i];
+        gObj->DrawDepth();
+
+        glBindVertexArray(gObj->mesh->vaoID);
+        glDrawElementsInstanced(GL_TRIANGLES, gObj->mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
+    }
+
 }
 
 void drawSkyboxBuffer(){
@@ -289,6 +325,7 @@ void draw(){
     glDepthMask(GL_FALSE);
     drawSkyboxBuffer();
     glDepthMask(GL_TRUE);
+    drawShadowBuffer();
     drawBackBuffer();
 
     /* Swap front and back buffers */
@@ -324,10 +361,13 @@ int run() {
 
     glEnable(GL_DEPTH_TEST);
 
-    //I need a parsedMesh to get the materials, so order matters here
-
     GLuint cubemapTextureID = InitCubeMapTexture();
 
+    //Depth Material for Shadow Mapping
+    auto* depthMat = InitProgramAsDepth("../shaders/depthShader.vert", "../shaders/depthShader.frag");
+    InitDepthMap();
+
+    //Standard Lit Material
     auto* woodTexture = InitStandardTextureByPath("../assets/wood.jpg");
     auto* cobbleSpecTexture = InitStandardTextureByPath("../assets/cobble-specular.png");
     auto* standardMat = InitProgramAsStandard("../shaders/lit.vert", "../shaders/lit.frag");
@@ -339,6 +379,7 @@ int run() {
     auto* teapot = InitGameObject();
     teapot->mesh = teapotMesh;
     teapot->material = standardMat;
+    teapot->depthMaterial = depthMat;
     backBufferObjects.push_back(teapot);
 
     auto* skyboxMat = InitProgramAsSkybox("../shaders/skybox.vert", "../shaders/skybox.frag");
