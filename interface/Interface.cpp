@@ -334,6 +334,7 @@ int run() {
     standardMat->diffuseID = woodTexture->textureID;
     standardMat->specularID = cobbleSpecTexture->textureID;
     standardMat->cubemapID = cubemapTextureID;
+
     auto* teapotMesh = InitMesh("../assets/teapot.obj");
     auto* teapot = InitGameObject();
     teapot->mesh = teapotMesh;

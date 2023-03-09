@@ -22,42 +22,34 @@ out vec4 FragColor;
 float reflectionFactor = 0.2;
 float specularExponent = 100.;
 
-vec3 ambientColor = vec3(.1, 0., 0.);
-vec3 diffuseColor = vec3(1.,1., 1.);
+vec3 diffuseColor = vec3(1.,0., 0.);
 
 vec3 viewDirection = vec3(0., 0., -1.);
 vec3 specularColor = vec3(1.);
 
 void main()
 {
+    vec3 world = normalize(mat3(projection * view * model) * WorldNormal);
+//
+    //SPECULAR
+    vec3 halfwayVector = normalize(DirectionalLight + viewDirection);
+    float specular = pow(max(dot(world, halfwayVector), 0.0), specularExponent);
+    float specularIntensity = texture(specularTexture, TextureCoords).r;
+    vec3 finalSpecular = (specular * specularIntensity) * specularColor;
 
+
+    //DIFFUSE (took out some part)
+    vec4 texelColor = texture(diffuseTexture, TextureCoords);
+    vec3 finalDiffuse = diffuseColor * texelColor.xyz;
+
+    //REFLECTION
     vec3 I = normalize(Position - cameraPosition * mat3(view));
     vec3 R = reflect(I, normalize(WorldNormal));
 
-    FragColor = vec4(texture(skyboxTexture, R).rgb, 1.0);
-//    FragColor = vec4(WorldNormal, 1.0);
+    vec3 finalReflection = texture(skyboxTexture, R).rgb * reflectionFactor;
 
-//
-//    vec3 world = normalize(mat3(projection * view * model) * Normal);
-//
-//    vec3 viewProj = reflect(mat3(projection * model) * Normal, vec3(1.0, 0.0, 0.0));
-//
-//    //SPECULAR
-//    vec3 halfwayVector = normalize(DirectionalLight + viewDirection);
-//    float specular = pow(max(dot(world, halfwayVector), 0.0), specularExponent);
-//    float specularIntensity = texture(specularTexture, TextureCoords).r;
-//    vec3 finalSpecular = (specular * specularIntensity) * specularColor;
-//
-//    //DIFFUSE
-//    float diffuse = max(dot(world, DirectionalLight), 0.0);
-//    vec4 texelColor = texture(diffuseTexture, TextureCoords);
-//    vec3 finalDiffuse = ambientColor + diffuse * diffuseColor * texelColor.xyz;
-//
-//    //REFLECTION
-//    vec3 reflection = texture(skyboxTexture, viewProj).rgb * reflectionFactor;
-//
-//    //FINAL SUMMING
-//    vec3 finalColor = finalDiffuse + finalSpecular + reflection;
-//
-//    FragColor = vec4(finalColor, 1.0);
+    //FINAL SUMMING
+    vec3 finalColor = finalSpecular + finalDiffuse + finalReflection;
+
+    FragColor = vec4(finalColor, 1.0);
 }

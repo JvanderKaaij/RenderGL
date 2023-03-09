@@ -36,7 +36,7 @@ public:
         GLuint p_location = glGetUniformLocation(this->programID, "projection");
         glUniformMatrix4fv(p_location, 1, GL_FALSE, glm::value_ptr(Scene::ProjectionMatrix));
 
-        GLint directional_light_location = glGetUniformLocation(this->programID, "directionalLight");
+        GLint directional_light_location = glGetUniformLocation(this->programID, "DirectionalLight");
         glUniform3fv(directional_light_location, 1, &Scene::directional_light.direction[0]);
 
         glActiveTexture(GL_TEXTURE0);
