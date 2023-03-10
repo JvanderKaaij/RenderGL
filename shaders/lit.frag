@@ -19,6 +19,7 @@ uniform vec3 diffuseColor;
 layout(binding = 0) uniform sampler2D diffuseTexture;
 layout(binding = 1) uniform sampler2D specularTexture;
 layout(binding = 2) uniform samplerCube skyboxTexture;
+layout(binding = 3) uniform sampler2D shadowMapTexture;
 out vec4 FragColor;
 
 float reflectionFactor = 0.2;
@@ -48,11 +49,15 @@ void main()
     //REFLECTION
     vec3 I = normalize(Position - cameraPosition * mat3(view));
     vec3 R = reflect(I, normalize(WorldNormal));
-
     vec3 finalReflection = texture(skyboxTexture, R).rgb * reflectionFactor;
+
+    //SHADOW MAP
+    vec4 shadowMapTxt = texture(shadowMapTexture, TextureCoords);
+
 
     //FINAL SUMMING
     vec3 finalColor = finalSpecular + finalDiffuse + finalReflection;
+
 
     FragColor = vec4(finalColor, 1.0);
 }

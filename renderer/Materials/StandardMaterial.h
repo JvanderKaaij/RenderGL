@@ -60,7 +60,10 @@ public:
         GLuint diffuse_color_location = glGetUniformLocation(this->programID, "diffuseColor");
         glUniform3fv(diffuse_color_location, 1, glm::value_ptr(this->diffuseColor));
 
-
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, this->shadowMapID);
+        GLuint shadowMapLocation = glGetUniformLocation(this->programID, "shadowMapTexture");
+        glUniform1i(shadowMapLocation, 3);
 
     }
 };
