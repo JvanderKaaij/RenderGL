@@ -29,6 +29,8 @@ double yMousePos = 0;
 
 const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 unsigned int depthMapFBO;
+unsigned int depthMap;
+
 
 std::vector<GameObject*> frameBufferObjects;
 std::vector<GameObject*> backBufferObjects;
@@ -155,12 +157,9 @@ void InitRenderTexture(GameObject* gObj){
     gObj->material->renderedTextureID = renderedTextureID;
 }
 
-
-//TODO: Render this to a Quad to be able to see it
 void InitDepthMap(){
     glGenFramebuffers(1, &depthMapFBO);
 
-    unsigned int depthMap;
     glGenTextures(1, &depthMap);
     glBindTexture(GL_TEXTURE_2D, depthMap);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -235,9 +234,8 @@ Material* InitProgramAsStandard(std::string vertex_path, std::string fragment_pa
     return new StandardMaterial(std::move(vertex_path), std::move(fragment_path));
 }
 
-void InitProgramAsRender(GameObject* gameObj, std::string vertex_path, std::string fragment_path){
-    gameObj->material = new RenderMaterial(std::move(vertex_path), std::move(fragment_path));
-    InitRenderTexture(gameObj);
+Material* InitProgramAsRender(std::string vertex_path, std::string fragment_path){
+    return new RenderMaterial(std::move(vertex_path), std::move(fragment_path));
 }
 
 Material* InitProgramAsSkybox(std::string vertex_path, std::string fragment_path){
@@ -376,6 +374,14 @@ int run() {
     standardMat->cubemapID = cubemapTextureID;
     standardMat->diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
+    //Render Texture Material
+    auto* renderTxt = InitProgramAsRender("../shaders/lit.vert", "../shaders/unlit.frag");
+
+    //Skybox Material
+    auto* skyboxMat = InitProgramAsSkybox("../shaders/skybox.vert", "../shaders/skybox.frag");
+    skyboxMat->cubemapID = cubemapTextureID;
+
+    //Teapot Game Object
     auto* teapotMesh = InitMesh("../assets/teapot.obj");
     auto* teapot = InitGameObject();
     teapot->mesh = teapotMesh;
@@ -383,21 +389,31 @@ int run() {
     teapot->depthMaterial = depthMat;
     backBufferObjects.push_back(teapot);
 
-    auto* skyboxMat = InitProgramAsSkybox("../shaders/skybox.vert", "../shaders/skybox.frag");
-    skyboxMat->cubemapID = cubemapTextureID;
-
+    //Skybox Game Object
     auto* cube = InitMesh("../assets/cube.obj");
     auto* skybox = InitGameObject();
     skybox->material = skyboxMat;
     skybox->mesh = cube;
     skyboxBufferObjects.push_back(skybox);
 
+    //Floor Game Object
     auto* planeMesh = InitMesh("../assets/plane.obj");
     auto* floor = InitGameObject();
     floor->mesh = planeMesh;
     floor->material = standardMat;
     floor->depthMaterial = depthMat;
     backBufferObjects.push_back(floor);
+
+    //Shadow Mapping Debug
+    auto* debugMesh = InitMesh("../assets/plane.obj");
+    auto* debug = InitGameObject();
+    debug->transform.position.x += 40.0f;
+    debug->transform.rotation.x += M_PI / 2.0f;
+    debug->mesh = debugMesh;
+    debug->material = renderTxt;
+    debug->material->renderedTextureID = depthMap;
+    debug->depthMaterial = depthMat;
+    backBufferObjects.push_back(debug);
 
     onMoveCamera(glm::vec3(0., 0., -40.));
 

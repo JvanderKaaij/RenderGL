@@ -7,15 +7,16 @@ layout (location = 2) in vec2 aTextureCoords;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-
 uniform float timer;
 uniform vec3 directionalLight;
+uniform mat4 lightSpaceMatrix;
 
 out vec3 WorldNormal;
 out vec3 LocalNormal;
 out vec3 Position;
 out vec3 DirectionalLight;
 out vec2 TextureCoords;
+out vec4 FragPosLightSpace;
 
 void main(){
     WorldNormal = mat3(transpose(inverse(model))) * aNormal;
