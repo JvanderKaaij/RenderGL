@@ -26,5 +26,7 @@ void main(){
     DirectionalLight = directionalLight;
     TextureCoords = aTextureCoords;
 
+    FragPosLightSpace = lightSpaceMatrix * vec4(Position, 1.0);
+
     gl_Position = projection * view * vec4(Position, 1.0);
 }

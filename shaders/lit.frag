@@ -7,6 +7,7 @@ in vec3 WorldNormal;
 in vec3 LocalNormal;
 in vec3 DirectionalLight;
 in vec2 TextureCoords;
+in vec4 FragPosLightSpace;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -14,7 +15,6 @@ uniform mat4 projection;
 uniform float timer;
 uniform vec3 cameraPosition;
 uniform vec3 diffuseColor;
-
 
 layout(binding = 0) uniform sampler2D diffuseTexture;
 layout(binding = 1) uniform sampler2D specularTexture;
@@ -25,8 +25,24 @@ out vec4 FragColor;
 float reflectionFactor = 0.2;
 float specularExponent = 100.;
 
+vec3 ambient = vec3(0.1);
+
 vec3 viewDirection = vec3(0., 0., -1.);
 vec3 specularColor = vec3(1.);
+
+
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float closestDepth  = texture(shadowMapTexture, projCoords.xy).r;
+    float currentDepth = projCoords.z;
+
+//    float bias = max(0.05 * (1.0 - dot(WorldNormal, DirectionalLight)), 0.005);
+    float bias = 0.01;
+    float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+    return shadow;
+}
 
 //(This is not following the render equation yet)
 //and messed up in all sorts of ways
@@ -52,12 +68,10 @@ void main()
     vec3 finalReflection = texture(skyboxTexture, R).rgb * reflectionFactor;
 
     //SHADOW MAP
-    vec4 shadowMapTxt = texture(shadowMapTexture, TextureCoords);
-
+    float shadow = ShadowCalculation(FragPosLightSpace);
 
     //FINAL SUMMING
-    vec3 finalColor = finalSpecular + finalDiffuse + finalReflection;
-
+    vec3 finalColor = ambient + (1.0 - shadow) * (finalSpecular + finalDiffuse + finalReflection);
 
     FragColor = vec4(finalColor, 1.0);
 }

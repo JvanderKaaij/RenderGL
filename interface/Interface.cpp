@@ -407,15 +407,15 @@ int run() {
     backBufferObjects.push_back(floor);
 
     //Shadow Mapping Debug
-    auto* debugMesh = InitMesh("../assets/plane.obj");
-    auto* debug = InitGameObject();
-    debug->transform.position.x += 40.0f;
-    debug->transform.rotation.x += M_PI / 2.0f;
-    debug->mesh = debugMesh;
-    debug->material = renderTxt;
-    debug->material->renderedTextureID = shadowMapID;
-    debug->depthMaterial = depthMat;
-    backBufferObjects.push_back(debug);
+//    auto* debugMesh = InitMesh("../assets/plane.obj");
+//    auto* debug = InitGameObject();
+//    debug->transform.position.x += 40.0f;
+//    debug->transform.rotation.x += M_PI / 2.0f;
+//    debug->mesh = debugMesh;
+//    debug->material = renderTxt;
+//    debug->material->renderedTextureID = shadowMapID;
+//    debug->depthMaterial = depthMat;
+//    backBufferObjects.push_back(debug);
 
     onMoveCamera(glm::vec3(0., 0., -40.));
 
