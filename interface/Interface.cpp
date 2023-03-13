@@ -157,7 +157,7 @@ void InitRenderTexture(GameObject* gObj){
     gObj->material->renderedTextureID = renderedTextureID;
 }
 
-void InitDepthMap(){
+void InitShadowMapTexture(){
     glGenFramebuffers(1, &depthMapFBO);
 
     glGenTextures(1, &shadowMapID);
@@ -174,60 +174,6 @@ void InitDepthMap(){
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-}
-
-GLuint InitCubeMapTexture(){
-    GLuint cubemapTextureID;
-    glGenTextures(1, &cubemapTextureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureID);
-
-    int width, height, nrChannels;
-    unsigned char *data;
-
-    stbi_set_flip_vertically_on_load(true);
-
-// Load positive X
-    data = stbi_load("../assets/cubemap/cubemap_posx.png", &width, &height, &nrChannels, 0);
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    stbi_image_free(data);
-
-// Load negative X
-    data = stbi_load("../assets/cubemap/cubemap_negx.png", &width, &height, &nrChannels, 0);
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    stbi_image_free(data);
-
-// Load positive Y
-    data = stbi_load("../assets/cubemap/cubemap_posy.png", &width, &height, &nrChannels, 0);
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    stbi_image_free(data);
-
-// Load negative Y
-    data = stbi_load("../assets/cubemap/cubemap_negy.png", &width, &height, &nrChannels, 0);
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    stbi_image_free(data);
-
-// Load positive Z
-    data = stbi_load("../assets/cubemap/cubemap_posz.png", &width, &height, &nrChannels, 0);
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    stbi_image_free(data);
-
-// Load negative Z
-    data = stbi_load("../assets/cubemap/cubemap_negz.png", &width, &height, &nrChannels, 0);
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    stbi_image_free(data);
-
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-
-    stbi_set_flip_vertically_on_load(false);
-
-    std::cout << "Cubemap Texture ID: " << cubemapTextureID << std::endl;
-
-    return cubemapTextureID;
 }
 
 Material* InitProgramAsStandard(std::string vertex_path, std::string fragment_path){
@@ -361,11 +307,11 @@ int run() {
 
     glEnable(GL_DEPTH_TEST);
 
-    GLuint cubemapTextureID = InitCubeMapTexture();
+    auto* skyboxTexture = MaterialInterface::LoadCubeMapTexture("../assets/cubemap/cubemap");
 
     //Depth Material for Shadow Mapping
     auto* depthMat = InitProgramAsDepth("../shaders/depthShader.vert", "../shaders/depthShader.frag");
-    InitDepthMap();
+    InitShadowMapTexture();
 
     //Standard Lit Material
     auto* woodTexture = InitStandardTextureByPath("../assets/wood.jpg");
@@ -373,7 +319,7 @@ int run() {
     auto* standardMat = InitProgramAsStandard("../shaders/lit.vert", "../shaders/lit.frag");
     standardMat->diffuseID = woodTexture->textureID;
     standardMat->specularID = cobbleSpecTexture->textureID;
-    standardMat->cubemapID = cubemapTextureID;
+    standardMat->cubemapID = skyboxTexture->textureID;
     standardMat->diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
     //Render Texture Material
@@ -381,7 +327,7 @@ int run() {
 
     //Skybox Material
     auto* skyboxMat = InitProgramAsSkybox("../shaders/skybox.vert", "../shaders/skybox.frag");
-    skyboxMat->cubemapID = cubemapTextureID;
+    skyboxMat->cubemapID = skyboxTexture->textureID;
 
     //Teapot Game Object
     auto* teapotMesh = InitMesh("../assets/teapot.obj");
@@ -419,7 +365,7 @@ int run() {
     debug->depthMaterial = depthMat;
     backBufferObjects.push_back(debug);
 
-    onMoveCamera(glm::vec3(0., 0., -40.));
+    onMoveCamera(glm::vec3(0., -2., -60.));
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

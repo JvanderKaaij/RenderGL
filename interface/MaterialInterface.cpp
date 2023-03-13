@@ -30,24 +30,6 @@ Shaders MaterialInterface::CompileShaders(std::string vertex_path, std::string f
     return shaders;
 }
 
-Texture MaterialInterface::LoadTexture(aiTextureType type, aiMaterial* material){
-    Texture texture;
-    aiString texture_path;
-
-    if (material->GetTexture(type, 0, &texture_path) == AI_SUCCESS)
-    {
-        int width, height, nrChannels;
-        std::string image_path = texture_path.data;
-        std::string full_path = "../assets/" + image_path;
-        std::cout << "Trying to load texture: " << full_path << std::endl;
-        unsigned char* imgData = stbi_load(full_path.c_str(), &width, &height, &nrChannels, 0);
-        texture.data = imgData;
-        texture.width = width;
-        texture.height = height;
-    }
-    return texture;
-}
-
 Texture* MaterialInterface::LoadTexture(std::string full_path){
     auto* texture = new Texture();
     std::cout << "Trying to load texture: " << full_path << std::endl;
@@ -56,5 +38,58 @@ Texture* MaterialInterface::LoadTexture(std::string full_path){
     texture->data = imgData;
     texture->width = width;
     texture->height = height;
+    return texture;
+}
+
+Texture* MaterialInterface::LoadCubeMapTexture(std::string path) {
+    auto* texture = new Texture();
+
+    glGenTextures(1, &texture->textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, texture->textureID);
+
+    int width, height, nrChannels;
+    unsigned char *data;
+
+    stbi_set_flip_vertically_on_load(true);
+
+// Load positive X
+    data = stbi_load((path+"_posx.png").c_str(), &width, &height, &nrChannels, 0);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+// Load negative X
+    data = stbi_load((path+"_negx.png").c_str(), &width, &height, &nrChannels, 0);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+// Load positive Y
+    data = stbi_load((path+"_posy.png").c_str(), &width, &height, &nrChannels, 0);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+// Load negative Y
+    data = stbi_load((path+"_negy.png").c_str(), &width, &height, &nrChannels, 0);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+// Load positive Z
+    data = stbi_load((path+"_posz.png").c_str(), &width, &height, &nrChannels, 0);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+// Load negative Z
+    data = stbi_load((path+"_negz.png").c_str(), &width, &height, &nrChannels, 0);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    stbi_set_flip_vertically_on_load(false);
+
+    std::cout << "Cubemap Texture ID: " << texture->textureID << std::endl;
     return texture;
 }
