@@ -17,6 +17,8 @@ void Mesh::InitBuffers(){
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
     std::cout << "Index of Vertex Buffer" << this->vertexBuffer << std::endl;
+    std::cout << "Size of Array Buffer: " << this->Vertices.size() * sizeof(float) << std::endl;
+
     glBufferData(GL_ARRAY_BUFFER, this->Vertices.size() * sizeof(float), this->Vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, this->normalBuffer);

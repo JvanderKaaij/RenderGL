@@ -19,6 +19,7 @@ Mesh* MeshParser::Process(const char* path, Mesh* parsedMesh) {
         parsedMesh->Vertices.push_back(mesh->mVertices[j].x);
         parsedMesh->Vertices.push_back(mesh->mVertices[j].y);
         parsedMesh->Vertices.push_back(mesh->mVertices[j].z);
+
         if(mesh->mNormals) {
             parsedMesh->Normals.push_back(mesh->mNormals[j].x);
             parsedMesh->Normals.push_back(mesh->mNormals[j].y);
@@ -28,13 +29,16 @@ Mesh* MeshParser::Process(const char* path, Mesh* parsedMesh) {
             parsedMesh->TextureCoords.push_back(mesh->mTextureCoords[0][j].x);
             parsedMesh->TextureCoords.push_back(mesh->mTextureCoords[0][j].y);
         }
-        for(unsigned int k = 0; k < mesh->mNumFaces; k++) {
-            const aiFace& face = mesh->mFaces[k];
-            for(unsigned int l = 0; l < face.mNumIndices; l++) {
-                parsedMesh->Indices.push_back(face.mIndices[l]);
-            }
+    }
+
+    for(unsigned int k = 0; k < mesh->mNumFaces; k++) {
+        const aiFace& face = mesh->mFaces[k];
+        for(unsigned int l = 0; l < face.mNumIndices; l++) {
+            parsedMesh->Indices.push_back(face.mIndices[l]);
         }
     }
+
+    std::cout << "Number of Elements in Vertex Array: " << parsedMesh->Indices.size() << std::endl;
 
     //What if there are more materials?
     parsedMesh->meshMaterialData = scene->mMaterials[mesh->mMaterialIndex];

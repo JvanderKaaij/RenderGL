@@ -32,9 +32,9 @@ unsigned int depthMapFBO;
 unsigned int shadowMapID;
 
 
-std::vector<GameObject*> frameBufferObjects;
-std::vector<GameObject*> backBufferObjects;
-std::vector<GameObject*> skyboxBufferObjects;
+std::vector<GameObject*> frameBufferObjects = std::vector<GameObject*>();
+std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
+std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
 
 void onMoveCamera(glm::vec3 translation){
     Scene::CameraTransform.position += translation;
@@ -274,6 +274,8 @@ void drawBackBuffer(){
 
         GameObject* gObj = backBufferObjects[i];
         gObj->Draw();
+
+        std::cout << "Indices Count: " << gObj->mesh->Indices.size() << std::endl;
 
         glBindVertexArray(gObj->mesh->vaoID);
         glDrawElementsInstanced(GL_TRIANGLES, gObj->mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
