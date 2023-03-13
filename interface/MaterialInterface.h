@@ -15,6 +15,7 @@ public:
     static Shaders CompileShaders(std::string vertex_path, std::string fragment_path);
     static Texture* LoadTexture(std::string full_path);
     static Texture* LoadCubeMapTexture(std::string path);
+    static Texture* LoadShadowMapTexture();
 };
 
 #endif

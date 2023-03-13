@@ -80,12 +80,9 @@ glm::mat4 GetProjection(){
 }
 
 glm::mat4 GetCameraProjection(Transform cameraTransform){
-
     glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), cameraTransform.position);
-
     glm::mat4 ViewRotate = glm::rotate(ViewTranslate, cameraTransform.rotation.x, glm::vec3(0.0f, 1.0f, 0.0f));
     ViewRotate = glm::rotate(ViewRotate, cameraTransform.rotation.y, glm::vec3(1.0f, 0.0f, 0.0f));
-
     return ViewRotate;
 }
 
@@ -100,24 +97,6 @@ GameObject* InitGameObject(){
     auto* go = new GameObject();
 //    go->transform.position = glm::linearRand(glm::vec3(-50), glm::vec3(50));
     return go;
-}
-
-Texture* InitStandardTextureByPath(std::string full_path){
-    Texture* texture = MaterialInterface::LoadTexture(full_path);
-
-    glGenTextures(1, &texture->textureID);
-    glBindTexture(GL_TEXTURE_2D, texture->textureID); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture->width, texture->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture->data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);//generate bilinear filtering
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//What to do with outside coordinates
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    stbi_image_free(texture->data);
-
-    return texture;
 }
 
 void InitRenderTexture(GameObject* gObj){
@@ -314,8 +293,8 @@ int run() {
     InitShadowMapTexture();
 
     //Standard Lit Material
-    auto* woodTexture = InitStandardTextureByPath("../assets/wood.jpg");
-    auto* cobbleSpecTexture = InitStandardTextureByPath("../assets/cobble-specular.png");
+    auto* woodTexture =  MaterialInterface::LoadTexture("../assets/wood.jpg");
+    auto* cobbleSpecTexture = MaterialInterface::LoadTexture("../assets/cobble-specular.png");
     auto* standardMat = InitProgramAsStandard("../shaders/lit.vert", "../shaders/lit.frag");
     standardMat->diffuseID = woodTexture->textureID;
     standardMat->specularID = cobbleSpecTexture->textureID;
