@@ -61,8 +61,8 @@ public:
         glUniform3fv(diffuse_color_location, 1, glm::value_ptr(this->diffuseColor));
 
 
-        GLuint lightSpaceMatrixLocation = glGetUniformLocation(this->programID, "lightSpaceMatrix");
-        glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, glm::value_ptr(Scene::LightSpaceMatrix));
+        GLuint lightSpaceMatrixLocation = glGetUniformLocation(this->programID, "lightProjectionMatrix");
+        glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, glm::value_ptr(Scene::LightProjectionMatrix));
 
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, this->shadowMapID);

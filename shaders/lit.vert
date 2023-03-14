@@ -9,7 +9,7 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform float timer;
 uniform vec3 directionalLight;
-uniform mat4 lightSpaceMatrix;
+uniform mat4 lightProjectionMatrix;
 
 out vec3 WorldNormal;
 out vec3 LocalNormal;
@@ -26,7 +26,7 @@ void main(){
     DirectionalLight = normalize(-directionalLight);
     TextureCoords = aTextureCoords;
 
-    FragPosLightSpace = lightSpaceMatrix * vec4(Position, 1.0);
+    FragPosLightSpace = lightProjectionMatrix * vec4(Position, 1.0);
 
     gl_Position = projection * view * vec4(Position, 1.0);
 }

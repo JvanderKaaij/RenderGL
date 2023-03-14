@@ -19,7 +19,7 @@ uniform vec3 diffuseColor;
 layout(binding = 0) uniform sampler2D diffuseTexture;
 layout(binding = 1) uniform sampler2D specularTexture;
 layout(binding = 2) uniform samplerCube skyboxTexture;
-layout(binding = 3) uniform sampler2D shadowMapTexture;
+layout(binding = 3) uniform sampler2DShadow shadowMapTexture;
 out vec4 FragColor;
 
 float reflectionFactor = 0.2;
@@ -33,14 +33,16 @@ vec3 specularColor = vec3(1.);
 
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
+    vec4 color = vec4(1.0, 0.0, 0.0, 1.0);
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-    projCoords = projCoords * 0.5 + 0.5;
-    float closestDepth  = texture(shadowMapTexture, projCoords.xy).r;
+    projCoords = projCoords * 0.5 + 0.5; //should happen in the vertex shader
+
+    float closestDepth = texture(shadowMapTexture, projCoords.xyz).r;
     float currentDepth = projCoords.z;
 
     float bias = max(0.05 * (1.0 - dot(LocalNormal, DirectionalLight * 4.0)), 0.005);
     //float bias = 0.01;
-    float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
     return shadow;
 }
 

@@ -21,4 +21,4 @@ glm::mat4 Scene::LightView = glm::lookAt((glm::vec3(-Scene::directional_light.di
                                   glm::vec3( 0.0f, 1.0f,  0.0f));
 
 
-glm::mat4 Scene::LightSpaceMatrix = LightProjection * LightView;
+glm::mat4 Scene::LightProjectionMatrix = LightProjection * LightView;
