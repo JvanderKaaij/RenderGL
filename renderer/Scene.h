@@ -14,6 +14,8 @@ public:
     static glm::mat4 ProjectionMatrix;
     static Transform CameraTransform;
     static glm::mat4 LightProjectionMatrix;
+    static const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+
 private:
     static glm::mat4 LightProjection;
     static glm::mat4 LightView;

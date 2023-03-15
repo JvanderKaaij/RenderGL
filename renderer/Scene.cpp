@@ -4,7 +4,7 @@
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
-DirectionalLight Scene::directional_light = DirectionalLight{glm::vec3(1,-1,0),1.0f};
+DirectionalLight Scene::directional_light = DirectionalLight();
 glm::mat4 Scene::ViewMatrix = glm::mat4(1.0f);
 glm::mat4 Scene::ProjectionMatrix = glm::mat4(1.0f);
 

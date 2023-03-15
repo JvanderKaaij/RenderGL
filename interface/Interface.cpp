@@ -27,11 +27,6 @@ bool lMouseBtnCntrl = false;
 double xMousePos = 0;
 double yMousePos = 0;
 
-const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-unsigned int depthMapFBO;
-unsigned int shadowMapID;
-
-
 std::vector<GameObject*> frameBufferObjects = std::vector<GameObject*>();
 std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
 std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
@@ -137,11 +132,11 @@ void InitRenderTexture(GameObject* gObj){
 }
 
 void InitShadowMapTexture(){
-    glGenFramebuffers(1, &depthMapFBO);
+    glGenFramebuffers(1, &Scene::directional_light.depthMapFBO);
 
-    glGenTextures(1, &shadowMapID);
-    glBindTexture(GL_TEXTURE_2D, shadowMapID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glGenTextures(1, &Scene::directional_light.shadowMapID);
+    glBindTexture(GL_TEXTURE_2D, Scene::directional_light.shadowMapID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Scene::SHADOW_WIDTH, Scene::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
     //Enable Bilinear filtering for shadow map should be done only when enabling these parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
@@ -150,12 +145,11 @@ void InitShadowMapTexture(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowMapID, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Scene::directional_light.depthMapFBO);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, Scene::directional_light.shadowMapID, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 }
 
 Material* InitProgramAsStandard(std::string vertex_path, std::string fragment_path){
@@ -209,8 +203,8 @@ void drawBackBuffer(){
 }
 
 void drawShadowBuffer(){
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+    glBindFramebuffer(GL_FRAMEBUFFER, Scene::Scene::directional_light.depthMapFBO);
+    glViewport(0, 0, Scene::SHADOW_WIDTH, Scene::SHADOW_HEIGHT);
     glClear(GL_DEPTH_BUFFER_BIT);
 
     for(unsigned int i = 0; i < backBufferObjects.size(); i++){
@@ -315,7 +309,7 @@ int run() {
     teapot->mesh = teapotMesh;
     teapot->material = standardMat;
     teapot->depthMaterial = depthMat;//this is the material used in the shadow depth pass
-    teapot->material->shadowMapID = shadowMapID;
+    teapot->material->shadowMapID = Scene::directional_light.shadowMapID;
     backBufferObjects.push_back(teapot);
 
     //Skybox Game Object
@@ -331,7 +325,7 @@ int run() {
     floor->mesh = planeMesh;
     floor->material = standardMat;
     floor->depthMaterial = depthMat;//this is the material used in the shadow depth pass
-    floor->material->shadowMapID = shadowMapID;
+    floor->material->shadowMapID = Scene::directional_light.shadowMapID;
     backBufferObjects.push_back(floor);
 
     //Shadow Mapping Debug
@@ -341,7 +335,7 @@ int run() {
     debug->transform.rotation.x += M_PI / 2.0f;
     debug->mesh = debugMesh;
     debug->material = renderTxt;
-    debug->material->renderedTextureID = shadowMapID;
+    debug->material->renderedTextureID = Scene::directional_light.shadowMapID;
     debug->depthMaterial = depthMat;
     backBufferObjects.push_back(debug);
 
