@@ -14,18 +14,19 @@
 #include "../renderer/GameObject.h"
 #include "../renderer/Materials/SkyboxMaterial.h"
 #include "../renderer/Materials/DepthMaterial.h"
+#include "../renderer/FrameBuffer.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
 int width = 640;
 int height = 480;
 
-GLuint frameBufferID;
-
 bool lMouseBtn = false;
 bool lMouseBtnCntrl = false;
 double xMousePos = 0;
 double yMousePos = 0;
+
+FrameBuffer* fb;
 
 std::vector<GameObject*> frameBufferObjects = std::vector<GameObject*>();
 std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
@@ -94,43 +95,6 @@ GameObject* InitGameObject(){
     return go;
 }
 
-void InitRenderTexture(GameObject* gObj){
-    GLuint renderedTextureID;
-
-    int textureWidth = 1024;
-    int textureHeight = 1024;
-
-    glGenFramebuffers(1, &frameBufferID);
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
-
-    glGenTextures(1, &renderedTextureID);
-    glBindTexture(GL_TEXTURE_2D, renderedTextureID);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-    GLuint depthBuffer;
-    glGenRenderbuffers(1, &depthBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, textureWidth, textureHeight);
-
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTextureID, 0);
-    GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-    glDrawBuffers(1, drawBuffers);
-
-    //Wait until done
-    bool checking = true;
-    while(checking){
-        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE){
-            checking = false;
-        }
-    }
-
-    gObj->material->renderedTextureID = renderedTextureID;
-}
-
 Material* InitProgramAsStandard(std::string vertex_path, std::string fragment_path){
     return new StandardMaterial(std::move(vertex_path), std::move(fragment_path));
 }
@@ -147,16 +111,16 @@ Material* InitProgramAsDepth(std::string vertex_path, std::string fragment_path)
     return new DepthMaterial(std::move(vertex_path), std::move(fragment_path));
 }
 
-void drawFrameBuffer(){
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
-    glViewport(0,0,1024,1024);
+void drawFrameBuffer(FrameBuffer* buffer){
+    glBindFramebuffer(GL_FRAMEBUFFER, buffer->id);
+    glViewport(0,0,buffer->texture->width,buffer->texture->width);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    unsigned int length = frameBufferObjects.size();
+    unsigned int length = backBufferObjects.size();
 
     for(unsigned int i = 0; i < length; i++){
-        GameObject* gObj = frameBufferObjects[i];
+        GameObject* gObj = backBufferObjects[i];
         gObj->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
@@ -168,8 +132,6 @@ void drawFrameBuffer(){
 void drawBackBuffer(){
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,width,height);
-//    glClearColor(.0f, .0f, .0f, 1.0f);
-//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for(unsigned int i = 0; i < backBufferObjects.size(); i++){
 
@@ -225,6 +187,7 @@ void draw(){
     drawSkyboxBuffer();
     glDepthMask(GL_TRUE);
     drawShadowBuffer();
+    drawFrameBuffer(fb);
     drawBackBuffer();
 
     /* Swap front and back buffers */
@@ -260,6 +223,8 @@ int run() {
 
     glEnable(GL_DEPTH_TEST);
 
+    fb = new FrameBuffer(1024, 1024);
+
     auto* skyboxTexture = MaterialInterface::LoadCubeMapTexture("../assets/cubemap/cubemap");
 
     //Depth Material for Shadow Mapping
@@ -277,6 +242,9 @@ int run() {
 
     //Render Texture Material
     auto* renderTxt = InitProgramAsRender("../shaders/lit.vert", "../shaders/unlit.frag");
+
+    //Render Texture Material
+    auto* renderTxtTwo = InitProgramAsRender("../shaders/lit.vert", "../shaders/unlit.frag");
 
     //Skybox Material
     auto* skyboxMat = InitProgramAsSkybox("../shaders/skybox.vert", "../shaders/skybox.frag");
@@ -317,6 +285,17 @@ int run() {
     debug->material->renderedTextureID = Scene::directional_light.shadowMapID;
     debug->depthMaterial = depthMat;
     backBufferObjects.push_back(debug);
+
+//    //Render Texture Debug
+    auto* renderTextureMesh = InitMesh("../assets/plane.obj");
+    auto* renderTextureObj = InitGameObject();
+    renderTextureObj->transform.position.x += 80.0f;
+    renderTextureObj->transform.rotation.x += M_PI / 2.0f;
+    renderTextureObj->mesh = renderTextureMesh;
+    renderTextureObj->material = renderTxtTwo;
+    renderTextureObj->material->renderedTextureID = fb->texture->textureID;
+    renderTextureObj->depthMaterial = depthMat;
+    backBufferObjects.push_back(renderTextureObj);
 
     onMoveCamera(glm::vec3(0., -2., -60.));
 

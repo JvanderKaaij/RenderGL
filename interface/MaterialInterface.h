@@ -16,6 +16,7 @@ public:
     static Texture* LoadTexture(std::string full_path);
     static Texture* LoadCubeMapTexture(std::string path);
     static void LoadShadowMapTexture();
+    static void LoadRenderTexture();
 };
 
 #endif
