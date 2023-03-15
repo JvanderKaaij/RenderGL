@@ -1,6 +1,7 @@
 
 #include <vector>
 #include "MaterialInterface.h"
+#include "../renderer/Scene.h"
 
 
 Shaders MaterialInterface::CompileShaders(std::string vertex_path, std::string fragment_path) {
@@ -105,4 +106,25 @@ Texture* MaterialInterface::LoadCubeMapTexture(std::string path) {
 
     std::cout << "Cubemap Texture ID: " << texture->textureID << std::endl;
     return texture;
+}
+
+void MaterialInterface::LoadShadowMapTexture() {
+    glGenFramebuffers(1, &Scene::directional_light.depthMapFBO);
+
+    glGenTextures(1, &Scene::directional_light.shadowMapID);
+    glBindTexture(GL_TEXTURE_2D, Scene::directional_light.shadowMapID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Scene::SHADOW_WIDTH, Scene::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+    //Enable Bilinear filtering for shadow map should be done only when enabling these parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, Scene::directional_light.depthMapFBO);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, Scene::directional_light.shadowMapID, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

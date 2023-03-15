@@ -131,27 +131,6 @@ void InitRenderTexture(GameObject* gObj){
     gObj->material->renderedTextureID = renderedTextureID;
 }
 
-void InitShadowMapTexture(){
-    glGenFramebuffers(1, &Scene::directional_light.depthMapFBO);
-
-    glGenTextures(1, &Scene::directional_light.shadowMapID);
-    glBindTexture(GL_TEXTURE_2D, Scene::directional_light.shadowMapID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Scene::SHADOW_WIDTH, Scene::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-
-    //Enable Bilinear filtering for shadow map should be done only when enabling these parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, Scene::directional_light.depthMapFBO);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, Scene::directional_light.shadowMapID, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
 Material* InitProgramAsStandard(std::string vertex_path, std::string fragment_path){
     return new StandardMaterial(std::move(vertex_path), std::move(fragment_path));
 }
@@ -285,7 +264,7 @@ int run() {
 
     //Depth Material for Shadow Mapping
     auto* depthMat = InitProgramAsDepth("../shaders/depthShader.vert", "../shaders/depthShader.frag");
-    InitShadowMapTexture();
+    MaterialInterface::LoadShadowMapTexture();
 
     //Standard Lit Material
     auto* woodTexture =  MaterialInterface::LoadTexture("../assets/wood.jpg");
