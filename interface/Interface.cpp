@@ -2,7 +2,6 @@
 #include <iostream>
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
-#include <glm/gtc/matrix_transform.hpp>
 #include <utility>
 #include "MeshParser.h"
 #include "InputInterface.h"
@@ -28,7 +27,6 @@ double yMousePos = 0;
 
 FrameBuffer* fb;
 
-std::vector<GameObject*> frameBufferObjects = std::vector<GameObject*>();
 std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
 std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
 
@@ -174,11 +172,6 @@ void draw(){
     Scene::ProjectionMatrix = GetProjection();
     Scene::ViewMatrix = GetCameraProjection(Scene::CameraTransform);
 
-//    backBufferObjects[0]->transform.position -= glm::vec3(0.0f, 0.1f, 0.0f);
-//    backBufferObjects[0]->transform.scale -= glm::vec3(0.001f, 0.001f, 0.001f);
-//    backBufferObjects[0]->transform.rotation -= glm::vec3(0.0f, 0.1f, 0.0f);
-
-//    drawFrameBuffer();
     glClearColor(.0f, .0f, .0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -286,7 +279,7 @@ int run() {
     debug->depthMaterial = depthMat;
     backBufferObjects.push_back(debug);
 
-//    //Render Texture Debug
+    //Render Texture Debug
     auto* renderTextureMesh = InitMesh("../assets/plane.obj");
     auto* renderTextureObj = InitGameObject();
     renderTextureObj->transform.position.x += 80.0f;

@@ -27,12 +27,4 @@ FrameBuffer::FrameBuffer(int width, int height) {
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture->textureID, 0);
     GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
     glDrawBuffers(1, drawBuffers);
-
-    bool checking = true;
-    while(checking){
-        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE){
-            checking = false;
-        }
-    }
-
 }
