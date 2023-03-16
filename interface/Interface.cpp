@@ -101,10 +101,7 @@ void drawFrameBuffer(FrameBuffer* buffer){
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    unsigned int length = backBufferObjects.size();
-
-    for(unsigned int i = 0; i < length; i++){
-        GameObject* gObj = backBufferObjects[i];
+    for(auto gObj : backBufferObjects){
         gObj->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
@@ -117,9 +114,8 @@ void drawBackBuffer(){
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,width,height);
 
-    for(unsigned int i = 0; i < backBufferObjects.size(); i++){
+    for(auto gObj : backBufferObjects){
 
-        GameObject* gObj = backBufferObjects[i];
         gObj->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
@@ -132,9 +128,8 @@ void drawShadowBuffer(){
     glViewport(0, 0, directional_light_shadow_map->texture->width, directional_light_shadow_map->texture->width);
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    for(unsigned int i = 0; i < backBufferObjects.size(); i++){
+    for(auto gObj : backBufferObjects){
 
-        GameObject* gObj = backBufferObjects[i];
         gObj->DrawDepth();
 
         glBindVertexArray(gObj->mesh->vaoID);
@@ -144,9 +139,8 @@ void drawShadowBuffer(){
 }
 
 void drawSkyboxBuffer(){
-    for(unsigned int i = 0; i < skyboxBufferObjects.size(); i++){
+    for(auto gObj : skyboxBufferObjects){
 
-        GameObject* gObj = skyboxBufferObjects[i];
         gObj->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
