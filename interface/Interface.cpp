@@ -102,6 +102,7 @@ void drawFrameBuffer(FrameBuffer* buffer){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for(auto gObj : backBufferObjects){
+
         gObj->Draw();
 
         glBindVertexArray(gObj->mesh->vaoID);
@@ -195,8 +196,6 @@ int run() {
 
     glEnable(GL_DEPTH_TEST);
 
-    fb = new FrameBuffer(1024, 1024);
-
     auto* skyboxTexture = MaterialInterface::LoadCubeMapTexture("../assets/cubemap/cubemap");
 
     //Depth Material for Shadow Mapping
@@ -212,12 +211,6 @@ int run() {
     standardMat->specularID = cobbleSpecTexture->textureID;
     standardMat->cubemapID = skyboxTexture->textureID;
     standardMat->diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
-
-    //Render Texture Material
-    auto* renderTxt = new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
-
-    //Render Texture Material
-    auto* renderTxtTwo =  new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
 
     //Skybox Material
     auto* skyboxMat = new SkyboxMaterial("../shaders/skybox.vert", "../shaders/skybox.frag");
@@ -249,23 +242,29 @@ int run() {
     backBufferObjects.push_back(floor);
 
     //Shadow Mapping Debug
+    auto* shadowMapTextureMat = new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
+
     auto* debugMesh = InitMesh("../assets/plane.obj");
     auto* debug = InitGameObject();
     debug->transform.position.x += 40.0f;
     debug->transform.rotation.x += M_PI / 2.0f;
     debug->mesh = debugMesh;
-    debug->material = renderTxt;
+    debug->material = shadowMapTextureMat;
     debug->material->renderedTextureID = directional_light_shadow_map->texture->textureID;
     debug->depthMaterial = depthMat;
     backBufferObjects.push_back(debug);
 
-    //Render Texture Debug
+    //Render Texture Material
+    fb = new FrameBuffer(1024, 1024);
+
+    auto* renderTextureMat =  new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
+
     auto* renderTextureMesh = InitMesh("../assets/plane.obj");
     auto* renderTextureObj = InitGameObject();
     renderTextureObj->transform.position.x += 80.0f;
     renderTextureObj->transform.rotation.x += M_PI / 2.0f;
     renderTextureObj->mesh = renderTextureMesh;
-    renderTextureObj->material = renderTxtTwo;
+    renderTextureObj->material = renderTextureMat;
     renderTextureObj->material->renderedTextureID = fb->texture->textureID;
     renderTextureObj->depthMaterial = depthMat;
     backBufferObjects.push_back(renderTextureObj);

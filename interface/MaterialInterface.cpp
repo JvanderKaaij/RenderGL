@@ -1,7 +1,6 @@
 
 #include <vector>
 #include "MaterialInterface.h"
-#include "../renderer/Scene.h"
 
 
 Shaders MaterialInterface::CompileShaders(std::string vertex_path, std::string fragment_path) {
