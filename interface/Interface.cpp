@@ -95,22 +95,6 @@ GameObject* InitGameObject(){
     return go;
 }
 
-Material* InitProgramAsStandard(std::string vertex_path, std::string fragment_path){
-    return new StandardMaterial(std::move(vertex_path), std::move(fragment_path));
-}
-
-Material* InitProgramAsRender(std::string vertex_path, std::string fragment_path){
-    return new RenderMaterial(std::move(vertex_path), std::move(fragment_path));
-}
-
-Material* InitProgramAsSkybox(std::string vertex_path, std::string fragment_path){
-    return new SkyboxMaterial(std::move(vertex_path), std::move(fragment_path));
-}
-
-Material* InitProgramAsDepth(std::string vertex_path, std::string fragment_path){
-    return new DepthMaterial(std::move(vertex_path), std::move(fragment_path));
-}
-
 void drawFrameBuffer(FrameBuffer* buffer){
     glBindFramebuffer(GL_FRAMEBUFFER, buffer->id);
     glViewport(0,0,buffer->texture->width,buffer->texture->width);
@@ -222,27 +206,27 @@ int run() {
     auto* skyboxTexture = MaterialInterface::LoadCubeMapTexture("../assets/cubemap/cubemap");
 
     //Depth Material for Shadow Mapping
-    auto* depthMat = InitProgramAsDepth("../shaders/depthShader.vert", "../shaders/depthShader.frag");
+    auto* depthMat = new DepthMaterial("../shaders/depthShader.vert", "../shaders/depthShader.frag");
 
     directional_light_shadow_map = new DepthFrameBuffer(1024, 1024);
 
     //Standard Lit Material
     auto* woodTexture =  MaterialInterface::LoadTexture("../assets/wood.jpg");
     auto* cobbleSpecTexture = MaterialInterface::LoadTexture("../assets/cobble-specular.png");
-    auto* standardMat = InitProgramAsStandard("../shaders/lit.vert", "../shaders/lit.frag");
+    auto* standardMat = new StandardMaterial("../shaders/lit.vert", "../shaders/lit.frag");
     standardMat->diffuseID = woodTexture->textureID;
     standardMat->specularID = cobbleSpecTexture->textureID;
     standardMat->cubemapID = skyboxTexture->textureID;
     standardMat->diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
     //Render Texture Material
-    auto* renderTxt = InitProgramAsRender("../shaders/lit.vert", "../shaders/unlit.frag");
+    auto* renderTxt = new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
 
     //Render Texture Material
-    auto* renderTxtTwo = InitProgramAsRender("../shaders/lit.vert", "../shaders/unlit.frag");
+    auto* renderTxtTwo =  new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
 
     //Skybox Material
-    auto* skyboxMat = InitProgramAsSkybox("../shaders/skybox.vert", "../shaders/skybox.frag");
+    auto* skyboxMat = new SkyboxMaterial("../shaders/skybox.vert", "../shaders/skybox.frag");
     skyboxMat->cubemapID = skyboxTexture->textureID;
 
     //Teapot Game Object
