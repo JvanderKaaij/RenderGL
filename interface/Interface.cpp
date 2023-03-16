@@ -14,6 +14,7 @@
 #include "../renderer/Materials/SkyboxMaterial.h"
 #include "../renderer/Materials/DepthMaterial.h"
 #include "../renderer/FrameBuffer.h"
+#include "../renderer/DepthFrameBuffer.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -26,6 +27,7 @@ double xMousePos = 0;
 double yMousePos = 0;
 
 FrameBuffer* fb;
+DepthFrameBuffer* directional_light_shadow_map;
 
 std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
 std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
@@ -142,8 +144,8 @@ void drawBackBuffer(){
 }
 
 void drawShadowBuffer(){
-    glBindFramebuffer(GL_FRAMEBUFFER, Scene::Scene::directional_light.depthMapFBO);
-    glViewport(0, 0, Scene::SHADOW_WIDTH, Scene::SHADOW_HEIGHT);
+    glBindFramebuffer(GL_FRAMEBUFFER, directional_light_shadow_map->id);
+    glViewport(0, 0, directional_light_shadow_map->texture->width, directional_light_shadow_map->texture->width);
     glClear(GL_DEPTH_BUFFER_BIT);
 
     for(unsigned int i = 0; i < backBufferObjects.size(); i++){
@@ -175,7 +177,6 @@ void draw(){
     glClearColor(.0f, .0f, .0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //Not the most optimal way but good for now
     glDepthMask(GL_FALSE);
     drawSkyboxBuffer();
     glDepthMask(GL_TRUE);
@@ -222,7 +223,8 @@ int run() {
 
     //Depth Material for Shadow Mapping
     auto* depthMat = InitProgramAsDepth("../shaders/depthShader.vert", "../shaders/depthShader.frag");
-    MaterialInterface::LoadShadowMapTexture();
+
+    directional_light_shadow_map = new DepthFrameBuffer(1024, 1024);
 
     //Standard Lit Material
     auto* woodTexture =  MaterialInterface::LoadTexture("../assets/wood.jpg");
@@ -249,7 +251,7 @@ int run() {
     teapot->mesh = teapotMesh;
     teapot->material = standardMat;
     teapot->depthMaterial = depthMat;//this is the material used in the shadow depth pass
-    teapot->material->shadowMapID = Scene::directional_light.shadowMapID;
+    teapot->material->shadowMapID = directional_light_shadow_map->texture->textureID;
     backBufferObjects.push_back(teapot);
 
     //Skybox Game Object
@@ -265,7 +267,7 @@ int run() {
     floor->mesh = planeMesh;
     floor->material = standardMat;
     floor->depthMaterial = depthMat;//this is the material used in the shadow depth pass
-    floor->material->shadowMapID = Scene::directional_light.shadowMapID;
+    floor->material->shadowMapID = directional_light_shadow_map->texture->textureID;
     backBufferObjects.push_back(floor);
 
     //Shadow Mapping Debug
@@ -275,7 +277,7 @@ int run() {
     debug->transform.rotation.x += M_PI / 2.0f;
     debug->mesh = debugMesh;
     debug->material = renderTxt;
-    debug->material->renderedTextureID = Scene::directional_light.shadowMapID;
+    debug->material->renderedTextureID = directional_light_shadow_map->texture->textureID;
     debug->depthMaterial = depthMat;
     backBufferObjects.push_back(debug);
 

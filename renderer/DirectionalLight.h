@@ -7,8 +7,6 @@
 
 struct DirectionalLight {
     glm::vec3 direction = glm::vec3(1,-1,0);
-    unsigned int depthMapFBO;
-    unsigned int shadowMapID;
     float intensity = 1.0f;
 };
 
