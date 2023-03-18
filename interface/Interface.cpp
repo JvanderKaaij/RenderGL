@@ -21,8 +21,8 @@
 
 GLFWwindow* window;
 static bool throw_exit = false;
-int width = 640;
-int height = 480;
+int width = 1024;
+int height = 768;
 
 bool lMouseBtn = false;
 bool lMouseBtnCntrl = false;
@@ -152,9 +152,26 @@ void drawSkyboxBuffer(){
     }
 }
 
+
+
 void draw(){
     Scene::ProjectionMatrix = GetProjection();
     Scene::ViewMatrix = GetCameraProjection(Scene::CameraTransform);
+
+    glfwPollEvents();
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+    ImGui::Begin("Hello, teapot!");
+    ImGui::Text("Hello, world!");
+    if(ImGui::Button("Button")){
+        std::cout << "Miaf!";
+    }
+    ImGui::End();
+
+    // Render the ImGui elements to the screen
+    ImGui::Render();
 
     glClearColor(.0f, .0f, .0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -166,23 +183,22 @@ void draw(){
     drawFrameBuffer(fb);
     drawBackBuffer();
 
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-    ImGui::Text("Hello, world!");
-
-    // Render the ImGui elements to the screen
-    ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
 
     //handle interface events
-    glfwPollEvents();
+}
+
+static void glfw_error_callback(int error, const char* description)
+{
+    fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
 int run() {
+    glfwSetErrorCallback(glfw_error_callback);
+
     if (!glfwInit())
         return -1;
 
@@ -196,12 +212,16 @@ int run() {
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+    glfwSwapInterval(1); // Enable vsync
 
+    IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImGuiIO io = ImGui::GetIO(); (void)io;
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330");
+    ImGui_ImplOpenGL3_Init("#version 450");
     ImGui::StyleColorsDark();
+
 
     //Needs to go after makeContextCurrent
     if(!gladLoadGL()){
@@ -300,6 +320,10 @@ int run() {
 
         draw();
     }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     glfwTerminate();
     return 0;
