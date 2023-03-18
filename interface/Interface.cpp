@@ -15,6 +15,9 @@
 #include "../renderer/Materials/DepthMaterial.h"
 #include "../renderer/FrameBuffer.h"
 #include "../renderer/DepthFrameBuffer.h"
+#include "imgui.h"
+#include "../libraries/imgui/backends/imgui_impl_glfw.h"
+#include "../libraries/imgui/backends/imgui_impl_opengl3.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -163,6 +166,15 @@ void draw(){
     drawFrameBuffer(fb);
     drawBackBuffer();
 
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+    ImGui::Text("Hello, world!");
+
+    // Render the ImGui elements to the screen
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
 
@@ -184,6 +196,12 @@ int run() {
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+
+    ImGui::CreateContext();
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+    ImGui::StyleColorsDark();
 
     //Needs to go after makeContextCurrent
     if(!gladLoadGL()){
