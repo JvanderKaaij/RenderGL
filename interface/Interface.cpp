@@ -18,6 +18,7 @@
 #include "imgui.h"
 #include "../libraries/imgui/backends/imgui_impl_glfw.h"
 #include "../libraries/imgui/backends/imgui_impl_opengl3.h"
+#include "../renderer/LightUniformBlock.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -31,6 +32,8 @@ double yMousePos = 0;
 
 FrameBuffer* fb;
 DepthFrameBuffer* directional_light_shadow_map;
+
+GLuint light_ubo;
 
 std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
 std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
@@ -98,6 +101,16 @@ GameObject* InitGameObject(){
     return go;
 }
 
+void InitLightUniformBlock(){
+    glGenBuffers(1, &light_ubo);
+    glBindBuffer(GL_UNIFORM_BUFFER, light_ubo);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(LightUniformBlock), NULL, GL_DYNAMIC_DRAW);
+
+    Scene::LightBlock.lightColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    glBindBuffer(GL_UNIFORM_BUFFER, light_ubo);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightUniformBlock), &Scene::LightBlock);
+}
+
 void drawFrameBuffer(FrameBuffer* buffer){
     glBindFramebuffer(GL_FRAMEBUFFER, buffer->id);
     glViewport(0,0,buffer->texture->width,buffer->texture->width);
@@ -152,11 +165,12 @@ void drawSkyboxBuffer(){
     }
 }
 
-
-
 void draw(){
     Scene::ProjectionMatrix = GetProjection();
     Scene::ViewMatrix = GetCameraProjection(Scene::CameraTransform);
+
+    Scene::LightBlock.lightColor = glm::vec4(1.0, 0.0, 0.0, 0.0);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightUniformBlock), &Scene::LightBlock);
 
     glfwPollEvents();
 
@@ -234,6 +248,8 @@ int run() {
 
     glEnable(GL_DEPTH_TEST);
 
+    InitLightUniformBlock();
+
     auto* skyboxTexture = MaterialInterface::LoadCubeMapTexture("../assets/cubemap/cubemap");
 
     //Depth Material for Shadow Mapping
@@ -249,6 +265,7 @@ int run() {
     standardMat->specularID = cobbleSpecTexture->textureID;
     standardMat->cubemapID = skyboxTexture->textureID;
     standardMat->diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    standardMat->lightBlockUBO = light_ubo;
 
     //Skybox Material
     auto* skyboxMat = new SkyboxMaterial("../shaders/skybox.vert", "../shaders/skybox.frag");

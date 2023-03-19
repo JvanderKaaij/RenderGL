@@ -23,3 +23,5 @@ glm::mat4 Scene::GetLightProjectionMatrix() {
 
     return LightProjection * LightView;;
 }
+
+LightUniformBlock Scene::LightBlock = LightUniformBlock();

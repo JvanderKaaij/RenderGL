@@ -60,7 +60,6 @@ public:
         GLuint diffuse_color_location = glGetUniformLocation(this->programID, "diffuseColor");
         glUniform3fv(diffuse_color_location, 1, glm::value_ptr(this->diffuseColor));
 
-
         GLuint lightSpaceMatrixLocation = glGetUniformLocation(this->programID, "lightProjectionMatrix");
         glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, glm::value_ptr(Scene::GetLightProjectionMatrix()));
 
@@ -68,6 +67,10 @@ public:
         glBindTexture(GL_TEXTURE_2D, this->shadowMapID);
         GLuint shadowMapLocation = glGetUniformLocation(this->programID, "shadowMapTexture");
         glUniform1i(shadowMapLocation, 3);
+
+        GLuint uniformBlockIndex = glGetUniformBlockIndex(this->programID, "LightBlock");
+        glUniformBlockBinding(this->programID, uniformBlockIndex, 0);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->lightBlockUBO);
 
     }
 };

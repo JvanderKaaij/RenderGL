@@ -30,6 +30,9 @@ vec3 ambient = vec3(0.1);
 vec3 viewDirection = vec3(0., 0., -1.);
 vec3 specularColor = vec3(1.);
 
+layout (std140) uniform LightBlock {
+    uniform vec4 lightColor;
+};
 
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
@@ -75,5 +78,5 @@ void main()
     //FINAL SUMMING
     vec3 finalColor = ambient + (1.0 - shadow) * (finalSpecular + finalDiffuse + finalReflection);
 
-    FragColor = vec4(finalColor, 1.0);
+    FragColor = lightColor;//vec4(finalColor, 1.0);
 }
