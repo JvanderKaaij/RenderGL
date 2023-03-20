@@ -16,10 +16,12 @@ public:
 
 void GameObject::Draw(){
     this->material->Draw(this->transform);
+    this->mesh->Draw();
 }
 
 void GameObject::DrawDepth(){
     this->depthMaterial->Draw(this->transform);
+    this->mesh->Draw();
 }
 
 #endif //RENDERGL_GAMEOBJECT_H

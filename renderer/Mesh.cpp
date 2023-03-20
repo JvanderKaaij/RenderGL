@@ -2,6 +2,10 @@
 #include "Mesh.h"
 #include "../interface/MeshParser.h"
 
+void Mesh::Draw(){
+    glBindVertexArray(this->vaoID);
+    glDrawElementsInstanced(GL_TRIANGLES, this->Indices.size(), GL_UNSIGNED_INT, 0, 2);
+}
 
 void Mesh::Parse(const char* path){
     MeshParser::Process(path, this);

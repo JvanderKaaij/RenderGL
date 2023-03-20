@@ -11,6 +11,7 @@ struct aiMaterial; //I need to forward declare aiMaterial here for some reason
 class Mesh {
 public:
     void Parse(const char* path);
+    void Draw();
     void InitBuffers();
 
     std::vector<float> Vertices;

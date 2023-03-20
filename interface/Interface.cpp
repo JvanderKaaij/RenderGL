@@ -132,11 +132,7 @@ void drawBackBuffer(){
     glViewport(0,0,width,height);
 
     for(auto gObj : backBufferObjects){
-
         gObj->Draw();
-
-        glBindVertexArray(gObj->mesh->vaoID);
-        glDrawElementsInstanced(GL_TRIANGLES, gObj->mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
     }
 }
 
@@ -146,22 +142,14 @@ void drawShadowBuffer(){
     glClear(GL_DEPTH_BUFFER_BIT);
 
     for(auto gObj : backBufferObjects){
-
         gObj->DrawDepth();
-
-        glBindVertexArray(gObj->mesh->vaoID);
-        glDrawElementsInstanced(GL_TRIANGLES, gObj->mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
     }
 
 }
 
 void drawSkyboxBuffer(){
     for(auto gObj : skyboxBufferObjects){
-
         gObj->Draw();
-
-        glBindVertexArray(gObj->mesh->vaoID);
-        glDrawElementsInstanced(GL_TRIANGLES, gObj->mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
     }
 }
 
