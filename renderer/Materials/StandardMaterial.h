@@ -68,9 +68,9 @@ public:
         GLuint shadowMapLocation = glGetUniformLocation(this->programID, "shadowMapTexture");
         glUniform1i(shadowMapLocation, 3);
 
-        GLuint uniformBlockIndex = glGetUniformBlockIndex(this->programID, "SceneBlock");
+        GLuint uniformBlockIndex = glGetUniformBlockIndex(this->programID, "SceneUniformBlock");
         glUniformBlockBinding(this->programID, uniformBlockIndex, 0);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->lightBlockUBO);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->sceneBlockUBO);
 
     }
 };

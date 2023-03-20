@@ -13,7 +13,7 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform float timer;
-uniform vec3 cameraPosition;
+//uniform vec3 cameraPosition;
 uniform vec3 diffuseColor;
 
 layout(binding = 0) uniform sampler2D diffuseTexture;
@@ -33,7 +33,7 @@ vec3 specularColor = vec3(1.);
 layout (std140) uniform SceneUniformBlock {
     uniform vec4 lightColor;
     uniform mat4 cameraView;
-//    uniform vec3 cameraPosition;
+    uniform vec3 cameraPosition;
     uniform mat4 cameraProjection;
 };
 

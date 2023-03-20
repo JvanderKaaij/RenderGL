@@ -233,7 +233,7 @@ int run() {
     standardMat->specularID = cobbleSpecTexture->textureID;
     standardMat->cubemapID = skyboxTexture->textureID;
     standardMat->diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    standardMat->lightBlockUBO = scene_ubo;
+    standardMat->sceneBlockUBO = scene_ubo;
 
     //Skybox Material
     auto* skyboxMat = new SkyboxMaterial("../shaders/skybox.vert", "../shaders/skybox.frag");
