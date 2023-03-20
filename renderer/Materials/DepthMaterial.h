@@ -14,7 +14,7 @@ class DepthMaterial: public Material {
 public:
     DepthMaterial(std::string vertex_path, std::string fragment_path): Material(std::move(vertex_path), std::move(fragment_path)){}
 
-    void Draw(Transform transform) override{
+    void Draw(Transform transform, SceneUniformBlock* sceneUniforms) override{
         glUseProgram(this->programID);
 
         glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), transform.position);

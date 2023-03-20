@@ -15,7 +15,7 @@ public:
 
     StandardMaterial(std::string vertex_path, std::string fragment_path): Material(std::move(vertex_path), std::move(fragment_path)){}
 
-    void Draw(Transform transform) override{
+    void Draw(Transform transform, SceneUniformBlock* sceneUniforms) override{
         glUseProgram(this->programID);
 
         GLint time_location = glGetUniformLocation(this->programID, "timer");
@@ -31,10 +31,10 @@ public:
         glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
 
         GLuint v_location = glGetUniformLocation(this->programID, "view");
-        glUniformMatrix4fv(v_location, 1, GL_FALSE, glm::value_ptr(Scene::ViewMatrix));
+        glUniformMatrix4fv(v_location, 1, GL_FALSE, glm::value_ptr(sceneUniforms->cameraView));
 
         GLuint p_location = glGetUniformLocation(this->programID, "projection");
-        glUniformMatrix4fv(p_location, 1, GL_FALSE, glm::value_ptr(Scene::ProjectionMatrix));
+        glUniformMatrix4fv(p_location, 1, GL_FALSE, glm::value_ptr(sceneUniforms->cameraProjection));
 
         GLint directional_light_location = glGetUniformLocation(this->programID, "directionalLight");
         glUniform3fv(directional_light_location, 1, glm::value_ptr(Scene::directional_light.direction));
@@ -55,7 +55,7 @@ public:
         glUniform1i(skyboxLocation, 2);
 
         GLuint cam_location = glGetUniformLocation(this->programID, "cameraPosition");
-        glUniform3fv(cam_location, 1, glm::value_ptr(Scene::CameraTransform.position));
+        glUniform3fv(cam_location, 1, glm::value_ptr(sceneUniforms->cameraPosition));
 
         GLuint diffuse_color_location = glGetUniformLocation(this->programID, "diffuseColor");
         glUniform3fv(diffuse_color_location, 1, glm::value_ptr(this->diffuseColor));
@@ -68,7 +68,7 @@ public:
         GLuint shadowMapLocation = glGetUniformLocation(this->programID, "shadowMapTexture");
         glUniform1i(shadowMapLocation, 3);
 
-        GLuint uniformBlockIndex = glGetUniformBlockIndex(this->programID, "LightBlock");
+        GLuint uniformBlockIndex = glGetUniformBlockIndex(this->programID, "SceneBlock");
         glUniformBlockBinding(this->programID, uniformBlockIndex, 0);
         glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->lightBlockUBO);
 

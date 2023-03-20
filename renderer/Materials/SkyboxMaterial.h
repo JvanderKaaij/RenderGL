@@ -14,7 +14,7 @@ public:
 
     SkyboxMaterial(std::string vertex_path, std::string fragment_path): Material(std::move(vertex_path), std::move(fragment_path)){}
 
-    void Draw(Transform transform) override{
+    void Draw(Transform transform, SceneUniformBlock* sceneUniforms) override{
         glUseProgram(this->programID);
 
         glActiveTexture(GL_TEXTURE0);
@@ -23,10 +23,10 @@ public:
         glUniform1i(skyboxLocation, 0);
 
         GLuint v_location = glGetUniformLocation(this->programID, "view");
-        glUniformMatrix4fv(v_location, 1, GL_FALSE, glm::value_ptr(glm::inverse(Scene::ViewMatrix)));
+        glUniformMatrix4fv(v_location, 1, GL_FALSE, glm::value_ptr(glm::inverse(sceneUniforms->cameraView)));
 
         GLuint p_location = glGetUniformLocation(this->programID, "projection");
-        glUniformMatrix4fv(p_location, 1, GL_FALSE, glm::value_ptr(Scene::ProjectionMatrix));
+        glUniformMatrix4fv(p_location, 1, GL_FALSE, glm::value_ptr(sceneUniforms->cameraProjection));
 
     }
 };

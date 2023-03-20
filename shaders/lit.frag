@@ -30,8 +30,11 @@ vec3 ambient = vec3(0.1);
 vec3 viewDirection = vec3(0., 0., -1.);
 vec3 specularColor = vec3(1.);
 
-layout (std140) uniform LightBlock {
+layout (std140) uniform SceneUniformBlock {
     uniform vec4 lightColor;
+    uniform mat4 cameraView;
+//    uniform vec3 cameraPosition;
+    uniform mat4 cameraProjection;
 };
 
 float ShadowCalculation(vec4 fragPosLightSpace)

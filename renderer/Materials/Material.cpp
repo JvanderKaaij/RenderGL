@@ -3,6 +3,7 @@
 #include <vector>
 #include "Material.h"
 #include "../../interface/MaterialInterface.h"
+#include "../SceneUniformBlock.h"
 
 Material::Material(std::string vertex_path, std::string fragment_path) {
     std::cout << "Shader Vertex Path" << vertex_path << std::endl;
@@ -43,7 +44,7 @@ Material::Material(std::string vertex_path, std::string fragment_path) {
     glUseProgram(this->programID);
 }
 
-void Material::Draw(Transform transform) {
+void Material::Draw(Transform transform, SceneUniformBlock* sceneUniforms) {
     std::cout << "Draw from Material" << std::endl;
 
 }

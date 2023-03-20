@@ -18,7 +18,7 @@
 #include "imgui.h"
 #include "../libraries/imgui/backends/imgui_impl_glfw.h"
 #include "../libraries/imgui/backends/imgui_impl_opengl3.h"
-#include "../renderer/LightUniformBlock.h"
+#include "../renderer/SceneUniformBlock.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -33,20 +33,22 @@ double yMousePos = 0;
 FrameBuffer* fb;
 DepthFrameBuffer* directional_light_shadow_map;
 
-GLuint light_ubo;
+GLuint scene_ubo;
 
 std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
 std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
 
+Scene scene = Scene();
+
 void onMoveCamera(glm::vec3 translation){
-    Scene::CameraTransform.position += translation;
+    scene.camera.transform.position += translation;
 }
 
 void onCursorPosition(glm::vec2 position)
 {
     if(lMouseBtn){
-        Scene::CameraTransform.rotation.x += (position.x - xMousePos) * 0.01f;
-        Scene::CameraTransform.rotation.y += (position.y - yMousePos) * 0.01f;
+        scene.camera.transform.rotation.x += (position.x - xMousePos) * 0.01f;
+        scene.camera.transform.rotation.y += (position.y - yMousePos) * 0.01f;
     }
     if(lMouseBtnCntrl){
         Scene::directional_light.direction.x += (position.x - xMousePos) * 0.1f;
@@ -64,7 +66,7 @@ void onMouseButtonCallback(int button, int action, int mods)
 
 void onScrollCallback(glm::vec2 scrollOffset)
 {
-    Scene::CameraTransform.position.z += scrollOffset.y;
+    scene.camera.transform.position.z += scrollOffset.y;
 }
 
 void registerInputs(GLFWwindow* window){
@@ -75,17 +77,6 @@ void registerInputs(GLFWwindow* window){
     input->Subscribe(GLFW_KEY_S, [](){ onMoveCamera(glm::vec3(0., 0.1, 0.));});
     input->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
     input->InitKeyCallback();
-}
-
-glm::mat4 GetProjection(){
-    return glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.f);
-}
-
-glm::mat4 GetCameraProjection(Transform cameraTransform){
-    glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), cameraTransform.position);
-    glm::mat4 ViewRotate = glm::rotate(ViewTranslate, cameraTransform.rotation.x, glm::vec3(0.0f, 1.0f, 0.0f));
-    ViewRotate = glm::rotate(ViewRotate, cameraTransform.rotation.y, glm::vec3(1.0f, 0.0f, 0.0f));
-    return ViewRotate;
 }
 
 Mesh* InitMesh(const std::string& path){
@@ -101,14 +92,12 @@ GameObject* InitGameObject(){
     return go;
 }
 
-void InitLightUniformBlock(){
-    glGenBuffers(1, &light_ubo);
-    glBindBuffer(GL_UNIFORM_BUFFER, light_ubo);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(LightUniformBlock), NULL, GL_DYNAMIC_DRAW);
-
-    Scene::LightBlock.lightColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-    glBindBuffer(GL_UNIFORM_BUFFER, light_ubo);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightUniformBlock), &Scene::LightBlock);
+void InitSceneUniformBlock(){
+    glGenBuffers(1, &scene_ubo);
+    glBindBuffer(GL_UNIFORM_BUFFER, scene_ubo);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(SceneUniformBlock), NULL, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, scene_ubo);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(SceneUniformBlock), scene.GetSceneUniforms());
 }
 
 void drawFrameBuffer(FrameBuffer* buffer){
@@ -118,13 +107,8 @@ void drawFrameBuffer(FrameBuffer* buffer){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for(auto gObj : backBufferObjects){
-
-        gObj->Draw();
-
-        glBindVertexArray(gObj->mesh->vaoID);
-        glDrawElementsInstanced(GL_TRIANGLES, gObj->mesh->Indices.size(), GL_UNSIGNED_INT, 0, 2);
+        gObj->Draw(scene.GetSceneUniforms());
     }
-    //Regerate MipMap Levels for render texture
 }
 
 void drawBackBuffer(){
@@ -132,7 +116,7 @@ void drawBackBuffer(){
     glViewport(0,0,width,height);
 
     for(auto gObj : backBufferObjects){
-        gObj->Draw();
+        gObj->Draw(scene.GetSceneUniforms());
     }
 }
 
@@ -142,25 +126,21 @@ void drawShadowBuffer(){
     glClear(GL_DEPTH_BUFFER_BIT);
 
     for(auto gObj : backBufferObjects){
-        gObj->DrawDepth();
+        gObj->DrawDepth(scene.GetSceneUniforms());
     }
 
 }
 
 void drawSkyboxBuffer(){
+    glDepthMask(GL_FALSE);
     for(auto gObj : skyboxBufferObjects){
-        gObj->Draw();
+        gObj->Draw(scene.GetSceneUniforms());
     }
+    glDepthMask(GL_TRUE);
 }
 
 void draw(){
-    Scene::ProjectionMatrix = GetProjection();
-    Scene::ViewMatrix = GetCameraProjection(Scene::CameraTransform);
-
-    Scene::LightBlock.lightColor = glm::vec4(1.0, 0.0, 0.0, 0.0);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightUniformBlock), &Scene::LightBlock);
-
-    glfwPollEvents();
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(SceneUniformBlock), scene.GetSceneUniforms());
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -178,9 +158,7 @@ void draw(){
     glClearColor(.0f, .0f, .0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glDepthMask(GL_FALSE);
     drawSkyboxBuffer();
-    glDepthMask(GL_TRUE);
     drawShadowBuffer();
     drawFrameBuffer(fb);
     drawBackBuffer();
@@ -191,6 +169,8 @@ void draw(){
     glfwSwapBuffers(window);
 
     //handle interface events
+    glfwPollEvents();
+
 }
 
 static void glfw_error_callback(int error, const char* description)
@@ -236,7 +216,7 @@ int run() {
 
     glEnable(GL_DEPTH_TEST);
 
-    InitLightUniformBlock();
+    InitSceneUniformBlock();
 
     auto* skyboxTexture = MaterialInterface::LoadCubeMapTexture("../assets/cubemap/cubemap");
 
@@ -253,7 +233,7 @@ int run() {
     standardMat->specularID = cobbleSpecTexture->textureID;
     standardMat->cubemapID = skyboxTexture->textureID;
     standardMat->diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    standardMat->lightBlockUBO = light_ubo;
+    standardMat->lightBlockUBO = scene_ubo;
 
     //Skybox Material
     auto* skyboxMat = new SkyboxMaterial("../shaders/skybox.vert", "../shaders/skybox.frag");

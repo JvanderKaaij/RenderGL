@@ -10,17 +10,17 @@ public:
     Material* material;
     Material* depthMaterial;
     Transform transform;
-    void Draw();
-    void DrawDepth();
+    void Draw(SceneUniformBlock* sceneUniforms);
+    void DrawDepth(SceneUniformBlock* sceneUniforms);
 };
 
-void GameObject::Draw(){
-    this->material->Draw(this->transform);
+void GameObject::Draw(SceneUniformBlock* sceneUniforms){
+    this->material->Draw(this->transform, sceneUniforms);
     this->mesh->Draw();
 }
 
-void GameObject::DrawDepth(){
-    this->depthMaterial->Draw(this->transform);
+void GameObject::DrawDepth(SceneUniformBlock* sceneUniforms){
+    this->depthMaterial->Draw(this->transform, sceneUniforms);
     this->mesh->Draw();
 }
 
