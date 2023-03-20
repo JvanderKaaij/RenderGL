@@ -78,5 +78,5 @@ void main()
     //FINAL SUMMING
     vec3 finalColor = ambient + (1.0 - shadow) * (finalSpecular + finalDiffuse + finalReflection);
 
-    FragColor = lightColor;//vec4(finalColor, 1.0);
+    FragColor = vec4(finalColor, 1.0);
 }

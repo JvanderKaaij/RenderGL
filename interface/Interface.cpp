@@ -5,7 +5,7 @@
 #include <utility>
 #include "MeshParser.h"
 #include "InputInterface.h"
-#include "../renderer/DirectionalLight.h"
+#include "../renderer/Lights/DirectionalLight.h"
 #include "MaterialInterface.h"
 #include "../renderer/Materials/Material.h"
 #include "../renderer/Materials/StandardMaterial.h"
