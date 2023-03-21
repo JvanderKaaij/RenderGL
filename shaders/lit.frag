@@ -10,8 +10,6 @@ in vec2 TextureCoords;
 in vec4 FragPosLightSpace;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
 uniform float timer;
 uniform vec3 diffuseColor;
 
@@ -30,8 +28,8 @@ vec3 viewDirection = vec3(0., 0., -1.);
 vec3 specularColor = vec3(1.);
 
 layout (std140) uniform SceneUniformBlock {
-    mat4 cameraView;
     vec4 cameraPosition;
+    mat4 cameraView;
     mat4 cameraProjection;
 };
 
@@ -54,8 +52,8 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 //and messed up in all sorts of ways
 void main()
 {
-    vec3 world = normalize(mat3(projection * view * model) * WorldNormal);
-    vec3 worldM = normalize(mat3(projection * model) * WorldNormal);
+    vec3 world = normalize(mat3(cameraProjection * cameraView * model) * WorldNormal);
+    vec3 worldM = normalize(mat3(cameraProjection * model) * WorldNormal);
 //
     //SPECULAR
     vec3 halfwayVector = normalize(DirectionalLight + viewDirection);
@@ -69,7 +67,7 @@ void main()
     vec3 finalDiffuse = diffuse * diffuseColor * texelColor.xyz;
 
     //REFLECTION
-    vec3 I = normalize(Position - cameraPosition.xyz * mat3(view));
+    vec3 I = normalize(Position - cameraPosition.xyz * mat3(cameraView));
     vec3 R = reflect(I, normalize(WorldNormal));
     vec3 finalReflection = texture(skyboxTexture, R).rgb * reflectionFactor;
 

@@ -30,12 +30,6 @@ public:
         GLuint m_location = glGetUniformLocation(this->programID, "model");
         glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
 
-        GLuint v_location = glGetUniformLocation(this->programID, "view");
-        glUniformMatrix4fv(v_location, 1, GL_FALSE, glm::value_ptr(sceneUniforms->cameraView));
-
-        GLuint p_location = glGetUniformLocation(this->programID, "projection");
-        glUniformMatrix4fv(p_location, 1, GL_FALSE, glm::value_ptr(sceneUniforms->cameraProjection));
-
         GLint directional_light_location = glGetUniformLocation(this->programID, "directionalLight");
         glUniform3fv(directional_light_location, 1, glm::value_ptr(Scene::directional_light.direction));
 
