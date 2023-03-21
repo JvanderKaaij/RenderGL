@@ -23,10 +23,6 @@ static bool throw_exit = false;
 int width = 1024;
 int height = 768;
 
-bool lMouseBtn = false;
-bool lMouseBtnCntrl = false;
-double xMousePos = 0;
-double yMousePos = 0;
 
 FrameBuffer* fb;
 DepthFrameBuffer* directional_light_shadow_map;
@@ -37,33 +33,8 @@ std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
 Scene scene = Scene();
 InputInterface* inputInterface;
 
-void onCursorPosition(glm::vec2 position)
-{
-    if(lMouseBtn){
-        scene.camera.transform.rotation.x += (position.x - xMousePos) * 0.01f;
-        scene.camera.transform.rotation.y += (position.y - yMousePos) * 0.01f;
-    }
-    if(lMouseBtnCntrl){
-        scene.directional_light.direction.x += (position.x - xMousePos) * 0.1f;
-        scene.directional_light.direction.y -= (position.y - yMousePos) * 0.1f;
-    }
-    xMousePos = position.x;
-    yMousePos = position.y;
-}
-
-void onMouseButtonCallback(int button, int action, int mods)
-{
-    lMouseBtn = (action == GLFW_PRESS && button == 0 && mods == 0);
-    lMouseBtnCntrl = (action == GLFW_PRESS && button == 0 && (mods & GLFW_MOD_CONTROL) != 0);
-}
-
-void onScrollCallback(glm::vec2 scrollOffset)
-{
-    scene.camera.transform.position.z += scrollOffset.y;
-}
-
 void registerInputs(GLFWwindow* window){
-    inputInterface = new InputInterface(window, &scene, onCursorPosition, onMouseButtonCallback, onScrollCallback);
+    inputInterface = new InputInterface(window, &scene);
     inputInterface->Subscribe(GLFW_KEY_A, [](){ inputInterface->OnMoveCamera(glm::vec3(0.1, 0., 0.));});
     inputInterface->Subscribe(GLFW_KEY_D, [](){ inputInterface->OnMoveCamera(glm::vec3(-0.1, 0., 0.));});
     inputInterface->Subscribe(GLFW_KEY_W, [](){ inputInterface->OnMoveCamera(glm::vec3(0., -0.1, 0.));});

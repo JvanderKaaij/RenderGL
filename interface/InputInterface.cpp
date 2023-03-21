@@ -9,13 +9,10 @@
  *They have to be static because they are called by glfw.
 */
 
-InputInterface::InputInterface(GLFWwindow *window, Scene* scene, std::function<void(glm::vec2)> mousePosCallback, std::function<void(int button, int action, int mods)> mouseButtonCallback, std::function<void(glm::vec2)> mouseScrollCallback) {
+InputInterface::InputInterface(GLFWwindow *window, Scene* scene) {
     std::cout << "Input Initialized" << std::endl;
     m_window = window;
     m_scene = scene;
-    m_mousePositionCallback = std::move(mousePosCallback); //std::move prevents a copy and just does a reference
-    m_mouseButtonCallback = std::move(mouseButtonCallback);
-    m_mouseScrollCallback = std::move(mouseScrollCallback);
     glfwSetWindowUserPointer(window, this);
     glfwSetCursorPosCallback(window, InputInterface::OnMousePositionCallback);
     glfwSetMouseButtonCallback(window, InputInterface::OnMouseButtonCallback);
@@ -26,23 +23,48 @@ void InputInterface::OnMoveCamera(glm::vec3 translation){
     m_scene->camera.transform.position += translation;
 }
 
+void InputInterface::OnCursorPosition(glm::vec2 position)
+{
+    if(lMouseBtn){
+        m_scene->camera.transform.rotation.x += (position.x - xMousePos) * 0.01f;
+        m_scene->camera.transform.rotation.y += (position.y - yMousePos) * 0.01f;
+    }
+    if(lMouseBtnCntrl){
+        m_scene->directional_light.direction.x += (position.x - xMousePos) * 0.1f;
+        m_scene->directional_light.direction.y -= (position.y - yMousePos) * 0.1f;
+    }
+    xMousePos = position.x;
+    yMousePos = position.y;
+}
+
+void InputInterface::OnMouseButton(int button, int action, int mods)
+{
+    lMouseBtn = (action == GLFW_PRESS && button == 0 && mods == 0);
+    lMouseBtnCntrl = (action == GLFW_PRESS && button == 0 && (mods & GLFW_MOD_CONTROL) != 0);
+}
+
 void InputInterface::InitKeyCallback() {
     glfwSetKeyCallback(m_window, &InputInterface::OnKeyCallback);
 }
 
 void InputInterface::OnMousePositionCallback(GLFWwindow* window, double xpos, double ypos) {
     auto* self = (InputInterface*)glfwGetWindowUserPointer(window);
-    self->m_mousePositionCallback(glm::vec2(xpos, ypos));
+    self->OnCursorPosition(glm::vec2(xpos, ypos));
 }
 
 void InputInterface::OnMouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     auto* self = (InputInterface*)glfwGetWindowUserPointer(window);
-    self->m_mouseButtonCallback(button, action, mods);
+    self->OnMouseButton(button, action, mods);
+}
+
+void InputInterface::OnScroll(glm::vec2 scrollOffset)
+{
+    m_scene->camera.transform.position.z += scrollOffset.y;
 }
 
 void InputInterface::OnMouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     auto* self = (InputInterface*)glfwGetWindowUserPointer(window);
-    self->m_mouseScrollCallback(glm::vec2(xoffset, yoffset));
+    self->OnScroll(glm::vec2(xoffset, yoffset));
 }
 
 void InputInterface::Subscribe(int key, std::function<void()> callback) {
