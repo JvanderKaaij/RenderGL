@@ -7,8 +7,8 @@
 
 
 #include "glad/glad.h"
-#include "Texture.h"
-#include "Scene.h"
+#include "../Texture.h"
+#include "../Scene.h"
 
 class DepthFrameBuffer {
 public:
