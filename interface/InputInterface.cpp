@@ -9,9 +9,10 @@
  *They have to be static because they are called by glfw.
 */
 
-InputInterface::InputInterface(GLFWwindow *window, std::function<void(glm::vec2)> mousePosCallback, std::function<void(int button, int action, int mods)> mouseButtonCallback, std::function<void(glm::vec2)> mouseScrollCallback) {
+InputInterface::InputInterface(GLFWwindow *window, Scene* scene, std::function<void(glm::vec2)> mousePosCallback, std::function<void(int button, int action, int mods)> mouseButtonCallback, std::function<void(glm::vec2)> mouseScrollCallback) {
     std::cout << "Input Initialized" << std::endl;
     m_window = window;
+    m_scene = scene;
     m_mousePositionCallback = std::move(mousePosCallback); //std::move prevents a copy and just does a reference
     m_mouseButtonCallback = std::move(mouseButtonCallback);
     m_mouseScrollCallback = std::move(mouseScrollCallback);
@@ -19,6 +20,10 @@ InputInterface::InputInterface(GLFWwindow *window, std::function<void(glm::vec2)
     glfwSetCursorPosCallback(window, InputInterface::OnMousePositionCallback);
     glfwSetMouseButtonCallback(window, InputInterface::OnMouseButtonCallback);
     glfwSetScrollCallback(window, InputInterface::OnMouseScrollCallback);
+}
+
+void InputInterface::OnMoveCamera(glm::vec3 translation){
+    m_scene->camera.transform.position += translation;
 }
 
 void InputInterface::InitKeyCallback() {

@@ -10,12 +10,14 @@
 #include <map>
 #include "GLFW/glfw3.h"
 #include "glm/ext.hpp"
+#include "../renderer/Scene.h"
 
 class InputInterface {
 public:
-    InputInterface(GLFWwindow* window, std::function<void(glm::vec2)> mousePosCallback, std::function<void(int button, int action, int mods)> mouseButtonCallback, std::function<void(glm::vec2)> mouseScrollCallback);
+    InputInterface(GLFWwindow* window, Scene* scene, std::function<void(glm::vec2)> mousePosCallback, std::function<void(int button, int action, int mods)> mouseButtonCallback, std::function<void(glm::vec2)> mouseScrollCallback);
     void InitKeyCallback();
     void Subscribe(int key, std::function<void()> callback);
+    void OnMoveCamera(glm::vec3 translation);
 private:
     static void OnKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void OnMousePositionCallback(GLFWwindow* window, double xpos, double ypos);
@@ -26,6 +28,7 @@ private:
     std::function<void(int button, int action, int mods)> m_mouseButtonCallback;
     std::function<void(glm::vec2)> m_mouseScrollCallback;
     GLFWwindow* m_window;
+    Scene* m_scene;
 };
 
 

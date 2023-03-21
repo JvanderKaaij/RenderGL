@@ -35,10 +35,7 @@ std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
 std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
 
 Scene scene = Scene();
-
-void onMoveCamera(glm::vec3 translation){
-    scene.camera.transform.position += translation;
-}
+InputInterface* inputInterface;
 
 void onCursorPosition(glm::vec2 position)
 {
@@ -66,13 +63,13 @@ void onScrollCallback(glm::vec2 scrollOffset)
 }
 
 void registerInputs(GLFWwindow* window){
-    auto input = new InputInterface(window, onCursorPosition, onMouseButtonCallback, onScrollCallback);
-    input->Subscribe(GLFW_KEY_A, [](){ onMoveCamera(glm::vec3(0.1, 0., 0.));});
-    input->Subscribe(GLFW_KEY_D, [](){ onMoveCamera(glm::vec3(-0.1, 0., 0.));});
-    input->Subscribe(GLFW_KEY_W, [](){ onMoveCamera(glm::vec3(0., -0.1, 0.));});
-    input->Subscribe(GLFW_KEY_S, [](){ onMoveCamera(glm::vec3(0., 0.1, 0.));});
-    input->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
-    input->InitKeyCallback();
+    inputInterface = new InputInterface(window, &scene, onCursorPosition, onMouseButtonCallback, onScrollCallback);
+    inputInterface->Subscribe(GLFW_KEY_A, [](){ inputInterface->OnMoveCamera(glm::vec3(0.1, 0., 0.));});
+    inputInterface->Subscribe(GLFW_KEY_D, [](){ inputInterface->OnMoveCamera(glm::vec3(-0.1, 0., 0.));});
+    inputInterface->Subscribe(GLFW_KEY_W, [](){ inputInterface->OnMoveCamera(glm::vec3(0., -0.1, 0.));});
+    inputInterface->Subscribe(GLFW_KEY_S, [](){ inputInterface->OnMoveCamera(glm::vec3(0., 0.1, 0.));});
+    inputInterface->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
+    inputInterface->InitKeyCallback();
 }
 
 Mesh* InitMesh(const std::string& path){
@@ -285,7 +282,7 @@ int init() {
     renderTextureObj->depthMaterial = depthMat;
     backBufferObjects.push_back(renderTextureObj);
 
-    onMoveCamera(glm::vec3(0., -2., -60.));
+    inputInterface->OnMoveCamera(glm::vec3(0., -2., -60.));
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
