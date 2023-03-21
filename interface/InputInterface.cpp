@@ -43,9 +43,16 @@ void InputInterface::OnMouseButton(int button, int action, int mods)
     lMouseBtnCntrl = (action == GLFW_PRESS && button == 0 && (mods & GLFW_MOD_CONTROL) != 0);
 }
 
+void InputInterface::OnScroll(glm::vec2 scrollOffset)
+{
+    m_scene->camera.transform.position.z += scrollOffset.y;
+}
+
 void InputInterface::InitKeyCallback() {
     glfwSetKeyCallback(m_window, &InputInterface::OnKeyCallback);
 }
+
+//Static wrappers
 
 void InputInterface::OnMousePositionCallback(GLFWwindow* window, double xpos, double ypos) {
     auto* self = (InputInterface*)glfwGetWindowUserPointer(window);
@@ -55,11 +62,6 @@ void InputInterface::OnMousePositionCallback(GLFWwindow* window, double xpos, do
 void InputInterface::OnMouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     auto* self = (InputInterface*)glfwGetWindowUserPointer(window);
     self->OnMouseButton(button, action, mods);
-}
-
-void InputInterface::OnScroll(glm::vec2 scrollOffset)
-{
-    m_scene->camera.transform.position.z += scrollOffset.y;
 }
 
 void InputInterface::OnMouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
