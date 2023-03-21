@@ -33,7 +33,7 @@ Dear ImGui is particularly suited to integration in game engines (for tooling), 
  - Easy to use to create code-driven and data-driven tools.
  - Easy to use to create ad hoc short-lived tools and long-lived, more elaborate tools.
  - Easy to hack and improve.
- - Portable, minimize dependencies, run on target (consoles, phones, etc.).
+ - Portable, minimize dependencies, init on target (consoles, phones, etc.).
  - Efficient runtime and memory consumption.
  - Battle-tested, used by [many major actors in the game industry](https://github.com/ocornut/imgui/wiki/Software-using-dear-imgui).
 

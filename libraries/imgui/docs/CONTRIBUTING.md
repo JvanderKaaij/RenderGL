@@ -15,7 +15,7 @@
 - Please read [docs/FAQ.md](https://github.com/ocornut/imgui/blob/master/docs/FAQ.md).
 - Please read [docs/FONTS.md](https://github.com/ocornut/imgui/blob/master/docs/FONTS.md) if your question relates to fonts or text.
 - Please read one of the [examples/](https://github.com/ocornut/imgui/tree/master/examples) application if your question relates to setting up Dear ImGui.
-- Please run `ImGui::ShowDemoWindow()` to explore the demo and its sources.
+- Please init `ImGui::ShowDemoWindow()` to explore the demo and its sources.
 - Please use the search function of your IDE to search in for comments related to your situation.
 - Please use the search function of GitHub to look for similar issues. You may [browse issues by Labels](https://github.com/ocornut/imgui/labels).
 - Please use a web search engine to look for similar issues.

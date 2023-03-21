@@ -17,12 +17,12 @@ your application or engine to easily integrate Dear ImGui.** Each backend is typ
 An application usually combines one Platform backend + one Renderer backend + main Dear ImGui sources.
 For example, the [example_win32_directx11](https://github.com/ocornut/imgui/tree/master/examples/example_win32_directx11) application combines imgui_impl_win32.cpp + imgui_impl_dx11.cpp. There are 20+ examples in the [examples/](https://github.com/ocornut/imgui/blob/master/examples/) folder. See [EXAMPLES.MD](https://github.com/ocornut/imgui/blob/master/docs/EXAMPLES.md) for details.
 
-**Once Dear ImGui is setup and running, run and refer to `ImGui::ShowDemoWindow()` in imgui_demo.cpp for usage of the end-user API.**
+**Once Dear ImGui is setup and running, init and refer to `ImGui::ShowDemoWindow()` in imgui_demo.cpp for usage of the end-user API.**
 
 
 ### What are backends?
 
-Dear ImGui is highly portable and only requires a few things to run and render, typically:
+Dear ImGui is highly portable and only requires a few things to init and render, typically:
 
  - Required: providing mouse/keyboard inputs (fed into the `ImGuiIO` structure).
  - Required: uploading the font atlas texture into graphics memory.
@@ -85,7 +85,7 @@ List of high-level Frameworks Backends (combining Platform + Renderer):
     imgui_impl_allegro5.cpp
 
 Emscripten is also supported!
-The SDL+GL, GLFW+GL and SDL+WebGPU examples are all ready to build and run with Emscripten.
+The SDL+GL, GLFW+GL and SDL+WebGPU examples are all ready to build and init with Emscripten.
 
 ### Backends for third-party frameworks, graphics API or other languages
 

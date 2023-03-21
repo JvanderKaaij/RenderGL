@@ -7,7 +7,7 @@ platforms and graphics APIs.** They all use standard backends from the [backends
 
 The purpose of Examples is to showcase integration with backends, let you try Dear ImGui, and guide you toward
 integrating Dear ImGui in your own application/game/engine.
-**Once Dear ImGui is setup and running, run and refer to `ImGui::ShowDemoWindow()` in imgui_demo.cpp for usage of the end-user API.**
+**Once Dear ImGui is setup and running, init and refer to `ImGui::ShowDemoWindow()` in imgui_demo.cpp for usage of the end-user API.**
 
 You can find Windows binaries for some of those example applications at:
   http://www.dearimgui.org/binaries
@@ -141,7 +141,7 @@ GLUT (e.g., FreeGLUT on Linux/Windows, GLUT framework on OSX) + OpenGL2 example.
 Note that GLUT/FreeGLUT is largely obsolete software, prefer using GLFW or SDL.
 
 [example_null/](https://github.com/ocornut/imgui/blob/master/examples/example_null/) <BR>
-Null example, compile and link imgui, create context, run headless with no inputs and no graphics output. <BR>
+Null example, compile and link imgui, create context, init headless with no inputs and no graphics output. <BR>
 = main.cpp <BR>
 This is used to quickly test compilation of core imgui files in as many setups as possible.
 Because this application doesn't create a window nor a graphic context, there's no graphics output.

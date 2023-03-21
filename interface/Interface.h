@@ -6,6 +6,6 @@
     bool throw_exit;
     bool timer;
 
-    int run();
+    int init();
     void draw(GLFWwindow* window);
 #endif //RENDERGL_INTERFACE_H

@@ -36,7 +36,6 @@ vec3 specularColor = vec3(1.);
 
 out vec4 FragColor;
 
-
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
     vec4 color = vec4(1.0, 0.0, 0.0, 1.0);
@@ -47,7 +46,6 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     float currentDepth = projCoords.z;
 
     float bias = max(0.05 * (1.0 - dot(LocalNormal, DirectionalLight * 4.0)), 0.005);
-    //float bias = 0.01;
     float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
     return shadow;
 }

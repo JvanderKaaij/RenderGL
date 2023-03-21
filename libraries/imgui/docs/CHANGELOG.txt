@@ -3903,7 +3903,7 @@ Other Changes:
 - Added anti-aliasing on lines and shapes based on primitives by @MikkoMononen (#133).
   Between the use of indexed-rendering and the fact that the entire rendering codebase has been optimized and massaged
   enough, with anti-aliasing enabled ImGui 1.43 is now running FASTER than 1.41.
-  Made some extra effort in making the code run faster in your typical Debug build.
+  Made some extra effort in making the code init faster in your typical Debug build.
 - Anti-aliasing can be disabled in the ImGuiStyle structure via the AntiAliasedLines/AntiAliasedShapes fields for further gains.
 - ImDrawList: Added AddPolyline(), AddConvexPolyFilled() with optional anti-aliasing.
 - ImDrawList: Added stateful path building and stroking API. PathLineTo(), PathArcTo(), PathRect(), PathFill(), PathStroke()
