@@ -13,7 +13,6 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform float timer;
-//uniform vec3 cameraPosition;
 uniform vec3 diffuseColor;
 
 layout(binding = 0) uniform sampler2D diffuseTexture;
@@ -31,10 +30,9 @@ vec3 viewDirection = vec3(0., 0., -1.);
 vec3 specularColor = vec3(1.);
 
 layout (std140) uniform SceneUniformBlock {
-    uniform vec4 lightColor;
-    uniform mat4 cameraView;
-    uniform vec3 cameraPosition;
-    uniform mat4 cameraProjection;
+    mat4 cameraView;
+    vec4 cameraPosition;
+    mat4 cameraProjection;
 };
 
 float ShadowCalculation(vec4 fragPosLightSpace)
@@ -71,7 +69,7 @@ void main()
     vec3 finalDiffuse = diffuse * diffuseColor * texelColor.xyz;
 
     //REFLECTION
-    vec3 I = normalize(Position - cameraPosition * mat3(view));
+    vec3 I = normalize(Position - cameraPosition.xyz * mat3(view));
     vec3 R = reflect(I, normalize(WorldNormal));
     vec3 finalReflection = texture(skyboxTexture, R).rgb * reflectionFactor;
 
