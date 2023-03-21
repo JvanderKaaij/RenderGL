@@ -104,11 +104,13 @@ GameObject* InitGameObject(){
 void InitLightUniformBlock(){
     glGenBuffers(1, &light_ubo);
     glBindBuffer(GL_UNIFORM_BUFFER, light_ubo);
+
     glBufferData(GL_UNIFORM_BUFFER, sizeof(LightUniformBlock), NULL, GL_DYNAMIC_DRAW);
 
-    Scene::LightBlock.lightColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-    glBindBuffer(GL_UNIFORM_BUFFER, light_ubo);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightUniformBlock), &Scene::LightBlock);
+    Scene::LightBlock.lightColor = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec4), &Scene::LightBlock.lightColor);
+    Scene::LightBlock.lightColorTwo = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+    glBufferSubData(GL_UNIFORM_BUFFER, 16, sizeof(glm::vec4), &Scene::LightBlock.lightColorTwo);
 }
 
 void drawFrameBuffer(FrameBuffer* buffer){
@@ -156,9 +158,6 @@ void drawSkyboxBuffer(){
 void draw(){
     Scene::ProjectionMatrix = GetProjection();
     Scene::ViewMatrix = GetCameraProjection(Scene::CameraTransform);
-
-    Scene::LightBlock.lightColor = glm::vec4(1.0, 0.0, 0.0, 0.0);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightUniformBlock), &Scene::LightBlock);
 
     glfwPollEvents();
 
