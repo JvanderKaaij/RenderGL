@@ -179,6 +179,7 @@ int init() {
         return -1;
     }
     printf("OpenGL version supported by this platform (%s): \n", glGetString(GL_VERSION));
+
     registerInputs(window);
 
     glEnable(GL_DEPTH_TEST);

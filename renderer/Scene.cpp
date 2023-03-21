@@ -4,7 +4,6 @@
 Scene::Scene() {
     this->camera = Camera();
     this->sceneUniforms = new SceneUniformBlock();
-
 }
 
 SceneUniformBlock* Scene::SetSceneUniforms(){
