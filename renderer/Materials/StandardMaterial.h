@@ -48,9 +48,6 @@ public:
         GLuint skyboxLocation = glGetUniformLocation(this->programID, "skyboxTexture");
         glUniform1i(skyboxLocation, 2);
 
-        GLuint cam_location = glGetUniformLocation(this->programID, "cameraPosition");
-        glUniform3fv(cam_location, 1, glm::value_ptr(sceneUniforms->cameraPosition));
-
         GLuint diffuse_color_location = glGetUniformLocation(this->programID, "diffuseColor");
         glUniform3fv(diffuse_color_location, 1, glm::value_ptr(this->diffuseColor));
 
