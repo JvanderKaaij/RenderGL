@@ -14,12 +14,13 @@ public:
     Scene();
     Camera camera;
     DirectionalLight directional_light;
-    SceneUniformBlock* GetSceneUniforms();
+    SceneUniformBlock* SetSceneUniforms();
+    SceneUniformBlock* sceneUniforms;
+    unsigned int scene_ubo_id;
 
 private:
     static glm::mat4 LightProjection;
     static glm::mat4 LightView;
-    SceneUniformBlock* sceneUniforms;
 };
 
 

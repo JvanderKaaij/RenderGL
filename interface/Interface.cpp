@@ -2,7 +2,6 @@
 #include <iostream>
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
-#include <utility>
 #include "MeshParser.h"
 #include "InputInterface.h"
 #include "../renderer/Lights/DirectionalLight.h"
@@ -18,7 +17,6 @@
 #include "imgui.h"
 #include "../libraries/imgui/backends/imgui_impl_glfw.h"
 #include "../libraries/imgui/backends/imgui_impl_opengl3.h"
-#include "../renderer/SceneUniformBlock.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -32,8 +30,6 @@ double yMousePos = 0;
 
 FrameBuffer* fb;
 DepthFrameBuffer* directional_light_shadow_map;
-
-GLuint scene_ubo;
 
 std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
 std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
@@ -93,11 +89,11 @@ GameObject* InitGameObject(){
 }
 
 void InitSceneUniformBlock(){
-    glGenBuffers(1, &scene_ubo);
-    glBindBuffer(GL_UNIFORM_BUFFER, scene_ubo);
+    glGenBuffers(1, &scene.scene_ubo_id);
+    glBindBuffer(GL_UNIFORM_BUFFER, scene.scene_ubo_id);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(SceneUniformBlock), NULL, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_UNIFORM_BUFFER, scene_ubo);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(SceneUniformBlock), scene.GetSceneUniforms());
+    glBindBuffer(GL_UNIFORM_BUFFER, scene.scene_ubo_id);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(SceneUniformBlock), scene.sceneUniforms);
 }
 
 void drawFrameBuffer(FrameBuffer* buffer){
@@ -107,7 +103,7 @@ void drawFrameBuffer(FrameBuffer* buffer){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for(auto gObj : backBufferObjects){
-        gObj->Draw(scene.GetSceneUniforms());
+        gObj->Draw(scene.sceneUniforms);
     }
 }
 
@@ -116,7 +112,7 @@ void drawBackBuffer(){
     glViewport(0,0,width,height);
 
     for(auto gObj : backBufferObjects){
-        gObj->Draw(scene.GetSceneUniforms());
+        gObj->Draw(scene.sceneUniforms);
     }
 }
 
@@ -126,7 +122,7 @@ void drawShadowBuffer(){
     glClear(GL_DEPTH_BUFFER_BIT);
 
     for(auto gObj : backBufferObjects){
-        gObj->DrawDepth(scene.GetSceneUniforms());
+        gObj->DrawDepth(scene.sceneUniforms);
     }
 
 }
@@ -134,14 +130,13 @@ void drawShadowBuffer(){
 void drawSkyboxBuffer(){
     glDepthMask(GL_FALSE);
     for(auto gObj : skyboxBufferObjects){
-        gObj->Draw(scene.GetSceneUniforms());
+        gObj->Draw(scene.sceneUniforms);
     }
     glDepthMask(GL_TRUE);
 }
 
 void draw(){
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(SceneUniformBlock), scene.GetSceneUniforms());
-
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(SceneUniformBlock), scene.SetSceneUniforms());
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -170,7 +165,6 @@ void draw(){
 
     //handle interface events
     glfwPollEvents();
-
 }
 
 static void glfw_error_callback(int error, const char* description)
@@ -204,7 +198,6 @@ int run() {
     ImGui_ImplOpenGL3_Init("#version 450");
     ImGui::StyleColorsDark();
 
-
     //Needs to go after makeContextCurrent
     if(!gladLoadGL()){
         printf("Something went wrong with loading GLAD!\n");
@@ -233,7 +226,7 @@ int run() {
     standardMat->specularID = cobbleSpecTexture->textureID;
     standardMat->cubemapID = skyboxTexture->textureID;
     standardMat->diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    standardMat->sceneBlockUBO = scene_ubo;
+    standardMat->sceneBlockUBO = scene.scene_ubo_id;
 
     //Skybox Material
     auto* skyboxMat = new SkyboxMaterial("../shaders/skybox.vert", "../shaders/skybox.frag");
