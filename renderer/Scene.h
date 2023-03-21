@@ -13,9 +13,8 @@ class Scene {
 public:
     Scene();
     Camera camera;
-    static DirectionalLight directional_light;
+    DirectionalLight directional_light;
     SceneUniformBlock* GetSceneUniforms();
-
 
 private:
     static glm::mat4 LightProjection;

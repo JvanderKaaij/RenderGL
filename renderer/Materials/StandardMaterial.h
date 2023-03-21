@@ -30,9 +30,6 @@ public:
         GLuint m_location = glGetUniformLocation(this->programID, "model");
         glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
 
-        GLint directional_light_location = glGetUniformLocation(this->programID, "directionalLight");
-        glUniform3fv(directional_light_location, 1, glm::value_ptr(Scene::directional_light.direction));
-
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->diffuseID);
         GLuint diffuseLocation = glGetUniformLocation(this->programID, "diffuseTexture");
@@ -50,9 +47,6 @@ public:
 
         GLuint diffuse_color_location = glGetUniformLocation(this->programID, "diffuseColor");
         glUniform3fv(diffuse_color_location, 1, glm::value_ptr(this->diffuseColor));
-
-        GLuint lightSpaceMatrixLocation = glGetUniformLocation(this->programID, "lightProjectionMatrix");
-        glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, glm::value_ptr(Scene::directional_light.GetProjectionMatrix()));
 
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, this->shadowMapID);

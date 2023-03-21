@@ -8,6 +8,9 @@ struct SceneUniformBlock{
     glm::vec4 cameraPosition = glm::vec4(1.0);
     glm::mat4 cameraView = glm::mat4(1.0);
     glm::mat4 cameraProjection = glm::mat4(1.0);
+
+    glm::vec4 sceneLightDirection = glm::vec4(1.0);
+    glm::mat4 sceneLightProjection = glm::mat4(1.0);
 };
 
 #endif //RENDERGL_SCENEUNIFORMBLOCK_H

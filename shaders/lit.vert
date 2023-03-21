@@ -6,13 +6,13 @@ layout (location = 2) in vec2 aTextureCoords;
 
 uniform mat4 model;
 uniform float timer;
-uniform vec3 directionalLight;
-uniform mat4 lightProjectionMatrix;
 
 layout (std140) uniform SceneUniformBlock {
     vec4 cameraPosition;
     mat4 cameraView;
     mat4 cameraProjection;
+    vec4 sceneLightDirection;
+    mat4 sceneLightProjection;
 };
 
 out vec3 WorldNormal;
@@ -27,10 +27,10 @@ void main(){
     LocalNormal = aNormal;
     Position = vec3(model * vec4(aPos, 1.0));
 
-    DirectionalLight = normalize(-directionalLight);
+    DirectionalLight = normalize(-sceneLightDirection.xyz);
     TextureCoords = aTextureCoords;
 
-    FragPosLightSpace = lightProjectionMatrix * vec4(Position, 1.0);
+    FragPosLightSpace = sceneLightProjection * vec4(Position, 1.0);
 
     gl_Position = cameraProjection * cameraView * vec4(Position, 1.0);
 }

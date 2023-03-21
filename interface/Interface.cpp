@@ -51,8 +51,8 @@ void onCursorPosition(glm::vec2 position)
         scene.camera.transform.rotation.y += (position.y - yMousePos) * 0.01f;
     }
     if(lMouseBtnCntrl){
-        Scene::directional_light.direction.x += (position.x - xMousePos) * 0.1f;
-        Scene::directional_light.direction.y -= (position.y - yMousePos) * 0.1f;
+        scene.directional_light.direction.x += (position.x - xMousePos) * 0.1f;
+        scene.directional_light.direction.y -= (position.y - yMousePos) * 0.1f;
     }
     xMousePos = position.x;
     yMousePos = position.y;

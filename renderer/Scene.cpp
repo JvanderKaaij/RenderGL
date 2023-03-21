@@ -1,8 +1,6 @@
 
 #include "Scene.h"
 
-DirectionalLight Scene::directional_light = DirectionalLight();
-
 Scene::Scene() {
     this->camera = Camera();
 }
@@ -13,5 +11,9 @@ SceneUniformBlock* Scene::GetSceneUniforms(){
     this->sceneUniforms->cameraPosition = glm::vec4(this->camera.transform.position.x, this->camera.transform.position.y, this->camera.transform.position.z, 0.0);
     this->sceneUniforms->cameraProjection = this->camera.GetProjectionMatrix();
     this->sceneUniforms->cameraView = this->camera.GetViewMatrix(this->camera.transform);
+
+    this->sceneUniforms->sceneLightDirection = glm::vec4(this->directional_light.direction.x, this->directional_light.direction.y, this->directional_light.direction.z, 0);
+    this->sceneUniforms->sceneLightProjection = this->directional_light.GetProjectionMatrix();
+
     return this->sceneUniforms;
 }

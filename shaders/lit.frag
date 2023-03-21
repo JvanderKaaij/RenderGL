@@ -13,11 +13,18 @@ uniform mat4 model;
 uniform float timer;
 uniform vec3 diffuseColor;
 
+layout (std140) uniform SceneUniformBlock {
+    vec4 cameraPosition;
+    mat4 cameraView;
+    mat4 cameraProjection;
+    vec4 sceneLightDirection;
+    mat4 sceneLightProjection;
+};
+
 layout(binding = 0) uniform sampler2D diffuseTexture;
 layout(binding = 1) uniform sampler2D specularTexture;
 layout(binding = 2) uniform samplerCube skyboxTexture;
 layout(binding = 3) uniform sampler2D shadowMapTexture;
-out vec4 FragColor;
 
 float reflectionFactor = 0.2;
 float specularExponent = 100.;
@@ -27,11 +34,8 @@ vec3 ambient = vec3(0.1);
 vec3 viewDirection = vec3(0., 0., -1.);
 vec3 specularColor = vec3(1.);
 
-layout (std140) uniform SceneUniformBlock {
-    vec4 cameraPosition;
-    mat4 cameraView;
-    mat4 cameraProjection;
-};
+out vec4 FragColor;
+
 
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
