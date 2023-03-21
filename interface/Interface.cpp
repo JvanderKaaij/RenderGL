@@ -23,7 +23,6 @@ static bool throw_exit = false;
 int width = 1024;
 int height = 768;
 
-
 FrameBuffer* fb;
 DepthFrameBuffer* directional_light_shadow_map;
 
@@ -32,6 +31,9 @@ std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
 
 Scene scene = Scene();
 InputInterface* inputInterface;
+
+//This file should be the RenderInterface
+//And inputs should be registered at an over-arching engine class
 
 void registerInputs(GLFWwindow* window){
     inputInterface = new InputInterface(window, &scene);
@@ -43,20 +45,20 @@ void registerInputs(GLFWwindow* window){
     inputInterface->InitKeyCallback();
 }
 
-Mesh* InitMesh(const std::string& path){
+Mesh* initMesh(const std::string& path){
     auto* mesh = new Mesh();
     mesh->Parse(path.c_str());
     mesh->InitBuffers();
     return mesh;
 }
 
-GameObject* InitGameObject(){
+GameObject* initGameObject(){
     auto* go = new GameObject();
 //    go->transform.position = glm::linearRand(glm::vec3(-50), glm::vec3(50));
     return go;
 }
 
-void InitSceneUniformBlock(){
+void initSceneUniformBlock(){
     glGenBuffers(1, &scene.scene_ubo_id);
     glBindBuffer(GL_UNIFORM_BUFFER, scene.scene_ubo_id);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(SceneUniformBlock), NULL, GL_DYNAMIC_DRAW);
@@ -103,8 +105,7 @@ void drawSkyboxBuffer(){
     glDepthMask(GL_TRUE);
 }
 
-void draw(){
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(SceneUniformBlock), scene.SetSceneUniforms());
+void drawUI(){
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -117,7 +118,11 @@ void draw(){
 
     // Render the ImGui elements to the screen
     ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
 
+void draw(){
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(SceneUniformBlock), scene.SetSceneUniforms());
     glClearColor(.0f, .0f, .0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -126,7 +131,8 @@ void draw(){
     drawFrameBuffer(fb);
     drawBackBuffer();
 
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    //UI
+    drawUI();
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
@@ -177,7 +183,7 @@ int init() {
 
     glEnable(GL_DEPTH_TEST);
 
-    InitSceneUniformBlock();
+    initSceneUniformBlock();
 
     auto* skyboxTexture = MaterialInterface::LoadCubeMapTexture("../assets/cubemap/cubemap");
 
@@ -201,8 +207,8 @@ int init() {
     skyboxMat->cubemapID = skyboxTexture->textureID;
 
     //Teapot Game Object
-    auto* teapotMesh = InitMesh("../assets/teapot.obj");
-    auto* teapot = InitGameObject();
+    auto* teapotMesh = initMesh("../assets/teapot.obj");
+    auto* teapot = initGameObject();
     teapot->mesh = teapotMesh;
     teapot->material = standardMat;
     teapot->depthMaterial = depthMat;//this is the material used in the shadow depth pass
@@ -210,15 +216,15 @@ int init() {
     backBufferObjects.push_back(teapot);
 
     //Skybox Game Object
-    auto* cube = InitMesh("../assets/cube.obj");
-    auto* skybox = InitGameObject();
+    auto* cube = initMesh("../assets/cube.obj");
+    auto* skybox = initGameObject();
     skybox->material = skyboxMat;
     skybox->mesh = cube;
     skyboxBufferObjects.push_back(skybox);
 
     //Floor Game Object
-    auto* planeMesh = InitMesh("../assets/plane.obj");
-    auto* floor = InitGameObject();
+    auto* planeMesh = initMesh("../assets/plane.obj");
+    auto* floor = initGameObject();
     floor->mesh = planeMesh;
     floor->material = standardMat;
     floor->depthMaterial = depthMat;//this is the material used in the shadow depth pass
@@ -228,8 +234,8 @@ int init() {
     //Shadow Mapping Debug
     auto* shadowMapTextureMat = new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
 
-    auto* debugMesh = InitMesh("../assets/plane.obj");
-    auto* debug = InitGameObject();
+    auto* debugMesh = initMesh("../assets/plane.obj");
+    auto* debug = initGameObject();
     debug->transform.position.x += 40.0f;
     debug->transform.rotation.x += M_PI / 2.0f;
     debug->mesh = debugMesh;
@@ -243,8 +249,8 @@ int init() {
 
     auto* renderTextureMat =  new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
 
-    auto* renderTextureMesh = InitMesh("../assets/plane.obj");
-    auto* renderTextureObj = InitGameObject();
+    auto* renderTextureMesh = initMesh("../assets/plane.obj");
+    auto* renderTextureObj = initGameObject();
     renderTextureObj->transform.position.x += 80.0f;
     renderTextureObj->transform.rotation.x += M_PI / 2.0f;
     renderTextureObj->mesh = renderTextureMesh;
