@@ -5,9 +5,13 @@ layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTextureCoords;
 
 uniform mat4 model;
-uniform float timer;
 
 layout (std140) uniform SceneUniformBlock {
+    float time;
+    float deltaTime;
+    float padding;
+    float morePadding;
+
     vec4 cameraPosition;
     mat4 cameraView;
     mat4 cameraProjection;

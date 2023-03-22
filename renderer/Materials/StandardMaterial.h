@@ -18,9 +18,6 @@ public:
     void Draw(Transform transform, SceneUniformBlock* sceneUniforms) override{
         glUseProgram(this->programID);
 
-        GLint time_location = glGetUniformLocation(this->programID, "timer");
-        glUniform1f(time_location, (float)glfwGetTime());
-
         glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), transform.position);
         ModelMatrix = glm::scale(ModelMatrix, transform.scale);
         ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));

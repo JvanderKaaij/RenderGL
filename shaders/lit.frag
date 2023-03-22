@@ -10,10 +10,14 @@ in vec2 TextureCoords;
 in vec4 FragPosLightSpace;
 
 uniform mat4 model;
-uniform float timer;
 uniform vec3 diffuseColor;
 
 layout (std140) uniform SceneUniformBlock {
+    float time;
+    float deltaTime;
+    float padding;
+    float morePadding;
+
     vec4 cameraPosition;
     mat4 cameraView;
     mat4 cameraProjection;
@@ -79,5 +83,5 @@ void main()
     //FINAL SUMMING
     vec3 finalColor = ambient + (1.0 - shadow) * (finalSpecular + finalDiffuse + finalReflection);
 
-    FragColor = vec4(finalColor, 1.0);
+    FragColor = vec4(time/10.0, 0.0, 0.0, 1.0);
 }
