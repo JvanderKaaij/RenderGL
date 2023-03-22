@@ -10,7 +10,6 @@ Scene::Scene() {
 
 SceneUniformBlock* Scene::SetSceneUniforms(){
 
-    std::cout << "Float size: " << sizeof(float) << std::endl;
     this->sceneUniforms->time = (float)glfwGetTime();
 
     //note that I parse to a vec4 here to make sure it works with UBO's and std140 (that expects type sizes to be divisible by 4)

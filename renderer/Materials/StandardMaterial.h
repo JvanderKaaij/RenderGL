@@ -27,6 +27,12 @@ public:
         GLuint m_location = glGetUniformLocation(this->programID, "model");
         glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
 
+        GLuint ambient_color_location = glGetUniformLocation(this->programID, "ambientColor");
+        glUniform3fv(ambient_color_location, 1, glm::value_ptr(this->ambientColor));
+
+        GLuint diffuse_color_location = glGetUniformLocation(this->programID, "diffuseColor");
+        glUniform3fv(diffuse_color_location, 1, glm::value_ptr(this->diffuseColor));
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->diffuseID);
         GLuint diffuseLocation = glGetUniformLocation(this->programID, "diffuseTexture");
@@ -41,9 +47,6 @@ public:
         glBindTexture(GL_TEXTURE_CUBE_MAP, this->cubemapID);
         GLuint skyboxLocation = glGetUniformLocation(this->programID, "skyboxTexture");
         glUniform1i(skyboxLocation, 2);
-
-        GLuint diffuse_color_location = glGetUniformLocation(this->programID, "diffuseColor");
-        glUniform3fv(diffuse_color_location, 1, glm::value_ptr(this->diffuseColor));
 
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, this->shadowMapID);

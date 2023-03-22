@@ -21,6 +21,7 @@ public:
     unsigned int shadowMapID;
     unsigned int sceneBlockUBO;
 
+    glm::vec3 ambientColor = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 };

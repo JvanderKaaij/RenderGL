@@ -200,6 +200,7 @@ int init() {
     standardMat->diffuseID = woodTexture->textureID;
     standardMat->specularID = cobbleSpecTexture->textureID;
     standardMat->cubemapID = skyboxTexture->textureID;
+    standardMat->ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     standardMat->diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
     standardMat->sceneBlockUBO = scene.scene_ubo_id;
 
