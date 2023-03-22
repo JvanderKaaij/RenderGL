@@ -1,3 +1,6 @@
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 #include "../Shaders.h"
 #include "../Texture.h"
 #include "../Transform.h"
@@ -10,7 +13,7 @@ class Material {
 public:
     Material(std::string vertex_path, std::string fragment_path);
 
-    void virtual Draw(Transform transform, SceneUniformBlock* sceneUniforms);
+    virtual void Draw(Transform transform, SceneUniformBlock* sceneUniforms);
 
     Shaders shaders;
     unsigned int programID;

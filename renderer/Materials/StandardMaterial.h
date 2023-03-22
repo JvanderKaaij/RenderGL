@@ -6,8 +6,6 @@
 #include <utility>
 #include "../../interface/MaterialInterface.h"
 #include "../Scene.h"
-#include "GLFW/glfw3.h"
-#include "glm/gtc/type_ptr.hpp"
 #include "Material.h"
 
 class StandardMaterial: public Material {
@@ -16,16 +14,7 @@ public:
     StandardMaterial(std::string vertex_path, std::string fragment_path): Material(std::move(vertex_path), std::move(fragment_path)){}
 
     void Draw(Transform transform, SceneUniformBlock* sceneUniforms) override{
-        glUseProgram(this->programID);
-
-        glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), transform.position);
-        ModelMatrix = glm::scale(ModelMatrix, transform.scale);
-        ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-        ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-        ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-
-        GLuint m_location = glGetUniformLocation(this->programID, "model");
-        glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+        Material::Draw(transform, sceneUniforms); //call the draw function on the base class
 
         GLuint ambient_color_location = glGetUniformLocation(this->programID, "ambientColor");
         glUniform3fv(ambient_color_location, 1, glm::value_ptr(this->ambientColor));
