@@ -23,12 +23,12 @@ public:
         glUniform3fv(diffuse_color_location, 1, glm::value_ptr(this->diffuseColor));
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->diffuseID);
+        glBindTexture(GL_TEXTURE_2D, this->diffuseTextID);
         GLuint diffuseLocation = glGetUniformLocation(this->programID, "diffuseTexture");
         glUniform1i(diffuseLocation, 0);
 
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, this->specularID);
+        glBindTexture(GL_TEXTURE_2D, this->specularTextID);
         GLuint specularLocation = glGetUniformLocation(this->programID, "specularTexture");
         glUniform1i(specularLocation, 1);
 

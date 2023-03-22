@@ -17,9 +17,9 @@ public:
 
     Shaders shaders;
     unsigned int programID;
-    unsigned int diffuseID;
-    unsigned int specularID;
-    unsigned int renderedTextureID;
+    unsigned int diffuseTextID;
+    unsigned int specularTextID;
+    unsigned int renderedTextID;
     unsigned int cubemapID;
     unsigned int shadowMapID;
     unsigned int sceneBlockUBO;

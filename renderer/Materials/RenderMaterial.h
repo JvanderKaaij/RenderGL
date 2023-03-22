@@ -27,7 +27,7 @@ public:
         glUniformMatrix4fv(p_location, 1, GL_FALSE, glm::value_ptr(sceneUniforms->cameraProjection));
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->renderedTextureID);
+        glBindTexture(GL_TEXTURE_2D, this->renderedTextID);
         GLuint renderLocation = glGetUniformLocation(this->programID, "renderTexture");
         glUniform1i(renderLocation, 0);
 

@@ -197,8 +197,8 @@ int init() {
     auto* woodTexture =  MaterialInterface::LoadTexture("../assets/wood.jpg");
     auto* cobbleSpecTexture = MaterialInterface::LoadTexture("../assets/cobble-specular.png");
     auto* standardMat = new StandardMaterial("../shaders/lit.vert", "../shaders/lit.frag");
-    standardMat->diffuseID = woodTexture->textureID;
-    standardMat->specularID = cobbleSpecTexture->textureID;
+    standardMat->diffuseTextID = woodTexture->textureID;
+    standardMat->specularTextID = cobbleSpecTexture->textureID;
     standardMat->cubemapID = skyboxTexture->textureID;
     standardMat->ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     standardMat->diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -242,7 +242,7 @@ int init() {
     debug->transform.rotation.x += M_PI / 2.0f;
     debug->mesh = debugMesh;
     debug->material = shadowMapTextureMat;
-    debug->material->renderedTextureID = directional_light_shadow_map->texture->textureID;
+    debug->material->renderedTextID = directional_light_shadow_map->texture->textureID;
     debug->depthMaterial = depthMat;
     backBufferObjects.push_back(debug);
 
@@ -257,7 +257,7 @@ int init() {
     renderTextureObj->transform.rotation.x += M_PI / 2.0f;
     renderTextureObj->mesh = renderTextureMesh;
     renderTextureObj->material = renderTextureMat;
-    renderTextureObj->material->renderedTextureID = fb->texture->textureID;
+    renderTextureObj->material->renderedTextID = fb->texture->textureID;
     renderTextureObj->depthMaterial = depthMat;
     backBufferObjects.push_back(renderTextureObj);
 
