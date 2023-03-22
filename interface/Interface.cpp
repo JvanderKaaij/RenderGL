@@ -194,11 +194,13 @@ int init() {
     directional_light_shadow_map = new DepthFrameBuffer(1024, 1024);
 
     //Standard Lit Material
-    auto* woodTexture =  MaterialInterface::LoadTexture("../assets/wood.jpg");
+    auto* woodTexture = MaterialInterface::LoadTexture("../assets/wood.jpg");
     auto* cobbleSpecTexture = MaterialInterface::LoadTexture("../assets/cobble-specular.png");
+    auto* normalTexture = MaterialInterface::LoadTexture("../assets/teapot_normals.png");
     auto* standardMat = new StandardMaterial("../shaders/lit.vert", "../shaders/lit.frag");
     standardMat->diffuseTextID = woodTexture->textureID;
     standardMat->specularTextID = cobbleSpecTexture->textureID;
+    standardMat->normalTextID = normalTexture->textureID;
     standardMat->cubemapID = skyboxTexture->textureID;
     standardMat->ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     standardMat->diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);

@@ -19,6 +19,7 @@ public:
     unsigned int programID;
     unsigned int diffuseTextID;
     unsigned int specularTextID;
+    unsigned int normalTextID;
     unsigned int renderedTextID;
     unsigned int cubemapID;
     unsigned int shadowMapID;

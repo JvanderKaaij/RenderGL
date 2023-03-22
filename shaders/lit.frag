@@ -30,6 +30,8 @@ layout(binding = 0) uniform sampler2D diffuseTexture;
 layout(binding = 1) uniform sampler2D specularTexture;
 layout(binding = 2) uniform samplerCube skyboxTexture;
 layout(binding = 3) uniform sampler2D shadowMapTexture;
+layout(binding = 4) uniform sampler2D normalTexture;
+
 
 float reflectionFactor = 0.2;
 float specularExponent = 100.;
@@ -57,7 +59,14 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 void main()
 {
     vec3 viewNormal = normalize(mat3(cameraProjection * cameraView * model) * WorldNormal);
+    vec3 worldNormal = normalize(WorldNormal);
     vec3 normal = normalize(mat3(cameraProjection * model) * WorldNormal);
+
+    //NORMAL MAP
+    vec4 normalColor = texture(normalTexture, TextureCoords);
+    normal *= normalColor.rgb;
+    viewNormal *= normalColor.rgb;
+    worldNormal *= normalColor.rgb;
 
     //DIFFUSE
     float diffuse = max(dot(normal, DirectionalLight), 0.0);
@@ -73,7 +82,7 @@ void main()
 
     //REFLECTION
     vec3 I = normalize(Position - cameraPosition.xyz * mat3(cameraView));
-    vec3 R = reflect(I, normalize(WorldNormal));
+    vec3 R = reflect(I, normalize(worldNormal));
     vec3 finalReflection = texture(skyboxTexture, R).rgb * reflectionFactor;
 
     //SHADOW MAP
@@ -81,6 +90,7 @@ void main()
 
     //FINAL SUMMING
     vec3 finalColor = (1.0 - shadow) * (finalSpecular + finalDiffuse + finalReflection);
+
 
     FragColor = vec4(finalColor, 1.0);
 }

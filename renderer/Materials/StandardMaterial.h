@@ -42,6 +42,11 @@ public:
         GLuint shadowMapLocation = glGetUniformLocation(this->programID, "shadowMapTexture");
         glUniform1i(shadowMapLocation, 3);
 
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, this->normalTextID);
+        GLuint normalLocation = glGetUniformLocation(this->programID, "normalTexture");
+        glUniform1i(normalLocation, 4);
+
         GLuint uniformBlockIndex = glGetUniformBlockIndex(this->programID, "SceneUniformBlock");
         glUniformBlockBinding(this->programID, uniformBlockIndex, 0);
         glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->sceneBlockUBO);
