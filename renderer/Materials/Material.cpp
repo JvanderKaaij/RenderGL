@@ -54,4 +54,5 @@ void Material::Draw(Transform transform, SceneUniformBlock* sceneUniforms) {
 
     GLuint m_location = glGetUniformLocation(this->programID, "model");
     glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+
 }

@@ -54,21 +54,20 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 }
 
 //(This is not following the render equation yet)
-//and messed up in all sorts of ways
 void main()
 {
-    vec3 world = normalize(mat3(cameraProjection * cameraView * model) * WorldNormal);
-    vec3 worldM = normalize(mat3(cameraProjection * model) * WorldNormal);
+    vec3 viewNormal = normalize(mat3(cameraProjection * cameraView * model) * WorldNormal);
+    vec3 normal = normalize(mat3(cameraProjection * model) * WorldNormal);
 
     //DIFFUSE
-    float diffuse = max(dot(worldM, DirectionalLight), 0.0);
+    float diffuse = max(dot(normal, DirectionalLight), 0.0);
     vec4 texelColor = texture(diffuseTexture, TextureCoords);
     vec3 diffuseAmbient = ambientColor + (diffuse * diffuseColor);
     vec3 finalDiffuse = clamp(diffuseAmbient, vec3(0.0), vec3(1.0)) * texelColor.xyz;
 
     //SPECULAR
     vec3 halfwayVector = normalize(DirectionalLight + viewDirection);
-    float specular = pow(max(dot(world, halfwayVector), 0.0), specularExponent);
+    float specular = pow(max(dot(viewNormal, halfwayVector), 0.0), specularExponent);
     float specularIntensity = texture(specularTexture, TextureCoords).r;
     vec3 finalSpecular = (specular * specularIntensity) * specularColor;
 
