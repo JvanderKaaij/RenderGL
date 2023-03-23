@@ -186,6 +186,7 @@ int init() {
 
     initSceneUniformBlock();
 
+    //MATERIALS
     auto* skyboxTexture = MaterialInterface::LoadCubeMapTexture("../assets/cubemap/cubemap");
 
     //Depth Material for Shadow Mapping
@@ -209,6 +210,12 @@ int init() {
     //Skybox Material
     auto* skyboxMat = new SkyboxMaterial("../shaders/skybox.vert", "../shaders/skybox.frag");
     skyboxMat->cubemapID = skyboxTexture->textureID;
+
+    //RenderTexture Material
+    fb = new FrameBuffer(1024, 1024);
+    auto* renderTextureMat =  new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
+
+    //GAME OBJECTS
 
     //Teapot Game Object
     auto* teapotMesh = initMesh("../assets/teapot.obj");
@@ -248,11 +255,7 @@ int init() {
     debug->depthMaterial = depthMat;
     backBufferObjects.push_back(debug);
 
-    //Render Texture Material
-    fb = new FrameBuffer(1024, 1024);
-
-    auto* renderTextureMat =  new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
-
+    //Render Texture Debug
     auto* renderTextureMesh = initMesh("../assets/plane.obj");
     auto* renderTextureObj = initGameObject();
     renderTextureObj->transform.position.x += 80.0f;
