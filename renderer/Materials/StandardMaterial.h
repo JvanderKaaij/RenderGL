@@ -13,6 +13,15 @@ public:
 
     StandardMaterial(std::string vertex_path, std::string fragment_path): Material(std::move(vertex_path), std::move(fragment_path)){}
 
+    unsigned int diffuseTextID;
+    unsigned int specularTextID;
+    unsigned int normalTextID;
+
+    unsigned int cubemapID;
+
+    glm::vec3 ambientColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
+
     void Draw(Transform transform, SceneUniformBlock* sceneUniforms) override{
         Material::Draw(transform, sceneUniforms); //call the draw function on the base class
 

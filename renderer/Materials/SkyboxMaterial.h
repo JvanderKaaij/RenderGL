@@ -14,6 +14,8 @@ public:
 
     SkyboxMaterial(std::string vertex_path, std::string fragment_path): Material(std::move(vertex_path), std::move(fragment_path)){}
 
+    unsigned int cubemapID;
+
     void Draw(Transform transform, SceneUniformBlock* sceneUniforms) override{
         glUseProgram(this->programID);
 
