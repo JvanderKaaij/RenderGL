@@ -22,7 +22,6 @@ layout (std140) uniform SceneUniformBlock {
 out vec3 WorldNormal;
 out vec3 LocalNormal;
 out vec3 Position;
-out vec3 DirectionalLight;
 out vec2 TextureCoords;
 out vec4 FragPosLightSpace;
 
@@ -31,7 +30,6 @@ void main(){
     LocalNormal = aNormal;
     Position = vec3(model * vec4(aPos, 1.0));
 
-    DirectionalLight = normalize(-sceneLightDirection.xyz);
     TextureCoords = aTextureCoords;
 
     FragPosLightSpace = sceneLightProjection * vec4(Position, 1.0);

@@ -2,7 +2,6 @@
 
 in vec3 SurfaceNormals;
 in vec3 WorldNormals;
-in vec3 DirectionalLight;
 in vec2 TextureCoords;
 
 layout(binding = 0) uniform sampler2D renderTexture;

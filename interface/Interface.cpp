@@ -17,6 +17,7 @@
 #include "imgui.h"
 #include "../libraries/imgui/backends/imgui_impl_glfw.h"
 #include "../libraries/imgui/backends/imgui_impl_opengl3.h"
+#include "../renderer/Materials/PBRMaterial.h"
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -215,13 +216,19 @@ int init() {
     fb = new FrameBuffer(1024, 1024);
     auto* renderTextureMat =  new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
 
+    //PBR Material
+    auto* pbrMaterial = new PBRMaterial("../shaders/lit.vert", "../shaders/pbr.frag");
+    pbrMaterial->roughness = 0.5;
+    pbrMaterial->is_metal = true;
+    pbrMaterial->color = glm::vec3(1.0, 0.0, 0.0);
+
     //GAME OBJECTS
 
     //Teapot Game Object
     auto* teapotMesh = initMesh("../assets/teapot.obj");
     auto* teapot = initGameObject();
     teapot->mesh = teapotMesh;
-    teapot->material = standardMat;
+    teapot->material = pbrMaterial;
     teapot->depthMaterial = depthMat;//this is the material used in the shadow depth pass
     teapot->material->shadowMapID = directional_light_shadow_map->texture->textureID;
     backBufferObjects.push_back(teapot);
@@ -276,7 +283,8 @@ int init() {
             glfwTerminate();
             return 0;
         }
-
+        teapot->transform.rotation.y += 0.05;
+        floor->transform.rotation.y += 0.01;
         draw();
     }
 

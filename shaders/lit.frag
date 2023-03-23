@@ -1,10 +1,8 @@
 #version 450 core
 
-in vec3 Normal;
 in vec3 Position;
 
 in vec3 WorldNormal;
-in vec3 LocalNormal;
 in vec3 DirectionalLight;
 in vec2 TextureCoords;
 in vec4 FragPosLightSpace;
@@ -32,7 +30,6 @@ layout(binding = 2) uniform samplerCube skyboxTexture;
 layout(binding = 3) uniform sampler2D shadowMapTexture;
 layout(binding = 4) uniform sampler2D normalTexture;
 
-
 float reflectionFactor = 0.2;
 float specularExponent = 100.;
 
@@ -50,7 +47,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     float closestDepth = texture(shadowMapTexture, projCoords.xy).r;
     float currentDepth = projCoords.z;
     //There is still a problem with Directional Light being a direction and not a position
-    float bias = max(0.05 * (1.0 - dot(LocalNormal, DirectionalLight * 4.0)), 0.005);
+    float bias = max(0.05 * (1.0 - dot(WorldNormal, sceneLightDirection.xyz * 4.0)), 0.005);
     float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
     return shadow;
 }
@@ -69,13 +66,13 @@ void main()
     worldNormal *= normalColor.rgb;
 
     //DIFFUSE
-    float diffuse = max(dot(normal, DirectionalLight), 0.0);
+    float diffuse = max(dot(normal, sceneLightDirection.xyz), 0.0);
     vec4 texelColor = texture(diffuseTexture, TextureCoords);
     vec3 diffuseAmbient = ambientColor + (diffuse * diffuseColor);
     vec3 finalDiffuse = clamp(diffuseAmbient, vec3(0.0), vec3(1.0)) * texelColor.xyz;
 
     //SPECULAR
-    vec3 halfwayVector = normalize(DirectionalLight + viewDirection);
+    vec3 halfwayVector = normalize(sceneLightDirection.xyz + viewDirection);
     float specular = pow(max(dot(viewNormal, halfwayVector), 0.0), specularExponent);
     float specularIntensity = texture(specularTexture, TextureCoords).r;
     vec3 finalSpecular = (specular * specularIntensity) * specularColor;
