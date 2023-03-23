@@ -1,9 +1,7 @@
 #version 450 core
 
 in vec3 Position;
-
 in vec3 WorldNormal;
-in vec3 DirectionalLight;
 in vec2 TextureCoords;
 in vec4 FragPosLightSpace;
 

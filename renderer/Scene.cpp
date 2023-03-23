@@ -20,6 +20,5 @@ SceneUniformBlock* Scene::SetSceneUniforms(){
     this->sceneUniforms->sceneLightDirection = glm::normalize(-glm::vec4(this->directional_light.direction.x, this->directional_light.direction.y, this->directional_light.direction.z, 0));
     this->sceneUniforms->sceneLightProjection = this->directional_light.GetProjectionMatrix();
 
-
     return this->sceneUniforms;
 }
