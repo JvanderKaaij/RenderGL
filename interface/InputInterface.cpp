@@ -1,4 +1,5 @@
 #include "InputInterface.h"
+#include "imgui.h"
 
 #include <utility>
 
@@ -14,9 +15,19 @@ InputInterface::InputInterface(GLFWwindow *window, Scene* scene) {
     m_window = window;
     m_scene = scene;
     glfwSetWindowUserPointer(window, this);
-    glfwSetCursorPosCallback(window, InputInterface::OnMousePositionCallback);
-    glfwSetMouseButtonCallback(window, InputInterface::OnMouseButtonCallback);
     glfwSetScrollCallback(window, InputInterface::OnMouseScrollCallback);
+}
+
+void InputInterface::Update(GLFWwindow *window){
+
+    //Cursor Position
+    double xpos, ypos;
+    glfwGetCursorPos(window, &xpos, &ypos);
+    this->OnCursorPosition(glm::vec2(xpos, ypos));
+
+    lMouseBtn = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+    lKeyModCntrl = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL);
+
 }
 
 void InputInterface::OnMoveCamera(glm::vec3 translation){
@@ -25,22 +36,15 @@ void InputInterface::OnMoveCamera(glm::vec3 translation){
 
 void InputInterface::OnCursorPosition(glm::vec2 position)
 {
-    if(lMouseBtn){
+    if(lMouseBtn && lKeyModCntrl){
+        m_scene->directional_light.direction.x += (position.x - xMousePos) * 0.1f;
+        m_scene->directional_light.direction.y -= (position.y - yMousePos) * 0.1f;
+    }else if(lMouseBtn){
         m_scene->camera.transform.rotation.x += (position.x - xMousePos) * 0.01f;
         m_scene->camera.transform.rotation.y += (position.y - yMousePos) * 0.01f;
     }
-    if(lMouseBtnCntrl){
-        m_scene->directional_light.direction.x += (position.x - xMousePos) * 0.1f;
-        m_scene->directional_light.direction.y -= (position.y - yMousePos) * 0.1f;
-    }
     xMousePos = position.x;
     yMousePos = position.y;
-}
-
-void InputInterface::OnMouseButton(int button, int action, int mods)
-{
-    lMouseBtn = (action == GLFW_PRESS && button == 0 && mods == 0);
-    lMouseBtnCntrl = (action == GLFW_PRESS && button == 0 && (mods & GLFW_MOD_CONTROL) != 0);
 }
 
 void InputInterface::OnScroll(glm::vec2 scrollOffset)
@@ -50,18 +54,6 @@ void InputInterface::OnScroll(glm::vec2 scrollOffset)
 
 void InputInterface::InitKeyCallback() {
     glfwSetKeyCallback(m_window, &InputInterface::OnKeyCallback);
-}
-
-//Static wrappers
-
-void InputInterface::OnMousePositionCallback(GLFWwindow* window, double xpos, double ypos) {
-    auto* self = (InputInterface*)glfwGetWindowUserPointer(window);
-    self->OnCursorPosition(glm::vec2(xpos, ypos));
-}
-
-void InputInterface::OnMouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-    auto* self = (InputInterface*)glfwGetWindowUserPointer(window);
-    self->OnMouseButton(button, action, mods);
 }
 
 void InputInterface::OnMouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {

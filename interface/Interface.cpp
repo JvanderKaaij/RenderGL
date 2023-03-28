@@ -123,6 +123,10 @@ void drawUI(){
 }
 
 void draw(){
+
+    //handle interface events
+    glfwPollEvents();
+
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(SceneUniformBlock), scene.SetSceneUniforms());
     glClearColor(.0f, .0f, .0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -138,8 +142,12 @@ void draw(){
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
 
-    //handle interface events
-    glfwPollEvents();
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureMouse) {
+        // Scroll event should be handled by Dear ImGui, not OpenGL
+        return;
+    }
+    inputInterface->Update(window);
 }
 
 static void glfw_error_callback(int error, const char* description)
@@ -228,7 +236,7 @@ int init() {
     auto* teapotMesh = initMesh("../assets/teapot.obj");
     auto* teapot = initGameObject();
     teapot->mesh = teapotMesh;
-    teapot->material = pbrMaterial;
+    teapot->material = standardMat;
     teapot->depthMaterial = depthMat;//this is the material used in the shadow depth pass
     teapot->material->shadowMapID = directional_light_shadow_map->texture->textureID;
     backBufferObjects.push_back(teapot);
@@ -283,8 +291,10 @@ int init() {
             glfwTerminate();
             return 0;
         }
-        teapot->transform.rotation.y += 0.05;
-        floor->transform.rotation.y += 0.01;
+//        teapot->transform.position.x += 0.01f;
+
+//        teapot->transform.rotation.y += 0.05;
+//        floor->transform.rotation.y += 0.01;
         draw();
     }
 
