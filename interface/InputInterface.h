@@ -27,8 +27,8 @@ private:
     std::map<int, std::function<void()>> keyCallbacks;
     bool lMouseBtn = false;
     bool lKeyModCntrl = false;
-    double xMousePos = 0;
-    double yMousePos = 0;
+    float xMousePos = 0;
+    float yMousePos = 0;
     GLFWwindow* m_window;
     Scene* m_scene;
 };

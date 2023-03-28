@@ -31,7 +31,7 @@ void InputInterface::Update(GLFWwindow *window){
 }
 
 void InputInterface::OnMoveCamera(glm::vec3 translation){
-    m_scene->camera.transform.position += translation;
+    m_scene->camera.Move(translation);
 }
 
 void InputInterface::OnCursorPosition(glm::vec2 position)
@@ -40,8 +40,9 @@ void InputInterface::OnCursorPosition(glm::vec2 position)
         m_scene->directional_light.direction.x += (position.x - xMousePos) * 0.1f;
         m_scene->directional_light.direction.y -= (position.y - yMousePos) * 0.1f;
     }else if(lMouseBtn){
-        m_scene->camera.transform.rotation.x += (position.x - xMousePos) * 0.01f;
-        m_scene->camera.transform.rotation.y += (position.y - yMousePos) * 0.01f;
+        float deltaMouseX = (position.x - xMousePos) * 0.004f;
+        float deltaMouseY = (position.y - yMousePos) * 0.004f;
+        m_scene->camera.Rotate(glm::vec3(deltaMouseY, deltaMouseX, 0));
     }
     xMousePos = position.x;
     yMousePos = position.y;

@@ -40,8 +40,8 @@ void registerInputs(GLFWwindow* window){
     inputInterface = new InputInterface(window, &scene);
     inputInterface->Subscribe(GLFW_KEY_A, [](){ inputInterface->OnMoveCamera(glm::vec3(0.9, 0., 0.));});
     inputInterface->Subscribe(GLFW_KEY_D, [](){ inputInterface->OnMoveCamera(glm::vec3(-0.9, 0., 0.));});
-    inputInterface->Subscribe(GLFW_KEY_W, [](){ inputInterface->OnMoveCamera(glm::vec3(0., -0.9, 0.));});
-    inputInterface->Subscribe(GLFW_KEY_S, [](){ inputInterface->OnMoveCamera(glm::vec3(0., 0.9, 0.));});
+    inputInterface->Subscribe(GLFW_KEY_W, [](){ inputInterface->OnMoveCamera(glm::vec3(0., 0.0, 0.9));});
+    inputInterface->Subscribe(GLFW_KEY_S, [](){ inputInterface->OnMoveCamera(glm::vec3(0., 0.0, -0.9));});
     inputInterface->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
     inputInterface->InitKeyCallback();
 }
