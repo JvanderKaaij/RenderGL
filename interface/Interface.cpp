@@ -37,6 +37,8 @@ std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
 Scene scene = Scene();
 InputInterface* inputInterface;
 
+GameObject* teapot;
+
 //This file should be the RenderInterface
 //And inputs should be registered at an over-arching engine class
 
@@ -118,14 +120,22 @@ void drawUI(){
     ImGui::NewFrame();
 
     ImGuizmo::BeginFrame();
+
+    ImGuiIO& io = ImGui::GetIO();
+    ImVec2 screenSize = ImVec2(io.DisplaySize.x, io.DisplaySize.y);
+    ImGui::SetNextWindowSize(screenSize);
+    ImGui::SetNextWindowPos(ImVec2(0,0));
+
+    ImGui::Begin("Hello, teapot!", nullptr, ImGuiWindowFlags_NoBackground);
+
     ImGuizmo::SetOrthographic(false); // Set the projection matrix to perspective
     ImGuizmo::SetDrawlist(); // Setup draw list for rendering
     ImGuizmo::Enable(true);
-    ImGuizmo::SetRect(0, 0, width,height);
+    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(),ImGui::GetWindowHeight());
+//    ImGuizmo::DrawGrid(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), glm::value_ptr(glm::mat4(1.0f)), 100.f);
 
-    ImGuizmo::DrawCubes(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), glm::value_ptr(glm::mat4(1.0f)), 1);
+    ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(teapot->material->modelMatrix));
 
-    ImGui::Begin("Hello, teapot!");
     ImGui::Text("Hello, world!");
     if(ImGui::Button("Button")){
         std::cout << "Miaf!";
@@ -193,7 +203,6 @@ int init() {
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO io = ImGui::GetIO(); (void)io;
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 450");
@@ -252,7 +261,7 @@ int init() {
 
     //Teapot Game Object
     auto* teapotMesh = initMesh("../assets/teapot.obj");
-    auto* teapot = initGameObject();
+    teapot = initGameObject();
     teapot->mesh = teapotMesh;
     teapot->material = standardMat;
     teapot->depthMaterial = depthMat;//this is the material used in the shadow depth pass

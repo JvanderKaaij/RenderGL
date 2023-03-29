@@ -20,6 +20,6 @@ public:
     unsigned int renderedTextID;
     unsigned int sceneBlockUBO;
     unsigned int shadowMapID;
-
+    glm::mat4 modelMatrix;
 };
 #endif

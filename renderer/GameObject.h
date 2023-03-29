@@ -10,6 +10,7 @@ public:
     Material* material;
     Material* depthMaterial;
     Transform transform;
+    
     void Draw(SceneUniformBlock* sceneUniforms);
     void DrawDepth(SceneUniformBlock* sceneUniforms);
 };
