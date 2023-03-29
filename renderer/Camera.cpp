@@ -5,53 +5,73 @@
 #include "Misc/Helpers.h"
 #include <math.h>
 
-Transform transform = Transform{
-        glm::vec3(0,0,0),
-        glm::vec3(0,0,0),
-        glm::vec3(1,1,1)
-};
 
-void Camera::Set(glm::vec3 position) {
-    transform.position = position;
-    viewMatrix = glm::translate(glm::mat4(1.0f), transform.position);
+Camera::Camera() {
+    transform = Transform{
+            glm::vec3(0,0,0),
+            glm::vec3(0,0,0),
+            glm::vec3(1,1,1)
+    };
+    worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+    yaw = -90.0f;
+    pitch = 0.0f;
+    speed = 12.5f;
+    rotationSpeed = 40.0f;
+    zoom = 45.0f;
+    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    UpdateCameraVectors();
 }
 
-void Camera::Move(glm::vec3 dir) {
-    //fmodf
-
-    float x = glm::clamp(transform.rotation.x, -2.0f, 2.0f);
-    float y = glm::clamp(transform.rotation.y, -2.0f, 2.0f);
-    float z = glm::clamp(transform.rotation.z, -2.0f, 2.0f);
-
-    glm::quat QuatAroundX = glm::quat(-x, glm::vec3(1.0,0.0,0.0));
-    glm::quat QuatAroundY = glm::quat(y, glm::vec3(0.0,1.0,0.0));
-    glm::quat QuatAroundZ = glm::quat(-z, glm::vec3(0.0,0.0,1.0));
-    glm::quat finalOrientation = QuatAroundX * QuatAroundY * QuatAroundZ;
-
-    glm::vec3 ndir = glm::vec4(dir, 1.0) * mat4_cast(finalOrientation);
-
-    std::cout << "New Direction:";
-    Helpers::DebugVec(ndir);
-
-    transform.position += ndir;
-
-    viewMatrix = glm::translate(viewMatrix, ndir);
+void Camera::SetCameraPos(glm::vec3 pos){
+    transform.position = pos;
+    UpdateCameraVectors();
 }
 
-void Camera::Rotate(glm::vec3 dir) {
-    yawRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-    pitchRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+void Camera::UpdateCameraVectors() {
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(yaw) * cos(glm::radians(pitch)));
+    direction.y = sin(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw) * cos(glm::radians(pitch)));
+    cameraFront = glm::normalize(direction);
+    cameraRight = glm::normalize(glm::cross(cameraFront, worldUp));
+    cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
+}
 
-    yawRotation = RotateAroundAxis(up, glm::radians(dir.x * 100.0f), yawRotation);
-    pitchRotation = RotateAroundAxis(right, glm::radians(dir.y * 100.0f), pitchRotation);
+void Camera::UpdateCameraDirection(double dx, double dy) {
+    yaw += dx * rotationSpeed;
+    pitch += dy * rotationSpeed;
+    pitch = glm::clamp(pitch, -89.0f, 89.0f);
+    UpdateCameraVectors();
+}
 
-    orientation = yawRotation * pitchRotation;
-    transform.rotation += glm::eulerAngles(orientation);
+//TODO Implement Delta Time
+void Camera::UpdateCameraPos(CameraDirection dir, double dt) {
+    float velocity = (float) dt * speed;
+    switch(dir){
+        case CameraDirection::FORWARD:
+            transform.position += cameraFront * velocity;
+            break;
+        case CameraDirection::BACKWARD:
+            transform.position -= cameraFront * velocity;
+            break;
+        case CameraDirection::RIGHT:
+            transform.position += cameraRight * velocity;
+            break;
+        case CameraDirection::LEFT:
+            transform.position -= cameraRight * velocity;
+            break;
+        case CameraDirection::UP:
+            transform.position += cameraUp * velocity;
+            break;
+        case CameraDirection::DOWN:
+            transform.position -= cameraUp * velocity;
+            break;
+    }
+}
 
-    std::cout << "Rotation:";
-    Helpers::DebugVec(transform.rotation);
-
-    viewMatrix = mat4_cast(orientation) * viewMatrix; //Note that order of multiplication matters here!
+void Camera::UpdateCameraZoom(double dy) {
+    zoom -= dy;
+    zoom = glm::clamp(zoom, 1.0f, 45.0f);
 }
 
 glm::mat4 Camera::GetProjectionMatrix() {
@@ -59,11 +79,7 @@ glm::mat4 Camera::GetProjectionMatrix() {
 }
 
 glm::mat4 Camera::GetViewMatrix(){
-    return viewMatrix;
+    return glm::lookAt(transform.position, transform.position + cameraFront, cameraUp);
 }
 
-glm::quat Camera::RotateAroundAxis(const glm::vec3& axis, float angle, const glm::quat& quat)
-{
-    glm::quat rotation = glm::angleAxis(angle, axis);
-    return rotation * quat;
-}
+

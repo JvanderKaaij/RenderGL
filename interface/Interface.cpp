@@ -38,10 +38,12 @@ InputInterface* inputInterface;
 
 void registerInputs(GLFWwindow* window){
     inputInterface = new InputInterface(window, &scene);
-    inputInterface->Subscribe(GLFW_KEY_A, [](){ inputInterface->OnMoveCamera(glm::vec3(1, 0, 0));});
-    inputInterface->Subscribe(GLFW_KEY_D, [](){ inputInterface->OnMoveCamera(glm::vec3(-1, 0, 0));});
-    inputInterface->Subscribe(GLFW_KEY_W, [](){ inputInterface->OnMoveCamera(glm::vec3(0, 0, 1));});
-    inputInterface->Subscribe(GLFW_KEY_S, [](){ inputInterface->OnMoveCamera(glm::vec3(0, 0, -1));});
+    inputInterface->Subscribe(GLFW_KEY_A, [](){ scene.camera.UpdateCameraPos(CameraDirection::LEFT, 0.1f); });
+    inputInterface->Subscribe(GLFW_KEY_D, [](){ scene.camera.UpdateCameraPos(CameraDirection::RIGHT, 0.1f); });
+    inputInterface->Subscribe(GLFW_KEY_W, [](){ scene.camera.UpdateCameraPos(CameraDirection::FORWARD, 0.1f); });
+    inputInterface->Subscribe(GLFW_KEY_S, [](){ scene.camera.UpdateCameraPos(CameraDirection::BACKWARD, 0.1f); });
+    inputInterface->Subscribe(GLFW_KEY_Q, [](){ scene.camera.UpdateCameraPos(CameraDirection::UP, 0.1f); });
+    inputInterface->Subscribe(GLFW_KEY_E, [](){ scene.camera.UpdateCameraPos(CameraDirection::DOWN, 0.1f); });
     inputInterface->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
     inputInterface->InitKeyCallback();
 }
@@ -281,7 +283,7 @@ int init() {
     renderTextureObj->depthMaterial = depthMat;
     backBufferObjects.push_back(renderTextureObj);
 
-    scene.camera.Set(glm::vec3(0., -2., -60.));
+    scene.camera.SetCameraPos(glm::vec3(0., -2., 60.));
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

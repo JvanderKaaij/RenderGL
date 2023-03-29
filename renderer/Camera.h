@@ -19,26 +19,32 @@ enum class CameraDirection{
 
 class Camera {
 public:
-    void Move(glm::vec3 dir);
-    void Set(glm::vec3 position);
-    void Rotate(glm::vec3 dir);
-    glm::quat RotateAroundAxis(const glm::vec3& axis, float angle, const glm::quat& quat);
+    Camera();
+
+    Transform transform;
+    glm::vec3 cameraFront;
+    glm::vec3 cameraUp;
+    glm::vec3 cameraRight;
+    glm::vec3 worldUp;
+
+    float yaw;
+    float pitch;
+    float speed;
+    float rotationSpeed;
+    float zoom;
+
+    void UpdateCameraDirection(double dx, double dy);
+    void UpdateCameraPos(CameraDirection dir, double dt);
+    void SetCameraPos(glm::vec3 pos);
+    void UpdateCameraZoom(double dy);
+
     glm::mat4 GetProjectionMatrix();
     glm::mat4 GetViewMatrix();
-    Transform transform;
-    glm::quat orientation;
 private:
+    void UpdateCameraVectors();
+
     glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.f);
     glm::mat4 viewMatrix;
-
-    glm::quat yawRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-    glm::quat pitchRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-
-    glm::vec3 forward = glm::vec3(0,0,-1);
-    glm::vec3 up = glm::vec3(0,1,0);
-    glm::vec3 right = glm::vec3(1,0,0);
-
-    glm::vec3 upWorld = glm::vec3(0,1,0);
 };
 
 
