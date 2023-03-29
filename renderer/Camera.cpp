@@ -68,11 +68,6 @@ void Camera::UpdateCameraPos(CameraDirection dir, double dt) {
     }
 }
 
-void Camera::UpdateCameraZoom(double dy) {
-    zoom -= dy;
-    zoom = glm::clamp(zoom, 1.0f, 45.0f);
-}
-
 glm::mat4 Camera::GetProjectionMatrix() {
     return this->projection;
 }

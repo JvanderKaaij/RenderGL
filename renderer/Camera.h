@@ -36,7 +36,6 @@ public:
     void UpdateCameraDirection(double dx, double dy);
     void UpdateCameraPos(CameraDirection dir, double dt);
     void SetCameraPos(glm::vec3 pos);
-    void UpdateCameraZoom(double dy);
 
     glm::mat4 GetProjectionMatrix();
     glm::mat4 GetViewMatrix();

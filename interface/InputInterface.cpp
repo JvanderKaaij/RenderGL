@@ -15,7 +15,6 @@ InputInterface::InputInterface(GLFWwindow *window, Scene* scene) {
     m_window = window;
     m_scene = scene;
     glfwSetWindowUserPointer(window, this);
-    glfwSetScrollCallback(window, InputInterface::OnMouseScrollCallback);
 }
 
 void InputInterface::Update(GLFWwindow *window){
@@ -44,18 +43,8 @@ void InputInterface::OnCursorPosition(glm::vec2 position)
     yMousePos = position.y;
 }
 
-void InputInterface::OnScroll(glm::vec2 scrollOffset)
-{
-    m_scene->camera.transform.position.z += scrollOffset.y;
-}
-
 void InputInterface::InitKeyCallback() {
     glfwSetKeyCallback(m_window, &InputInterface::OnKeyCallback);
-}
-
-void InputInterface::OnMouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-    auto* self = (InputInterface*)glfwGetWindowUserPointer(window);
-    self->OnScroll(glm::vec2(xoffset, yoffset));
 }
 
 void InputInterface::Subscribe(int key, std::function<void()> callback) {
