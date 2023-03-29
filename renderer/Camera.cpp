@@ -29,9 +29,9 @@ void Camera::SetCameraPos(glm::vec3 pos){
 
 void Camera::UpdateCameraVectors() {
     glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw) * cos(glm::radians(pitch)));
+    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
     direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw) * cos(glm::radians(pitch)));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     cameraFront = glm::normalize(direction);
     cameraRight = glm::normalize(glm::cross(cameraFront, worldUp));
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
@@ -78,7 +78,7 @@ glm::mat4 Camera::GetProjectionMatrix() {
 }
 
 glm::mat4 Camera::GetViewMatrix(){
-    return glm::lookAt(transform.position, transform.position + cameraFront, cameraUp);
+    return glm::lookAt(transform.position, transform.position + cameraFront, worldUp);
 }
 
 
