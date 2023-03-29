@@ -15,6 +15,7 @@
 #include "../renderer/Buffers/FrameBuffer.h"
 #include "../renderer/Buffers/DepthFrameBuffer.h"
 #include "imgui.h"
+#include "ImGuizmo.h"
 #include "../libraries/imgui/backends/imgui_impl_glfw.h"
 #include "../libraries/imgui/backends/imgui_impl_opengl3.h"
 #include "../renderer/Materials/PBRMaterial.h"
@@ -115,6 +116,15 @@ void drawUI(){
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+
+    ImGuizmo::BeginFrame();
+    ImGuizmo::SetOrthographic(false); // Set the projection matrix to perspective
+    ImGuizmo::SetDrawlist(); // Setup draw list for rendering
+    ImGuizmo::Enable(true);
+    ImGuizmo::SetRect(0, 0, width,height);
+
+    ImGuizmo::DrawCubes(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), glm::value_ptr(glm::mat4(1.0f)), 1);
+
     ImGui::Begin("Hello, teapot!");
     ImGui::Text("Hello, world!");
     if(ImGui::Button("Button")){
@@ -150,6 +160,7 @@ void draw(){
     glfwSwapBuffers(window);
 
     ImGuiIO& io = ImGui::GetIO();
+
     if (io.WantCaptureMouse) {
         // Scroll event should be handled by Dear ImGui, not OpenGL
         return;

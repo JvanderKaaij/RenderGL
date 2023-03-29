@@ -20,6 +20,8 @@ add_subdirectory("libraries/glm")
 
 add_subdirectory(libraries/imgui)
 
+add_subdirectory(libraries/imguizmo)
+
 include_directories("libraries/stb")
 
 add_executable("${PROJECT_NAME}" main.cpp glad.c libraries/imgui/backends/imgui_impl_glfw.cpp libraries/imgui/backends/imgui_impl_opengl3.cpp interface/Interface.cpp interface/Interface.h interface/InputInterface.cpp interface/InputInterface.h renderer/Materials/StandardMaterial.h renderer/Materials/RenderMaterial.h renderer/Materials/Material.cpp interface/MeshParser.cpp renderer/Mesh.cpp renderer/Lights/DirectionalLight.h interface/MaterialInterface.cpp renderer/Shaders.h renderer/Texture.h renderer/Scene.cpp renderer/Materials/SkyboxMaterial.h renderer/Materials/SkyboxMaterial.h renderer/Transform.h renderer/Transform.h renderer/Materials/DepthMaterial.h renderer/Buffers/FrameBuffer.cpp renderer/Buffers/FrameBuffer.h renderer/Buffers/DepthFrameBuffer.cpp renderer/Buffers/DepthFrameBuffer.h renderer/SceneUniformBlock.h renderer/Lights/DirectionalLight.cpp renderer/Camera.cpp renderer/Camera.h renderer/Lights/PointLight.cpp renderer/Lights/PointLight.h renderer/Materials/PBRMaterial.h renderer/Misc/Helpers.h)
@@ -36,4 +38,7 @@ target_link_libraries("${PROJECT_NAME}" assimp::assimp)
 
 target_link_libraries("${PROJECT_NAME}" imgui)
 
+target_link_libraries("${PROJECT_NAME}" imguizmo)
+
 target_link_libraries("${PROJECT_NAME}" -static)
+
