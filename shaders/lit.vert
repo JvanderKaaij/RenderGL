@@ -25,7 +25,7 @@ out vec2 TextureCoords;
 out vec4 FragPosLightSpace;
 
 void main(){
-    WorldNormal = mat3(transpose(model)) * aNormal;
+    WorldNormal = mat3(model) * aNormal;
     Position = vec3(model * vec4(aPos, 1.0));
 
     TextureCoords = aTextureCoords;

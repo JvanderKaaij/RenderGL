@@ -18,7 +18,7 @@ Camera::Camera() {
     speed = 12.5f;
     rotationSpeed = 40.0f;
     zoom = 45.0f;
-    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    cameraFront = glm::vec3(0.0f, 0.0f, -8.0f);
     UpdateCameraVectors();
 }
 
