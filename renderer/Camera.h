@@ -11,6 +11,7 @@ class Camera {
 public:
     void Move(glm::vec3 dir);
     void Rotate(glm::vec3 dir);
+    glm::quat RotateAroundAxis(const glm::vec3& axis, float angle, const glm::quat& quat);
     glm::mat4 GetProjectionMatrix();
     glm::mat4 GetViewMatrix();
     Transform transform;
@@ -18,6 +19,13 @@ public:
 private:
     glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.f);
     glm::mat4 viewMatrix;
+
+    glm::quat yawRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+    glm::quat pitchRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+
+    glm::vec3 forward = glm::vec3(0,0,-1);
+    glm::vec3 up = glm::vec3(0,1,0);
+    glm::vec3 right = glm::vec3(1,0,0);
 };
 
 

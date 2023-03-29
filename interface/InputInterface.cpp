@@ -42,7 +42,7 @@ void InputInterface::OnCursorPosition(glm::vec2 position)
     }else if(lMouseBtn){
         float deltaMouseX = (position.x - xMousePos) * 0.004f;
         float deltaMouseY = (position.y - yMousePos) * 0.004f;
-        m_scene->camera.Rotate(glm::vec3(deltaMouseY, deltaMouseX, 0));
+        m_scene->camera.Rotate(glm::vec3(deltaMouseX, deltaMouseY, 0));
     }
     xMousePos = position.x;
     yMousePos = position.y;
