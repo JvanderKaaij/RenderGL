@@ -24,6 +24,9 @@ static bool throw_exit = false;
 int width = 1024;
 int height = 768;
 
+float deltaTime = 0.0f;
+float lastTime = 0.0f;
+
 FrameBuffer* fb;
 DepthFrameBuffer* directional_light_shadow_map;
 
@@ -38,12 +41,12 @@ InputInterface* inputInterface;
 
 void registerInputs(GLFWwindow* window){
     inputInterface = new InputInterface(window, &scene);
-    inputInterface->Subscribe(GLFW_KEY_A, [](){ scene.camera.UpdateCameraPos(CameraDirection::LEFT, 0.1f); });
-    inputInterface->Subscribe(GLFW_KEY_D, [](){ scene.camera.UpdateCameraPos(CameraDirection::RIGHT, 0.1f); });
-    inputInterface->Subscribe(GLFW_KEY_W, [](){ scene.camera.UpdateCameraPos(CameraDirection::FORWARD, 0.1f); });
-    inputInterface->Subscribe(GLFW_KEY_S, [](){ scene.camera.UpdateCameraPos(CameraDirection::BACKWARD, 0.1f); });
-    inputInterface->Subscribe(GLFW_KEY_Q, [](){ scene.camera.UpdateCameraPos(CameraDirection::UP, 0.1f); });
-    inputInterface->Subscribe(GLFW_KEY_E, [](){ scene.camera.UpdateCameraPos(CameraDirection::DOWN, 0.1f); });
+    inputInterface->Subscribe(GLFW_KEY_A, [](){ scene.camera.UpdateCameraPos(CameraDirection::LEFT, deltaTime); });
+    inputInterface->Subscribe(GLFW_KEY_D, [](){ scene.camera.UpdateCameraPos(CameraDirection::RIGHT, deltaTime); });
+    inputInterface->Subscribe(GLFW_KEY_W, [](){ scene.camera.UpdateCameraPos(CameraDirection::FORWARD, deltaTime); });
+    inputInterface->Subscribe(GLFW_KEY_S, [](){ scene.camera.UpdateCameraPos(CameraDirection::BACKWARD, deltaTime); });
+    inputInterface->Subscribe(GLFW_KEY_Q, [](){ scene.camera.UpdateCameraPos(CameraDirection::UP, deltaTime); });
+    inputInterface->Subscribe(GLFW_KEY_E, [](){ scene.camera.UpdateCameraPos(CameraDirection::DOWN, deltaTime); });
     inputInterface->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
     inputInterface->InitKeyCallback();
 }
@@ -125,7 +128,9 @@ void drawUI(){
 }
 
 void draw(){
-
+    double currentTime = glfwGetTime();
+    deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
     //handle interface events
     glfwPollEvents();
 
