@@ -44,7 +44,6 @@ void Camera::UpdateCameraDirection(double dx, double dy) {
     UpdateCameraVectors();
 }
 
-//TODO Implement Delta Time
 void Camera::UpdateCameraPos(CameraDirection dir, double dt) {
     float velocity = (float) dt * speed;
     switch(dir){
