@@ -46,8 +46,8 @@ void registerInputs(GLFWwindow* window){
     inputInterface->Subscribe(GLFW_KEY_D, [](){ scene.camera.UpdateCameraPos(CameraDirection::RIGHT, deltaTime); });
     inputInterface->Subscribe(GLFW_KEY_W, [](){ scene.camera.UpdateCameraPos(CameraDirection::FORWARD, deltaTime); });
     inputInterface->Subscribe(GLFW_KEY_S, [](){ scene.camera.UpdateCameraPos(CameraDirection::BACKWARD, deltaTime); });
-    inputInterface->Subscribe(GLFW_KEY_Q, [](){ scene.camera.UpdateCameraPos(CameraDirection::UP, deltaTime); });
-    inputInterface->Subscribe(GLFW_KEY_E, [](){ scene.camera.UpdateCameraPos(CameraDirection::DOWN, deltaTime); });
+    inputInterface->Subscribe(GLFW_KEY_E, [](){ scene.camera.UpdateCameraPos(CameraDirection::UP, deltaTime); });
+    inputInterface->Subscribe(GLFW_KEY_Q, [](){ scene.camera.UpdateCameraPos(CameraDirection::DOWN, deltaTime); });
     inputInterface->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
     inputInterface->InitKeyCallback();
 }

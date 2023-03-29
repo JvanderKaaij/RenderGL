@@ -76,7 +76,7 @@ void main()
     vec3 finalSpecular = (specular * specularIntensity) * specularColor;
 
     //REFLECTION
-    vec3 I = normalize(Position - cameraPosition.xyz * mat3(cameraView));
+    vec3 I = normalize(Position + cameraPosition.xyz);
     vec3 R = reflect(I, normalize(worldNormal));
     vec3 finalReflection = texture(skyboxTexture, R).rgb * reflectionFactor;
 

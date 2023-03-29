@@ -15,7 +15,7 @@ Camera::Camera() {
     worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
     yaw = -90.0f;
     pitch = 0.0f;
-    speed = 12.5f;
+    speed = 22.5f;
     rotationSpeed = 40.0f;
     cameraFront = glm::vec3(0.0f, 0.0f, -8.0f);
     UpdateCameraVectors();
@@ -37,7 +37,7 @@ void Camera::UpdateCameraVectors() {
 }
 
 void Camera::UpdateCameraDirection(double dx, double dy) {
-    yaw += dx * rotationSpeed;
+    yaw += -dx * rotationSpeed;
     pitch += dy * rotationSpeed;
     pitch = glm::clamp(pitch, -89.0f, 89.0f);
     UpdateCameraVectors();
