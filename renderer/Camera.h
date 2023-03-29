@@ -7,9 +7,20 @@
 #include <glm/gtc/quaternion.hpp>
 #include "Transform.h"
 
+enum class CameraDirection{
+    None = 0,
+    FORWARD,
+    BACKWARD,
+    LEFT,
+    RIGHT,
+    UP,
+    DOWN
+};
+
 class Camera {
 public:
     void Move(glm::vec3 dir);
+    void Set(glm::vec3 position);
     void Rotate(glm::vec3 dir);
     glm::quat RotateAroundAxis(const glm::vec3& axis, float angle, const glm::quat& quat);
     glm::mat4 GetProjectionMatrix();
@@ -26,6 +37,8 @@ private:
     glm::vec3 forward = glm::vec3(0,0,-1);
     glm::vec3 up = glm::vec3(0,1,0);
     glm::vec3 right = glm::vec3(1,0,0);
+
+    glm::vec3 upWorld = glm::vec3(0,1,0);
 };
 
 

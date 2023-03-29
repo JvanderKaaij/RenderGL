@@ -38,10 +38,10 @@ InputInterface* inputInterface;
 
 void registerInputs(GLFWwindow* window){
     inputInterface = new InputInterface(window, &scene);
-    inputInterface->Subscribe(GLFW_KEY_A, [](){ inputInterface->OnMoveCamera(glm::vec3(0.9, 0., 0.));});
-    inputInterface->Subscribe(GLFW_KEY_D, [](){ inputInterface->OnMoveCamera(glm::vec3(-0.9, 0., 0.));});
-    inputInterface->Subscribe(GLFW_KEY_W, [](){ inputInterface->OnMoveCamera(glm::vec3(0., 0.0, 0.9));});
-    inputInterface->Subscribe(GLFW_KEY_S, [](){ inputInterface->OnMoveCamera(glm::vec3(0., 0.0, -0.9));});
+    inputInterface->Subscribe(GLFW_KEY_A, [](){ inputInterface->OnMoveCamera(glm::vec3(1, 0, 0));});
+    inputInterface->Subscribe(GLFW_KEY_D, [](){ inputInterface->OnMoveCamera(glm::vec3(-1, 0, 0));});
+    inputInterface->Subscribe(GLFW_KEY_W, [](){ inputInterface->OnMoveCamera(glm::vec3(0, 0, 1));});
+    inputInterface->Subscribe(GLFW_KEY_S, [](){ inputInterface->OnMoveCamera(glm::vec3(0, 0, -1));});
     inputInterface->Subscribe(GLFW_KEY_ESCAPE, [=](){throw_exit = true;});
     inputInterface->InitKeyCallback();
 }
@@ -281,7 +281,7 @@ int init() {
     renderTextureObj->depthMaterial = depthMat;
     backBufferObjects.push_back(renderTextureObj);
 
-    inputInterface->OnMoveCamera(glm::vec3(0., -2., -60.));
+    scene.camera.Set(glm::vec3(0., -2., -60.));
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
