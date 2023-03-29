@@ -31,7 +31,6 @@ public:
     float pitch;
     float speed;
     float rotationSpeed;
-    float zoom;
 
     void UpdateCameraDirection(double dx, double dy);
     void UpdateCameraPos(CameraDirection dir, double dt);
