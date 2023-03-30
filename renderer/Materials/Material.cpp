@@ -37,8 +37,6 @@ Material::Material(std::string vertex_path, std::string fragment_path) {
         return;
     }
 
-    modelMatrix = glm::mat4(1.0f);
-
     glDeleteShader(this->shaders.vertShader);
     glDeleteShader(this->shaders.fragShader);
 
@@ -48,13 +46,7 @@ Material::Material(std::string vertex_path, std::string fragment_path) {
 void Material::Draw(Transform transform, SceneUniformBlock* sceneUniforms) {
     glUseProgram(this->programID);
 
-    modelMatrix = glm::translate(modelMatrix, transform.position);
-    modelMatrix = glm::scale(modelMatrix, transform.scale);
-    modelMatrix = glm::rotate(modelMatrix, transform.rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-    modelMatrix = glm::rotate(modelMatrix, transform.rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-    modelMatrix = glm::rotate(modelMatrix, transform.rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-
     GLuint m_location = glGetUniformLocation(this->programID, "model");
-    glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+    glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(transform.matrix));
 
 }

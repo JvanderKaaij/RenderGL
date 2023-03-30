@@ -1,4 +1,3 @@
-#include "glm/ext/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
 #include "../Shaders.h"
@@ -20,6 +19,5 @@ public:
     unsigned int renderedTextID;
     unsigned int sceneBlockUBO;
     unsigned int shadowMapID;
-    glm::mat4 modelMatrix;
 };
 #endif

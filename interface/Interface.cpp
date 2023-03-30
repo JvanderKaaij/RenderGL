@@ -134,7 +134,7 @@ void drawUI(){
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(),ImGui::GetWindowHeight());
 //    ImGuizmo::DrawGrid(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), glm::value_ptr(glm::mat4(1.0f)), 100.f);
 
-    ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(teapot->material->modelMatrix));
+    ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(teapot->transform.matrix));
 
     ImGui::Text("Hello, world!");
     if(ImGui::Button("Button")){
@@ -289,8 +289,8 @@ int init() {
 
     auto* debugMesh = initMesh("../assets/plane.obj");
     auto* debug = initGameObject();
-    debug->transform.position.x += 40.0f;
-    debug->transform.rotation.x += M_PI / 2.0f;
+    debug->transform.SetPosition(glm::vec3(debug->transform.position.x + 40.0f, debug->transform.position.y, debug->transform.position.z));
+    debug->transform.SetRotation(glm::vec3(debug->transform.rotation.x + M_PI / 2.0f, debug->transform.rotation.y, debug->transform.rotation.z));
     debug->mesh = debugMesh;
     debug->material = shadowMapTextureMat;
     debug->material->renderedTextID = directional_light_shadow_map->texture->textureID;
@@ -300,8 +300,8 @@ int init() {
     //Render Texture Debug
     auto* renderTextureMesh = initMesh("../assets/plane.obj");
     auto* renderTextureObj = initGameObject();
-    renderTextureObj->transform.position.x += 80.0f;
-    renderTextureObj->transform.rotation.x += M_PI / 2.0f;
+    renderTextureObj->transform.SetPosition(glm::vec3(renderTextureObj->transform.position.x + 80.0f, renderTextureObj->transform.position.y, renderTextureObj->transform.position.z));
+    renderTextureObj->transform.SetRotation(glm::vec3(renderTextureObj->transform.rotation.x + M_PI / 2.0f, renderTextureObj->transform.rotation.y, renderTextureObj->transform.rotation.z));
     renderTextureObj->mesh = renderTextureMesh;
     renderTextureObj->material = renderTextureMat;
     renderTextureObj->material->renderedTextID = fb->texture->textureID;
