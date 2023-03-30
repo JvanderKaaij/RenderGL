@@ -287,7 +287,16 @@ int init() {
     teapot->material = standardMat;
     teapot->depthMaterial = depthMat;//this is the material used in the shadow depth pass
     teapot->material->shadowMapID = directional_light_shadow_map->texture->textureID;
-    backBufferObjects.push_back(teapot);
+//    backBufferObjects.push_back(teapot);
+
+    //LightBulb Game Object
+    auto* lightBulbMesh = initMesh("../assets/lightbulb.obj");
+    auto* lightBulb = initGameObject();
+    lightBulb->mesh = lightBulbMesh;
+    lightBulb->material = standardMat;
+    lightBulb->depthMaterial = depthMat;//this is the material used in the shadow depth pass
+    lightBulb->material->shadowMapID = directional_light_shadow_map->texture->textureID;
+    backBufferObjects.push_back(lightBulb);
 
     //Skybox Game Object
     auto* cube = initMesh("../assets/cube.obj");
