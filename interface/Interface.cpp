@@ -39,6 +39,9 @@ InputInterface* inputInterface;
 
 GameObject* teapot;
 
+bool rotateTool;
+bool translateTool;
+
 //This file should be the RenderInterface
 //And inputs should be registered at an over-arching engine class
 
@@ -133,12 +136,21 @@ void drawUI(){
     ImGuizmo::Enable(true);
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(),ImGui::GetWindowHeight());
 //    ImGuizmo::DrawGrid(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), glm::value_ptr(glm::mat4(1.0f)), 100.f);
+    if(translateTool){
+        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(teapot->transform.matrix));
+    }
+    if(rotateTool){
+        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, glm::value_ptr(teapot->transform.matrix));
+    }
 
-    ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(teapot->transform.matrix));
-
-    ImGui::Text("Hello, world!");
-    if(ImGui::Button("Button")){
-        std::cout << "Miaf!";
+    ImGui::Text("Hello, teapot!");
+    if(ImGui::Button("Translate")){
+        rotateTool = false;
+        translateTool = true;
+    }
+    if(ImGui::Button("Rotate")){
+        rotateTool = true;
+        translateTool = false;
     }
     ImGui::End();
 
