@@ -17,17 +17,11 @@ public:
     void Draw(Transform transform, SceneUniformBlock* sceneUniforms) override{
         glUseProgram(this->programID);
 
-        glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), transform.position);
-        ModelMatrix = glm::scale(ModelMatrix, transform.scale);
-        ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-        ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-        ModelMatrix = glm::rotate(ModelMatrix, transform.rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-
         GLuint lightSpaceMatrixLocation = glGetUniformLocation(this->programID, "lightProjectionMatrix");
         glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, glm::value_ptr(sceneUniforms->sceneLightProjection));
 
         GLuint m_location = glGetUniformLocation(this->programID, "model");
-        glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+        glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(transform.matrix));
 
     }
 };

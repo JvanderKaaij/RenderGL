@@ -15,8 +15,6 @@ struct Transform{
     void SetPosition(glm::vec3 pos){
         position = pos;
         matrix = glm::translate(matrix, position);
-//        transform.matrix = glm::scale(modelMatrix, transform.scale);
-
     }
 
     void SetRotation(glm::vec3 rot){
