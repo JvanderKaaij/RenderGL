@@ -8,7 +8,7 @@
 
 class DirectionalLight {
 public:
-    glm::vec3 direction = glm::vec3(1,-1,0);
+    glm::vec3 direction = glm::vec3(1,-1,-2);
     glm::mat4 GetProjectionMatrix();
 };
 

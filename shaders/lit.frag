@@ -31,7 +31,6 @@ layout(binding = 4) uniform sampler2D normalTexture;
 float reflectionFactor = 0.2;
 float specularExponent = 100.;
 
-vec3 viewDirection = vec3(0., 0., -1.);
 vec3 specularColor = vec3(1.);
 
 out vec4 FragColor;
@@ -59,21 +58,26 @@ void main()
 
     //NORMAL MAP
     vec4 normalColor = texture(normalTexture, TextureCoords);
-    normal *= normalColor.rgb;
-    viewNormal *= normalColor.rgb;
-    worldNormal *= normalColor.rgb;
+//    normal *= normalColor.rgb;
+//    viewNormal *= normalColor.rgb;
+//    worldNormal *= normalColor.rgb;
 
     //DIFFUSE
-    float diffuse = max(dot(normal, sceneLightDirection.xyz), 0.0);
+    float diffuse = max(dot(worldNormal, sceneLightDirection.xyz), 0.0);
     vec4 texelColor = texture(diffuseTexture, TextureCoords);
     vec3 diffuseAmbient = ambientColor + (diffuse * diffuseColor);
     vec3 finalDiffuse = clamp(diffuseAmbient, vec3(0.0), vec3(1.0)) * texelColor.xyz;
 
     //SPECULAR
-    vec3 halfwayVector = normalize(sceneLightDirection.xyz + viewDirection);
-    float specular = pow(max(dot(viewNormal, halfwayVector), 0.0), specularExponent);
-    float specularIntensity = texture(specularTexture, TextureCoords).r;
-    vec3 finalSpecular = (specular * specularIntensity) * specularColor;
+    vec3 viewDir = normalize(cameraPosition.xyz - Position);
+    vec3 reflectDir = reflect(sceneLightDirection.xyz, worldNormal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256);
+    vec3 finalSpecular = 0.5 * spec * vec3(1.0);
+
+//    vec3 halfwayVector = normalize(sceneLightDirection.xyz + viewDir);
+//    float specular = pow(max(dot(viewNormal, halfwayVector), 0.0), specularExponent);
+//    float specularIntensity = texture(specularTexture, TextureCoords).r;
+//    vec3 finalSpecular = (specular * specularIntensity) * specularColor;
 
     //REFLECTION
     vec3 I = normalize(Position + cameraPosition.xyz);
@@ -84,8 +88,8 @@ void main()
     float shadow = ShadowCalculation(FragPosLightSpace);
 
     //FINAL SUMMING
-    vec3 finalColor = (1.0 - shadow) * (finalSpecular + finalDiffuse + finalReflection);
+    vec3 finalColor = (1.0 - shadow) * (finalSpecular + finalDiffuse);// + finalReflection
 
 
-    FragColor = vec4(finalColor, 1.0);
+    FragColor = vec4(finalColor, 1.0); //vec4(finalColor, 1.0);
 }
