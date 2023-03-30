@@ -14,8 +14,7 @@ class Scene {
 public:
     Scene();
     Camera camera;
-    DirectionalLight directional_light;
-    std::vector<PointLight> pointLights;
+    DirectionalLight directionalLight;
     SceneUniformBlock* SetSceneUniforms();
     SceneUniformBlock* sceneUniforms;
     unsigned int scene_ubo_id;

@@ -6,6 +6,9 @@
 Scene::Scene() {
     this->camera = Camera();
     this->sceneUniforms = new SceneUniformBlock();
+    this->directionalLight = DirectionalLight();
+    this->directionalLight.transform.SetPosition(glm::vec3(2, 3, 3));
+    this->directionalLight.transform.SetRotation(glm::vec3(-1,-1,-1));
 }
 
 SceneUniformBlock* Scene::SetSceneUniforms(){
@@ -17,8 +20,8 @@ SceneUniformBlock* Scene::SetSceneUniforms(){
     this->sceneUniforms->cameraProjection = this->camera.GetProjectionMatrix();
     this->sceneUniforms->cameraView = this->camera.GetViewMatrix();
 
-    this->sceneUniforms->sceneLightDirection = glm::normalize(-glm::vec4(this->directional_light.direction.x, this->directional_light.direction.y, this->directional_light.direction.z, 0));
-    this->sceneUniforms->sceneLightProjection = this->directional_light.GetProjectionMatrix();
+    this->sceneUniforms->sceneLightDirection = glm::normalize(glm::vec4(this->directionalLight.transform.rotation.x, this->directionalLight.transform.rotation.y, this->directionalLight.transform.rotation.z, 0));
+    this->sceneUniforms->sceneLightProjection = this->directionalLight.GetProjectionMatrix();
 
     return this->sceneUniforms;
 }

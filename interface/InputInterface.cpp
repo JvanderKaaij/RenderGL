@@ -31,10 +31,7 @@ void InputInterface::Update(GLFWwindow *window){
 
 void InputInterface::OnCursorPosition(glm::vec2 position)
 {
-    if(lMouseBtn && lKeyModCntrl){
-        m_scene->directional_light.direction.x += (position.x - xMousePos) * 0.1f;
-        m_scene->directional_light.direction.y -= (position.y - yMousePos) * 0.1f;
-    }else if(lMouseBtn){
+    if(lMouseBtn){
         float deltaMouseX = (position.x - xMousePos) * 0.004f;
         float deltaMouseY = (position.y - yMousePos) * 0.004f;
         m_scene->camera.UpdateCameraDirection(deltaMouseX, deltaMouseY);

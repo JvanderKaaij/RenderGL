@@ -44,7 +44,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     float closestDepth = texture(shadowMapTexture, projCoords.xy).r;
     float currentDepth = projCoords.z;
     //There is still a problem with Directional Light being a direction and not a position
-    float bias = max(0.05 * (1.0 - dot(WorldNormal, sceneLightDirection.xyz * 4.0)), 0.005);
+    float bias = max(0.05 * (1.0 - dot(WorldNormal, sceneLightDirection.xyz)), 0.005);
     float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
     return shadow;
 }
@@ -63,7 +63,7 @@ void main()
 //    worldNormal *= normalColor.rgb;
 
     //DIFFUSE
-    float diffuse = max(dot(worldNormal, sceneLightDirection.xyz), 0.0);
+    float diffuse = max(dot(worldNormal, -sceneLightDirection.xyz), 0.0);
     vec4 texelColor = texture(diffuseTexture, TextureCoords);
     vec3 diffuseAmbient = ambientColor + (diffuse * diffuseColor);
     vec3 finalDiffuse = clamp(diffuseAmbient, vec3(0.0), vec3(1.0)) * texelColor.xyz;
@@ -74,11 +74,6 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256);
     vec3 finalSpecular = 0.5 * spec * vec3(1.0);
 
-//    vec3 halfwayVector = normalize(sceneLightDirection.xyz + viewDir);
-//    float specular = pow(max(dot(viewNormal, halfwayVector), 0.0), specularExponent);
-//    float specularIntensity = texture(specularTexture, TextureCoords).r;
-//    vec3 finalSpecular = (specular * specularIntensity) * specularColor;
-
     //REFLECTION
     vec3 I = normalize(Position + cameraPosition.xyz);
     vec3 R = reflect(I, normalize(worldNormal));
@@ -88,8 +83,8 @@ void main()
     float shadow = ShadowCalculation(FragPosLightSpace);
 
     //FINAL SUMMING
-    vec3 finalColor = (1.0 - shadow) * (finalSpecular + finalDiffuse);// + finalReflection
+    vec3 finalColor = (1.0 - shadow) * (finalSpecular + finalDiffuse) + finalReflection;
 
 
-    FragColor = vec4(finalColor, 1.0); //vec4(finalColor, 1.0);
+    FragColor = vec4(finalColor, 1.0);
 }

@@ -19,6 +19,7 @@
 #include "../libraries/imgui/backends/imgui_impl_glfw.h"
 #include "../libraries/imgui/backends/imgui_impl_opengl3.h"
 #include "../renderer/Materials/PBRMaterial.h"
+#include <glm/gtx/euler_angles.hpp>
 
 GLFWwindow* window;
 static bool throw_exit = false;
@@ -40,7 +41,7 @@ InputInterface* inputInterface;
 GameObject* teapot;
 
 bool rotateTool;
-bool translateTool;
+bool translateTool = true;
 
 //This file should be the RenderInterface
 //And inputs should be registered at an over-arching engine class
@@ -137,10 +138,18 @@ void drawUI(){
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(),ImGui::GetWindowHeight());
 //    ImGuizmo::DrawGrid(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), glm::value_ptr(glm::mat4(1.0f)), 100.f);
     if(translateTool){
-        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(teapot->transform.matrix));
+        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::WORLD, glm::value_ptr(scene.directionalLight.transform.matrix));
     }
     if(rotateTool){
-        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, glm::value_ptr(teapot->transform.matrix));
+        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::ROTATE, ImGuizmo::WORLD, glm::value_ptr(scene.directionalLight.transform.matrix));
+    }
+
+    if(ImGuizmo::IsUsing()){
+        float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+        ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(scene.directionalLight.transform.matrix), matrixTranslation, matrixRotation, matrixScale);
+        scene.directionalLight.transform.position = glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
+        scene.directionalLight.transform.rotation = glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]);
+
     }
 
     ImGui::Text("Hello, teapot!");
