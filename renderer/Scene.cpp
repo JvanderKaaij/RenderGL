@@ -7,8 +7,8 @@ Scene::Scene() {
     this->camera = Camera();
     this->sceneUniforms = new SceneUniformBlock();
     this->directionalLight = DirectionalLight();
-//    this->directionalLight.transform.SetPosition(glm::vec3(2, 3, 3));
-//    this->directionalLight.transform.SetRotation(glm::vec3(-1,-1,-1));
+    this->directionalLight.transform.SetPosition(glm::vec3(2, 30, -8));
+    this->directionalLight.transform.SetRotation(glm::vec3(-1,-1,-1));
 }
 
 SceneUniformBlock* Scene::SetSceneUniforms(){

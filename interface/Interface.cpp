@@ -150,10 +150,10 @@ void drawUI(){
         float matrixTranslation[3], matrixRotation[3], matrixScale[3];
         ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(scene.directionalLight.transform.matrix), matrixTranslation, matrixRotation, matrixScale);
         scene.directionalLight.transform.position = glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
-        scene.directionalLight.transform.rotation = glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]);
-        scene.directionalLight.Update();
-
+//        scene.directionalLight.transform.rotation = glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]);
     }
+    scene.directionalLight.Update();
+
 
     ImGui::Text("Hello, teapot!");
     if(ImGui::Button("Translate")){
@@ -298,7 +298,7 @@ int init() {
     teapot->material = standardMat;
     teapot->depthMaterial = depthMat;//this is the material used in the shadow depth pass
     teapot->material->shadowMapID = directional_light_shadow_map->texture->textureID;
-//    backBufferObjects.push_back(teapot);
+    backBufferObjects.push_back(teapot);
 
     //LightBulb Game Object
     auto* lightBulbMesh = initMesh("../assets/lightbulb.obj");

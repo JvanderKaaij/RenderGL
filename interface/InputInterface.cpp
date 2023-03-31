@@ -25,7 +25,6 @@ void InputInterface::Update(GLFWwindow *window){
     this->OnCursorPosition(glm::vec2(xpos, ypos));
 
     lMouseBtn = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-    lKeyModCntrl = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL);
 
 }
 

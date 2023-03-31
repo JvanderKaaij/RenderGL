@@ -86,5 +86,5 @@ void main()
     vec3 finalColor = (1.0 - shadow) * (finalSpecular + finalDiffuse) + finalReflection;
 
 
-    FragColor = texelColor; //vec4(finalColor, 1.0);
+    FragColor = vec4(finalColor, 1.0);
 }
