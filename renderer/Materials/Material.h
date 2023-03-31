@@ -19,5 +19,7 @@ public:
     unsigned int renderedTextID;
     unsigned int sceneBlockUBO;
     unsigned int shadowMapID;
+
+    bool castShadow = true;
 };
 #endif

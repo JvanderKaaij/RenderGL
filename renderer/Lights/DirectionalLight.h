@@ -10,7 +10,10 @@
 class DirectionalLight {
 public:
     Transform transform;
+    Transform* gizmoObjTransform;
     glm::mat4 GetProjectionMatrix();
+    void Update();
+
 };
 
 #endif

@@ -17,8 +17,20 @@ struct Transform{
         matrix = glm::translate(matrix, position);
     }
 
+    void AddPosition(glm::vec3 pos){
+        position += pos;
+        matrix = glm::translate(matrix, position);
+    }
+
     void SetRotation(glm::vec3 rot){
         rotation = rot;
+        matrix = glm::rotate(matrix, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+        matrix = glm::rotate(matrix, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+        matrix = glm::rotate(matrix, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    }
+
+    void AddRotation(glm::vec3 rot){
+        rotation += rot;
         matrix = glm::rotate(matrix, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
         matrix = glm::rotate(matrix, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
         matrix = glm::rotate(matrix, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));

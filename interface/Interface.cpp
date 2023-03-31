@@ -105,7 +105,9 @@ void drawShadowBuffer(){
     glClear(GL_DEPTH_BUFFER_BIT);
 
     for(auto gObj : backBufferObjects){
-        gObj->DrawDepth(scene.sceneUniforms);
+        if(gObj->material->castShadow){
+            gObj->DrawDepth(scene.sceneUniforms);
+        }
     }
 
 }
@@ -138,10 +140,10 @@ void drawUI(){
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(),ImGui::GetWindowHeight());
 //    ImGuizmo::DrawGrid(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), glm::value_ptr(glm::mat4(1.0f)), 100.f);
     if(translateTool){
-        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::WORLD, glm::value_ptr(scene.directionalLight.transform.matrix));
+        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(scene.directionalLight.transform.matrix));
     }
     if(rotateTool){
-        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::ROTATE, ImGuizmo::WORLD, glm::value_ptr(scene.directionalLight.transform.matrix));
+        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, glm::value_ptr(scene.directionalLight.transform.matrix));
     }
 
     if(ImGuizmo::IsUsing()){
@@ -149,6 +151,7 @@ void drawUI(){
         ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(scene.directionalLight.transform.matrix), matrixTranslation, matrixRotation, matrixScale);
         scene.directionalLight.transform.position = glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
         scene.directionalLight.transform.rotation = glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]);
+        scene.directionalLight.Update();
 
     }
 
@@ -197,6 +200,8 @@ void draw(){
         return;
     }
     inputInterface->Update(window);
+
+
 }
 
 static void glfw_error_callback(int error, const char* description)
@@ -255,6 +260,7 @@ int init() {
     auto* gizmoMat = new StandardMaterial("../shaders/lit.vert", "../shaders/gizmo.frag");
     gizmoMat->diffuseColor = glm::vec3(0.6f, 0.6f, 0.6f);
     gizmoMat->sceneBlockUBO = scene.scene_ubo_id;
+    gizmoMat->castShadow = false;
 
     //Standard Lit Material
     auto* woodTexture = MaterialInterface::LoadTexture("../assets/wood.jpg");
@@ -292,15 +298,19 @@ int init() {
     teapot->material = standardMat;
     teapot->depthMaterial = depthMat;//this is the material used in the shadow depth pass
     teapot->material->shadowMapID = directional_light_shadow_map->texture->textureID;
-    backBufferObjects.push_back(teapot);
+//    backBufferObjects.push_back(teapot);
 
     //LightBulb Game Object
     auto* lightBulbMesh = initMesh("../assets/lightbulb.obj");
     auto* lightBulb = initGameObject();
+
     lightBulb->mesh = lightBulbMesh;
     lightBulb->material = gizmoMat;
     lightBulb->depthMaterial = depthMat;//this is the material used in the shadow depth pass
     lightBulb->material->shadowMapID = directional_light_shadow_map->texture->textureID;
+
+    scene.directionalLight.gizmoObjTransform = &lightBulb->transform;
+
     backBufferObjects.push_back(lightBulb);
 
     //Skybox Game Object
@@ -324,8 +334,8 @@ int init() {
 
     auto* debugMesh = initMesh("../assets/plane.obj");
     auto* debug = initGameObject();
-    debug->transform.SetPosition(glm::vec3(debug->transform.position.x + 40.0f, debug->transform.position.y, debug->transform.position.z));
-    debug->transform.SetRotation(glm::vec3(debug->transform.rotation.x + M_PI / 2.0f, debug->transform.rotation.y, debug->transform.rotation.z));
+    debug->transform.AddPosition(glm::vec3(40.0f,0.0f, 0.0f));
+    debug->transform.AddRotation(glm::vec3(M_PI / 2.0f, 0.0f, 0.0f));
     debug->mesh = debugMesh;
     debug->material = shadowMapTextureMat;
     debug->material->renderedTextID = directional_light_shadow_map->texture->textureID;
@@ -335,8 +345,8 @@ int init() {
     //Render Texture Debug
     auto* renderTextureMesh = initMesh("../assets/plane.obj");
     auto* renderTextureObj = initGameObject();
-    renderTextureObj->transform.SetPosition(glm::vec3(renderTextureObj->transform.position.x + 80.0f, renderTextureObj->transform.position.y, renderTextureObj->transform.position.z));
-    renderTextureObj->transform.SetRotation(glm::vec3(renderTextureObj->transform.rotation.x + M_PI / 2.0f, renderTextureObj->transform.rotation.y, renderTextureObj->transform.rotation.z));
+    renderTextureObj->transform.AddPosition(glm::vec3(80.0f, 0.0f, 0.0f));
+    renderTextureObj->transform.AddRotation(glm::vec3(M_PI / 2.0f, 0.0f, 0.0f));
     renderTextureObj->mesh = renderTextureMesh;
     renderTextureObj->material = renderTextureMat;
     renderTextureObj->material->renderedTextID = fb->texture->textureID;

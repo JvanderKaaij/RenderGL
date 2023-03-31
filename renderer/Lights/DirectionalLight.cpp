@@ -11,3 +11,7 @@ glm::mat4 DirectionalLight::GetProjectionMatrix() {
 
     return LightProjection * LightView;
 }
+
+void DirectionalLight::Update(){
+    gizmoObjTransform->matrix = this->transform.matrix;
+}
