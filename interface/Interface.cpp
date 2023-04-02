@@ -100,6 +100,8 @@ void drawBackBuffer(){
 }
 
 void drawShadowBuffer(){
+
+    glDisable(GL_CULL_FACE);
     glBindFramebuffer(GL_FRAMEBUFFER, directional_light_shadow_map->id);
     glViewport(0, 0, directional_light_shadow_map->texture->width, directional_light_shadow_map->texture->width);
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -147,10 +149,6 @@ void drawUI(){
     }
 
     if(ImGuizmo::IsUsing()){
-        float matrixTranslation[3], matrixRotation[3], matrixScale[3];
-        ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(scene.directionalLight.transform.matrix), matrixTranslation, matrixRotation, matrixScale);
-        scene.directionalLight.transform.position = glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
-//        scene.directionalLight.transform.rotation = glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]);
     }
     scene.directionalLight.Update();
 

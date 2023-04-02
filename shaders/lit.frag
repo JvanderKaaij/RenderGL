@@ -44,7 +44,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     float closestDepth = texture(shadowMapTexture, projCoords.xy).r;
     float currentDepth = projCoords.z;
     //There is still a problem with Directional Light being a direction and not a position
-    float bias = max(0.05 * (1.0 - dot(WorldNormal, sceneLightDirection.xyz)), 0.005);
+    float bias = max(0.05 * (1.0 - dot(WorldNormal, sceneLightDirection.xyz)), 0.05);
     float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
     return shadow;
 }

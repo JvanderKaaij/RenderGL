@@ -11,6 +11,12 @@ struct Transform{
     glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::mat4 matrix = glm::mat4(1.0f);
+    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+    glm::vec3 Forward(){
+        glm::mat4 m = this->matrix;
+        return this->position - glm::vec3(m[2][0], m[2][1], m[2][2]);
+    }
 
     void SetPosition(glm::vec3 pos){
         position = pos;
