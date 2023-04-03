@@ -256,7 +256,7 @@ int init() {
 
     //Gizmo Material
     auto* gizmoMat = new StandardMaterial("../shaders/lit.vert", "../shaders/gizmo.frag");
-    gizmoMat->diffuseColor = glm::vec3(0.6f, 0.6f, 0.6f);
+    gizmoMat->diffuseColor = glm::vec3(0.6f, 0.6f, 0.3f);
     gizmoMat->sceneBlockUBO = scene.scene_ubo_id;
     gizmoMat->castShadow = false;
 

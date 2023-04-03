@@ -20,12 +20,14 @@ layout (std140) uniform SceneUniformBlock {
 };
 
 out vec3 WorldNormal;
+out vec3 Normal;
 out vec3 Position;
 out vec2 TextureCoords;
 out vec4 FragPosLightSpace;
 
 void main(){
     WorldNormal = mat3(model) * aNormal;
+    Normal = aNormal;
     Position = vec3(model * vec4(aPos, 1.0));
 
     TextureCoords = aTextureCoords;

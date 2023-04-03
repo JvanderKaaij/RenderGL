@@ -13,7 +13,6 @@ public:
     Transform* gizmoObjTransform;
     glm::mat4 GetProjectionMatrix();
     void Update();
-
 };
 
 #endif
