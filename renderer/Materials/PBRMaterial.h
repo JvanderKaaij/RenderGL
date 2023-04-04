@@ -9,6 +9,7 @@ public:
     PBRMaterial(std::string vertex_path, std::string fragment_path): Material(std::move(vertex_path), std::move(fragment_path)){}
 
     float roughness;
+    float light_intensity;
     bool is_metal;
     glm::vec3 color;
 
@@ -18,6 +19,9 @@ public:
 
         GLuint roughness_location = glGetUniformLocation(this->programID, "roughness");
         glUniform1f(roughness_location, this->roughness);
+
+        GLuint light_intensity_location = glGetUniformLocation(this->programID, "light_intensity");
+        glUniform1f(light_intensity_location, this->light_intensity);
 
         GLuint is_metal_location = glGetUniformLocation(this->programID, "is_metal");
         glUniform1i(is_metal_location, this->is_metal);

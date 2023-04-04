@@ -283,8 +283,9 @@ int init() {
 
     //PBR Material
     auto* pbrMaterial = new PBRMaterial("../shaders/lit.vert", "../shaders/pbr.frag");
-    pbrMaterial->roughness = 0.5;
-    pbrMaterial->is_metal = true;
+    pbrMaterial->roughness = 0.32f;
+    pbrMaterial->light_intensity = 0.9f;
+    pbrMaterial->is_metal = false;
     pbrMaterial->color = glm::vec3(1.0, 0.0, 0.0);
 
     //GAME OBJECTS
@@ -293,7 +294,7 @@ int init() {
     auto* teapotMesh = initMesh("../assets/teapot.obj");
     teapot = initGameObject();
     teapot->mesh = teapotMesh;
-    teapot->material = standardMat;
+    teapot->material = pbrMaterial;
     teapot->depthMaterial = depthMat;//this is the material used in the shadow depth pass
     teapot->material->shadowMapID = directional_light_shadow_map->texture->textureID;
     backBufferObjects.push_back(teapot);
