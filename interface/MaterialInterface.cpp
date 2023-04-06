@@ -39,7 +39,7 @@ Texture* MaterialInterface::LoadTexture(std::string full_path){
 
     unsigned char* imgData = stbi_load(full_path.c_str(), &width, &height, &nrChannels, 0);
 
-    std::cout << "Texture Width: " << width << " & Height: " << height << std::endl;
+    std::cout << "Texture Width: " << width << " & Height: " << height << " Channels: " << nrChannels << std::endl;
 
     texture->data = imgData;
     texture->width = width;
@@ -53,7 +53,7 @@ Texture* MaterialInterface::LoadTexture(std::string full_path){
     if(nrChannels == 1){
         glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, texture->width, texture->height, 0, GL_RED, GL_UNSIGNED_BYTE, texture->data);
     }else{
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture->width, texture->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture->data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, texture->width, texture->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture->data);
     }
 
     std::cout << "Generate Mip Map" << std::endl;

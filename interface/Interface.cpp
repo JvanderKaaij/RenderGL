@@ -286,9 +286,12 @@ int init() {
     auto* teapotAlbedo = MaterialInterface::LoadTexture("../assets/pbr/UtahTeapot_albedo.jpg");
     auto* teapotMetallic = MaterialInterface::LoadTexture("../assets/pbr/UtahTeapot_metallic.jpg");
     auto* teapotRoughness = MaterialInterface::LoadTexture("../assets/pbr/UtahTeapot_roughness.jpg");
+    auto* teapotNormal = MaterialInterface::LoadTexture("../assets/pbr/UtahTeapot_normal.png");
+
     pbrMaterial->diffuseTextID = teapotAlbedo->textureID;
     pbrMaterial->metallicTextID = teapotMetallic->textureID;
     pbrMaterial->roughnessTextID = teapotRoughness->textureID;
+    pbrMaterial->normalTextID = teapotNormal->textureID;
     pbrMaterial->roughness = 0.2f;
     pbrMaterial->light_intensity = 3.0f;
     pbrMaterial->is_metal = false;

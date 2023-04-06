@@ -13,10 +13,10 @@ public:
     bool is_metal;
     glm::vec3 color;
 
-    unsigned int diffuseTextID;
-    unsigned int metallicTextID;
-    unsigned int roughnessTextID;
-    unsigned int normalTextID;
+    unsigned int diffuseTextID = -1;
+    unsigned int metallicTextID = -1;
+    unsigned int roughnessTextID = -1;
+    unsigned int normalTextID = -1;
 
     void Draw(Transform transform, SceneUniformBlock* sceneUniforms) override{
 
@@ -27,14 +27,27 @@ public:
         GLuint roughness_location = glGetUniformLocation(this->programID, "roughness");
         glUniform1f(roughness_location, this->roughness);
 
-        GLuint light_intensity_location = glGetUniformLocation(this->programID, "light_intensity");
+        GLuint light_intensity_location = glGetUniformLocation(this->programID, "lightIntensity");
         glUniform1f(light_intensity_location, this->light_intensity);
 
-        GLuint is_metal_location = glGetUniformLocation(this->programID, "is_metal");
+        GLuint is_metal_location = glGetUniformLocation(this->programID, "isMetal");
         glUniform1i(is_metal_location, this->is_metal);
 
         GLuint color_location = glGetUniformLocation(this->programID, "color");
         glUniform3fv(color_location, 1, glm::value_ptr(this->color));
+
+        //TEXTURE USED
+        GLuint diffuse_used_location = glGetUniformLocation(this->programID, "diffuseTxtUsed");
+        glUniform1i(diffuse_used_location, (this->diffuseTextID != -1));
+
+        GLuint metallic_used_location = glGetUniformLocation(this->programID, "metallicTxtUsed");
+        glUniform1i(metallic_used_location, (this->metallicTextID != -1));
+
+        GLuint roughness_used_location = glGetUniformLocation(this->programID, "roughnessTxtUsed");
+        glUniform1i(roughness_used_location, (this->roughnessTextID != -1));
+
+        GLuint normal_used_location = glGetUniformLocation(this->programID, "normalTxtUsed");
+        glUniform1i(normal_used_location, (this->normalTextID != -1));
 
         //TEXTURES
 

@@ -9,6 +9,7 @@ in vec2 TextureCoords;
 layout(binding = 0) uniform sampler2D diffuseTexture;
 layout(binding = 1) uniform sampler2D metallicTexture;
 layout(binding = 2) uniform sampler2D roughnessTexture;
+layout(binding = 3) uniform sampler2D normalTexture;
 
 layout (std140) uniform SceneUniformBlock {
     float time;
@@ -25,18 +26,22 @@ layout (std140) uniform SceneUniformBlock {
 
 uniform mat4 model;
 uniform float roughness;
-uniform float light_intensity;
-uniform bool is_metal;
+uniform float lightIntensity;
+uniform bool isMetal;
 uniform vec3 color;
 
-out vec4 FragColor;
+uniform bool diffuseTxtUsed;
+uniform bool metallicTxtUsed;
+uniform bool roughnessTxtUsed;
+uniform bool normalTxtUsed;
 
+out vec4 FragColor;
 
 vec3 schlickFresnel(float vDotH)
 {
     vec3 F0 = vec3(0.04);
 
-    if (is_metal) {
+    if (isMetal) {
         F0 = color;
     }
 
@@ -62,6 +67,13 @@ float ggxDistribution(float nDotH, float rough)
 
 void main() {
 
+    vec3 worldNormal = normalize(WorldNormal);
+
+    if(normalTxtUsed){
+        vec4 normalColor = texture(normalTexture, TextureCoords);
+        worldNormal *= normalColor.rgb;
+    }
+
     vec3 l = -sceneLightDirection.xyz;
     vec3 n = normalize(WorldNormal);
 
@@ -78,9 +90,14 @@ void main() {
     vec3 kS = F;
     vec3 kD = 1.0 - kS;
 
-    float RoughTexture = texture(roughnessTexture, TextureCoords).r;
-    float RoughnessTxt = min(roughness + RoughTexture, 1.0);
-    vec3 SpecBRDF_nom  = ggxDistribution(nDotH, RoughnessTxt) * F * geomSmith(nDotL, RoughnessTxt) * geomSmith(nDotV, RoughnessTxt);
+    float RoughnessTotal = roughness;
+
+    if(roughnessTxtUsed){
+        float RoughTexture = texture(roughnessTexture, TextureCoords).r;
+        RoughnessTotal = min(RoughnessTotal + RoughTexture, 1.0);
+    }
+
+    vec3 SpecBRDF_nom  = ggxDistribution(nDotH, RoughnessTotal) * F * geomSmith(nDotL, RoughnessTotal) * geomSmith(nDotV, RoughnessTotal);
 
     float SpecBRDF_denom = 4.0 * nDotV * nDotL + 0.0001;
 
@@ -88,14 +105,18 @@ void main() {
 
     vec3 fLambert = vec3(0.0);
 
-    if (!is_metal) {
+    if (!isMetal) {
         fLambert = color;
     }
 
-    vec3 DiffTexture = texture(diffuseTexture, TextureCoords).rgb;
-    vec3 DiffuseBRDF = kD * DiffTexture * (fLambert / PI) ;
+    vec3 DiffuseBRDF = kD * (fLambert / PI) ;
 
-    vec3 FinalColor = (DiffuseBRDF + SpecBRDF) * light_intensity * nDotL;
+    if(diffuseTxtUsed){
+        vec3 DiffTexture = texture(diffuseTexture, TextureCoords).rgb;
+        DiffuseBRDF *= DiffTexture;
+    }
+
+    vec3 FinalColor = (DiffuseBRDF + SpecBRDF) * lightIntensity * nDotL;
 
     FragColor = vec4(FinalColor, 1.0);
 }
