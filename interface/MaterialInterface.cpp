@@ -48,7 +48,16 @@ Texture* MaterialInterface::LoadTexture(std::string full_path){
     glGenTextures(1, &texture->textureID);
     glBindTexture(GL_TEXTURE_2D, texture->textureID); // all upcoming GL_TEXTURE_2D operations now have effect on this diffuseTexture object
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture->width, texture->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture->data);
+    std::cout << "Set Text Image 2D" << std::endl;
+    //TODO could be done neater
+    if(nrChannels == 1){
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, texture->width, texture->height, 0, GL_RED, GL_UNSIGNED_BYTE, texture->data);
+    }else{
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture->width, texture->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture->data);
+    }
+
+    std::cout << "Generate Mip Map" << std::endl;
+
     glGenerateMipmap(GL_TEXTURE_2D);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);//generate bilinear filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -56,6 +65,8 @@ Texture* MaterialInterface::LoadTexture(std::string full_path){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
     stbi_image_free(texture->data);
+
+    std::cout << "Done Loading Texture" << std::endl;
 
     stbi_set_flip_vertically_on_load(false);
 

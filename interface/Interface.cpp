@@ -283,9 +283,13 @@ int init() {
 
     //PBR Material
     auto* pbrMaterial = new PBRMaterial("../shaders/lit.vert", "../shaders/pbr.frag");
-    auto* teapotAlbedo = MaterialInterface::LoadTexture("../assets/pbr/tex/UtahTeapot_albedo.jpg");
+    auto* teapotAlbedo = MaterialInterface::LoadTexture("../assets/pbr/UtahTeapot_albedo.jpg");
+    auto* teapotMetallic = MaterialInterface::LoadTexture("../assets/pbr/UtahTeapot_metallic.jpg");
+    auto* teapotRoughness = MaterialInterface::LoadTexture("../assets/pbr/UtahTeapot_roughness.jpg");
     pbrMaterial->diffuseTextID = teapotAlbedo->textureID;
-    pbrMaterial->roughness = 0.5f;
+    pbrMaterial->metallicTextID = teapotMetallic->textureID;
+    pbrMaterial->roughnessTextID = teapotRoughness->textureID;
+    pbrMaterial->roughness = 0.2f;
     pbrMaterial->light_intensity = 3.0f;
     pbrMaterial->is_metal = false;
     pbrMaterial->color = glm::vec3(1.0, 1.0, 1.0);

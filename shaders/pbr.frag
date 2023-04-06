@@ -45,16 +45,16 @@ vec3 schlickFresnel(float vDotH)
     return ret;
 }
 
-float geomSmith(float dp)
+float geomSmith(float dp, float rough)
 {
-    float k = (roughness + 1.0) * (roughness + 1.0) / 8.0;
+    float k = (rough + 1.0) * (rough + 1.0) / 8.0;
     float denom = dp * (1 - k) + k;
     return dp / denom;
 }
 
-float ggxDistribution(float nDotH)
+float ggxDistribution(float nDotH, float rough)
 {
-    float alpha2 = roughness * roughness * roughness * roughness;
+    float alpha2 = rough * rough * rough * rough;
     float d = nDotH * nDotH * (alpha2 - 1) + 1;
     float ggxdistrib = alpha2 / (PI * d * d);
     return ggxdistrib;
@@ -78,7 +78,9 @@ void main() {
     vec3 kS = F;
     vec3 kD = 1.0 - kS;
 
-    vec3 SpecBRDF_nom  = ggxDistribution(nDotH) * F * geomSmith(nDotL) * geomSmith(nDotV);
+    float RoughTexture = texture(roughnessTexture, TextureCoords).r;
+    float RoughnessTxt = min(roughness + RoughTexture, 1.0);
+    vec3 SpecBRDF_nom  = ggxDistribution(nDotH, RoughnessTxt) * F * geomSmith(nDotL, RoughnessTxt) * geomSmith(nDotV, RoughnessTxt);
 
     float SpecBRDF_denom = 4.0 * nDotV * nDotL + 0.0001;
 
