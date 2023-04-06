@@ -283,15 +283,17 @@ int init() {
 
     //PBR Material
     auto* pbrMaterial = new PBRMaterial("../shaders/lit.vert", "../shaders/pbr.frag");
-    pbrMaterial->roughness = 0.32f;
-    pbrMaterial->light_intensity = 0.9f;
+    auto* teapotAlbedo = MaterialInterface::LoadTexture("../assets/pbr/tex/UtahTeapot_albedo.jpg");
+    pbrMaterial->diffuseTextID = teapotAlbedo->textureID;
+    pbrMaterial->roughness = 0.5f;
+    pbrMaterial->light_intensity = 3.0f;
     pbrMaterial->is_metal = false;
-    pbrMaterial->color = glm::vec3(1.0, 0.0, 0.0);
+    pbrMaterial->color = glm::vec3(1.0, 1.0, 1.0);
 
     //GAME OBJECTS
 
     //Teapot Game Object
-    auto* teapotMesh = initMesh("../assets/teapot.obj");
+    auto* teapotMesh = initMesh("../assets/pbr/utah_teapot.obj");
     teapot = initGameObject();
     teapot->mesh = teapotMesh;
     teapot->material = pbrMaterial;

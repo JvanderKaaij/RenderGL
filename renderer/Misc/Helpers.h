@@ -13,5 +13,6 @@ public:
     static void DebugVec(glm::vec3 vector){
         std::cout << "(" << vector.x << "," << vector.y << "," << vector.z << ")" << std::endl;
     }
+
 };
 #endif //RENDERGL_HELPERS_H

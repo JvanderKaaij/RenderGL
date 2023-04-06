@@ -6,6 +6,10 @@ in vec3 Position;
 in vec3 WorldNormal;
 in vec2 TextureCoords;
 
+layout(binding = 0) uniform sampler2D diffuseTexture;
+layout(binding = 1) uniform sampler2D metallicTexture;
+layout(binding = 2) uniform sampler2D roughnessTexture;
+
 layout (std140) uniform SceneUniformBlock {
     float time;
     float deltaTime;
@@ -27,6 +31,7 @@ uniform vec3 color;
 
 out vec4 FragColor;
 
+
 vec3 schlickFresnel(float vDotH)
 {
     vec3 F0 = vec3(0.04);
@@ -47,7 +52,6 @@ float geomSmith(float dp)
     return dp / denom;
 }
 
-
 float ggxDistribution(float nDotH)
 {
     float alpha2 = roughness * roughness * roughness * roughness;
@@ -60,6 +64,7 @@ void main() {
 
     vec3 l = -sceneLightDirection.xyz;
     vec3 n = normalize(WorldNormal);
+
     vec3 v = normalize(cameraPosition.xyz - Position.xyz);
     vec3 h = normalize(v + l);
 
@@ -73,7 +78,7 @@ void main() {
     vec3 kS = F;
     vec3 kD = 1.0 - kS;
 
-    vec3 SpecBRDF_nom  = ggxDistribution(nDotH) *F * geomSmith(nDotL) * geomSmith(nDotV);
+    vec3 SpecBRDF_nom  = ggxDistribution(nDotH) * F * geomSmith(nDotL) * geomSmith(nDotV);
 
     float SpecBRDF_denom = 4.0 * nDotV * nDotL + 0.0001;
 
@@ -85,7 +90,8 @@ void main() {
         fLambert = color;
     }
 
-    vec3 DiffuseBRDF = kD * fLambert / PI;
+    vec3 DiffTexture = texture(diffuseTexture, TextureCoords).rgb;
+    vec3 DiffuseBRDF = kD * DiffTexture * (fLambert / PI) ;
 
     vec3 FinalColor = (DiffuseBRDF + SpecBRDF) * light_intensity * nDotL;
 

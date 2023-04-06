@@ -34,7 +34,13 @@ Texture* MaterialInterface::LoadTexture(std::string full_path){
     auto* texture = new Texture();
     std::cout << "Trying to load texture: " << full_path << std::endl;
     int width, height, nrChannels;
+
+    stbi_set_flip_vertically_on_load(true);
+
     unsigned char* imgData = stbi_load(full_path.c_str(), &width, &height, &nrChannels, 0);
+
+    std::cout << "Texture Width: " << width << " & Height: " << height << std::endl;
+
     texture->data = imgData;
     texture->width = width;
     texture->height = height;
@@ -45,11 +51,13 @@ Texture* MaterialInterface::LoadTexture(std::string full_path){
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture->width, texture->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture->data);
     glGenerateMipmap(GL_TEXTURE_2D);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);//generate bilinear filtering
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//What to do with outside coordinates
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );//What to do with outside coordinates
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
     stbi_image_free(texture->data);
+
+    stbi_set_flip_vertically_on_load(false);
 
     return texture;
 }
