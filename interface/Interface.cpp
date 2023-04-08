@@ -297,6 +297,22 @@ int init() {
     pbrMaterial->is_metal = false;
     pbrMaterial->color = glm::vec3(1.0, 1.0, 1.0);
 
+
+    //HELMET MATERIAL PBR
+    auto* helmetPBRMaterial = new PBRMaterial("../shaders/lit.vert", "../shaders/pbr.frag");
+    auto* helmetAlbedo = MaterialInterface::LoadTexture("../assets/salletHelmet/SalletHelmet_Helmet_diffuse.png");
+    auto* helmetRoughness = MaterialInterface::LoadTexture("../assets/salletHelmet/SalletHelmet_Helmet_roughness.png");
+    auto* helmetNormal = MaterialInterface::LoadTexture("../assets/salletHelmet/SalletHelmet_Helmet_normal.png");
+
+    helmetPBRMaterial->diffuseTextID = helmetAlbedo->textureID;
+    helmetPBRMaterial->roughnessTextID = helmetRoughness->textureID;
+    helmetPBRMaterial->normalTextID = helmetNormal->textureID;
+    helmetPBRMaterial->cubemapID = skyboxTexture->textureID;
+    helmetPBRMaterial->roughness = 0.1f;
+    helmetPBRMaterial->light_intensity = 2.0f;
+    helmetPBRMaterial->is_metal = false;
+    helmetPBRMaterial->color = glm::vec3(1.0, 1.0, 1.0);
+
     //GAME OBJECTS
 
     //Teapot Game Object
@@ -306,7 +322,17 @@ int init() {
     teapot->material = pbrMaterial;
     teapot->depthMaterial = depthMat;//this is the material used in the shadow depth pass
     teapot->material->shadowMapID = directional_light_shadow_map->texture->textureID;
-    backBufferObjects.push_back(teapot);
+//    backBufferObjects.push_back(teapot);
+
+
+    //Sallet Helmet
+    auto* helmetMesh = initMesh("../assets/salletHelmet/SalletHelmet.fbx");
+    auto* helmet = initGameObject();
+    helmet->mesh = helmetMesh;
+    helmet->material = helmetPBRMaterial;
+    helmet->depthMaterial = depthMat;//this is the material used in the shadow depth pass
+    helmet->material->shadowMapID = directional_light_shadow_map->texture->textureID;
+    backBufferObjects.push_back(helmet);
 
     //LightBulb Game Object
     auto* lightBulbMesh = initMesh("../assets/lightbulb.obj");
@@ -329,13 +355,13 @@ int init() {
     skyboxBufferObjects.push_back(skybox);
 
     //Floor Game Object
-    auto* planeMesh = initMesh("../assets/plane.obj");
-    auto* floor = initGameObject();
-    floor->mesh = planeMesh;
-    floor->material = standardMat;
-    floor->depthMaterial = depthMat;//this is the material used in the shadow depth pass
-    floor->material->shadowMapID = directional_light_shadow_map->texture->textureID;
-    backBufferObjects.push_back(floor);
+//    auto* planeMesh = initMesh("../assets/plane.obj");
+//    auto* floor = initGameObject();
+//    floor->mesh = planeMesh;
+//    floor->material = standardMat;
+//    floor->depthMaterial = depthMat;//this is the material used in the shadow depth pass
+//    floor->material->shadowMapID = directional_light_shadow_map->texture->textureID;
+//    backBufferObjects.push_back(floor);
 
     //Shadow Mapping Debug
     auto* shadowMapTextureMat = new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");

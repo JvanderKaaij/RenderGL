@@ -10,6 +10,7 @@ layout(binding = 0) uniform sampler2D diffuseTexture;
 layout(binding = 1) uniform sampler2D metallicTexture;
 layout(binding = 2) uniform sampler2D roughnessTexture;
 layout(binding = 3) uniform sampler2D normalTexture;
+layout(binding = 4) uniform samplerCube skyboxTexture;
 
 layout (std140) uniform SceneUniformBlock {
     float time;
@@ -36,6 +37,8 @@ uniform bool roughnessTxtUsed;
 uniform bool normalTxtUsed;
 
 out vec4 FragColor;
+
+float reflectionFactor = 0.2;
 
 vec3 schlickFresnel(float vDotH)
 {
@@ -116,7 +119,12 @@ void main() {
         DiffuseBRDF *= DiffTexture;
     }
 
-    vec3 FinalColor = (DiffuseBRDF + SpecBRDF) * lightIntensity * nDotL;
+    //REFLECTION
+    vec3 I = normalize(Position + cameraPosition.xyz);
+    vec3 R = reflect(I, normalize(worldNormal));
+    vec3 finalReflection = texture(skyboxTexture, R).rgb * reflectionFactor;
+
+    vec3 FinalColor = (DiffuseBRDF + SpecBRDF + finalReflection) * lightIntensity * nDotL;
 
     FragColor = vec4(FinalColor, 1.0);
 }

@@ -17,6 +17,7 @@ public:
     unsigned int metallicTextID = -1;
     unsigned int roughnessTextID = -1;
     unsigned int normalTextID = -1;
+    unsigned int cubemapID;
 
     void Draw(Transform transform, SceneUniformBlock* sceneUniforms) override{
 
@@ -31,7 +32,7 @@ public:
         glUniform1f(light_intensity_location, this->light_intensity);
 
         GLuint is_metal_location = glGetUniformLocation(this->programID, "isMetal");
-        glUniform1i(is_metal_location, this->is_metal);
+        glUniform1i(is_metal_location, true);
 
         GLuint color_location = glGetUniformLocation(this->programID, "color");
         glUniform3fv(color_location, 1, glm::value_ptr(this->color));
@@ -70,6 +71,11 @@ public:
         glBindTexture(GL_TEXTURE_2D, this->normalTextID);
         GLuint normal_texture_location = glGetUniformLocation(this->programID, "normalTexture");
         glUniform1i(normal_texture_location, 3);
+
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, this->cubemapID);
+        GLuint skyboxLocation = glGetUniformLocation(this->programID, "skyboxTexture");
+        glUniform1i(skyboxLocation, 4);
     }
 
 };
