@@ -24,7 +24,6 @@ public:
     GLuint normalBuffer;
     GLuint textureCoordBuffer;
 
-    aiMaterial* meshMaterialData;
 };
 
 

@@ -19,6 +19,7 @@
 #include "../libraries/imgui/backends/imgui_impl_glfw.h"
 #include "../libraries/imgui/backends/imgui_impl_opengl3.h"
 #include "../renderer/Materials/PBRMaterial.h"
+#include "SceneImporter.h"
 #include <glm/gtx/euler_angles.hpp>
 
 GLFWwindow* window;
@@ -281,58 +282,65 @@ int init() {
     fb = new FrameBuffer(1024, 1024);
     auto* renderTextureMat =  new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
 
-    //PBR Material
-    auto* pbrMaterial = new PBRMaterial("../shaders/lit.vert", "../shaders/pbr.frag");
-    auto* teapotAlbedo = MaterialInterface::LoadTexture("../assets/pbr/UtahTeapot_albedo.jpg");
-    auto* teapotMetallic = MaterialInterface::LoadTexture("../assets/pbr/UtahTeapot_metallic.jpg");
-    auto* teapotRoughness = MaterialInterface::LoadTexture("../assets/pbr/UtahTeapot_roughness.jpg");
-    auto* teapotNormal = MaterialInterface::LoadTexture("../assets/pbr/UtahTeapot_normal.png");
-
-    pbrMaterial->diffuseTextID = teapotAlbedo->textureID;
-    pbrMaterial->metallicTextID = teapotMetallic->textureID;
-    pbrMaterial->roughnessTextID = teapotRoughness->textureID;
-    pbrMaterial->normalTextID = teapotNormal->textureID;
-    pbrMaterial->roughness = 0.2f;
-    pbrMaterial->light_intensity = 3.0f;
-    pbrMaterial->is_metal = false;
-    pbrMaterial->color = glm::vec3(1.0, 1.0, 1.0);
-
-
     //HELMET MATERIAL PBR
     auto* helmetPBRMaterial = new PBRMaterial("../shaders/lit.vert", "../shaders/pbr.frag");
     auto* helmetAlbedo = MaterialInterface::LoadTexture("../assets/salletHelmet/SalletHelmet_Helmet_diffuse.png");
     auto* helmetRoughness = MaterialInterface::LoadTexture("../assets/salletHelmet/SalletHelmet_Helmet_roughness.png");
     auto* helmetNormal = MaterialInterface::LoadTexture("../assets/salletHelmet/SalletHelmet_Helmet_normal.png");
-
     helmetPBRMaterial->diffuseTextID = helmetAlbedo->textureID;
     helmetPBRMaterial->roughnessTextID = helmetRoughness->textureID;
     helmetPBRMaterial->normalTextID = helmetNormal->textureID;
     helmetPBRMaterial->cubemapID = skyboxTexture->textureID;
     helmetPBRMaterial->roughness = 0.1f;
-    helmetPBRMaterial->light_intensity = 2.0f;
+    helmetPBRMaterial->light_intensity = 1.0f;
     helmetPBRMaterial->is_metal = false;
     helmetPBRMaterial->color = glm::vec3(1.0, 1.0, 1.0);
 
+    //HELMET FACE MATERIAL PBR
+    auto* helmetFacePBRMaterial = new PBRMaterial("../shaders/lit.vert", "../shaders/pbr.frag");
+    auto* helmetFaceAlbedo = MaterialInterface::LoadTexture("../assets/salletHelmet/SalletHelmet_FaceGuard_diffuse.png");
+    auto* helmetFaceRoughness = MaterialInterface::LoadTexture("../assets/salletHelmet/SalletHelmet_FaceGuard_roughness.png");
+    auto* helmetFaceNormal = MaterialInterface::LoadTexture("../assets/salletHelmet/SalletHelmet_FaceGuard_normal.png");
+    helmetFacePBRMaterial->diffuseTextID = helmetFaceAlbedo->textureID;
+    helmetFacePBRMaterial->roughnessTextID = helmetFaceRoughness->textureID;
+    helmetFacePBRMaterial->normalTextID = helmetFaceNormal->textureID;
+    helmetFacePBRMaterial->cubemapID = skyboxTexture->textureID;
+    helmetFacePBRMaterial->roughness = 0.1f;
+    helmetFacePBRMaterial->light_intensity = 1.0f;
+    helmetFacePBRMaterial->is_metal = false;
+    helmetFacePBRMaterial->color = glm::vec3(1.0, 1.0, 1.0);
+
+    //HELMET MATERIAL PBR
+    auto* helmetNeckPBRMaterial = new PBRMaterial("../shaders/lit.vert", "../shaders/pbr.frag");
+    auto* helmetNeckAlbedo = MaterialInterface::LoadTexture("../assets/salletHelmet/SalletHelmet_NeckGuard_diffuse.png");
+    auto* helmetNeckRoughness = MaterialInterface::LoadTexture("../assets/salletHelmet/SalletHelmet_NeckGuard_roughness.png");
+    auto* helmetNeckNormal = MaterialInterface::LoadTexture("../assets/salletHelmet/SalletHelmet_NeckGuard_normal.png");
+    helmetNeckPBRMaterial->diffuseTextID = helmetNeckAlbedo->textureID;
+    helmetNeckPBRMaterial->roughnessTextID = helmetNeckRoughness->textureID;
+    helmetNeckPBRMaterial->normalTextID = helmetNeckNormal->textureID;
+    helmetNeckPBRMaterial->cubemapID = skyboxTexture->textureID;
+    helmetNeckPBRMaterial->roughness = 0.1f;
+    helmetNeckPBRMaterial->light_intensity = 1.0f;
+    helmetNeckPBRMaterial->is_metal = false;
+    helmetNeckPBRMaterial->color = glm::vec3(1.0, 1.0, 1.0);
+
+    std::vector<PBRMaterial*> helmetMaterials;
+    helmetMaterials.push_back(helmetPBRMaterial);
+    helmetMaterials.push_back(helmetFacePBRMaterial);
+    helmetMaterials.push_back(helmetNeckPBRMaterial);
+
     //GAME OBJECTS
 
-    //Teapot Game Object
-    auto* teapotMesh = initMesh("../assets/pbr/utah_teapot.obj");
-    teapot = initGameObject();
-    teapot->mesh = teapotMesh;
-    teapot->material = pbrMaterial;
-    teapot->depthMaterial = depthMat;//this is the material used in the shadow depth pass
-    teapot->material->shadowMapID = directional_light_shadow_map->texture->textureID;
-//    backBufferObjects.push_back(teapot);
-
-
     //Sallet Helmet
-    auto* helmetMesh = initMesh("../assets/salletHelmet/SalletHelmet.fbx");
-    auto* helmet = initGameObject();
-    helmet->mesh = helmetMesh;
-    helmet->material = helmetPBRMaterial;
-    helmet->depthMaterial = depthMat;//this is the material used in the shadow depth pass
-    helmet->material->shadowMapID = directional_light_shadow_map->texture->textureID;
-    backBufferObjects.push_back(helmet);
+    auto* helmetS = new SceneImporter("../assets/salletHelmet/SalletHelmet.fbx");
+    for(unsigned int i=0;i<helmetS->meshCollection.size();i++){
+        auto* helmet = initGameObject();
+        helmet->mesh = helmetS->meshCollection[i];
+        helmet->material = helmetMaterials[i];
+        helmet->depthMaterial = depthMat;//this is the material used in the shadow depth pass
+        helmet->material->shadowMapID = directional_light_shadow_map->texture->textureID;
+        backBufferObjects.push_back(helmet);
+    }
 
     //LightBulb Game Object
     auto* lightBulbMesh = initMesh("../assets/lightbulb.obj");

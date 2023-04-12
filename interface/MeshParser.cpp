@@ -2,7 +2,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-Mesh* MeshParser::Process(const char* path, Mesh* parsedMesh) {
+void MeshParser::Process(const char* path, Mesh* parsedMesh) {
     const aiScene* scene = aiImportFile( path,
                                          aiProcess_CalcTangentSpace     |
                                          aiProcess_Triangulate               |
@@ -39,9 +39,4 @@ Mesh* MeshParser::Process(const char* path, Mesh* parsedMesh) {
     }
 
     std::cout << "Number of Elements in Vertex Array: " << parsedMesh->Indices.size() << std::endl;
-
-    //What if there are more materials?
-    parsedMesh->meshMaterialData = scene->mMaterials[mesh->mMaterialIndex];
-
-    return parsedMesh;
 }

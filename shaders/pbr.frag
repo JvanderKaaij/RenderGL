@@ -38,8 +38,6 @@ uniform bool normalTxtUsed;
 
 out vec4 FragColor;
 
-float reflectionFactor = 0.2;
-
 vec3 schlickFresnel(float vDotH)
 {
     vec3 F0 = vec3(0.04);
@@ -122,7 +120,7 @@ void main() {
     //REFLECTION
     vec3 I = normalize(Position + cameraPosition.xyz);
     vec3 R = reflect(I, normalize(worldNormal));
-    vec3 finalReflection = texture(skyboxTexture, R).rgb * reflectionFactor;
+    vec3 finalReflection = texture(skyboxTexture, R).rgb * ((1.0 - RoughnessTotal));
 
     vec3 FinalColor = (DiffuseBRDF + SpecBRDF + finalReflection) * lightIntensity * nDotL;
 
