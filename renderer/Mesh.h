@@ -8,6 +8,7 @@
 #include "Misc/BoundingBox.h"
 
 struct aiMaterial; //I need to forward declare aiMaterial here for some reason
+class BoundingBox;
 
 class Mesh {
 public:

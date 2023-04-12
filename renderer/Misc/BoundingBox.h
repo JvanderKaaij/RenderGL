@@ -11,7 +11,9 @@
 
 class BoundingBox{
 public:
-    void FromAssimpMesh(aiMesh mesh);
+    BoundingBox();
+    ~BoundingBox();
+    void FromAssimpMesh(const aiMesh& mesh);
     float minX = std::numeric_limits<float>::max();
     float minY = std::numeric_limits<float>::max();
     float minZ = std::numeric_limits<float>::max();
@@ -24,21 +26,5 @@ public:
     glm::vec3 extents;
 };
 
-void BoundingBox::FromAssimpMesh(aiMesh mesh) {
-
-    for (int i = 0; i < mesh.mNumVertices; i++)
-    {
-        if (mesh.mVertices[i].x < minX) minX = mesh.mVertices[i].x;
-        if (mesh.mVertices[i].y < minY) minY = mesh.mVertices[i].y;
-        if (mesh.mVertices[i].z < minZ) minZ = mesh.mVertices[i].z;
-        if (mesh.mVertices[i].x > maxX) maxX = mesh.mVertices[i].x;
-        if (mesh.mVertices[i].y > maxY) maxY = mesh.mVertices[i].y;
-        if (mesh.mVertices[i].z > maxZ) maxZ = mesh.mVertices[i].z;
-    }
-   minPoint = glm::vec3(minX, minY, minZ);
-   maxPoint = glm::vec3(maxX, maxY, maxZ);
-   center = (minPoint + maxPoint) / 2.0f;
-   extents = (maxPoint - minPoint) / 2.0f;
-}
-
 #endif //RENDERGL_BOUNDINGBOX_H
+
