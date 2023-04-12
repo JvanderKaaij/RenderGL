@@ -9,6 +9,7 @@
 #include "SceneUniformBlock.h"
 #include "Camera.h"
 #include "Lights/PointLight.h"
+#include "GameObject.h"
 
 class Scene {
 public:
@@ -20,6 +21,8 @@ public:
     SceneUniformBlock* SetSceneUniforms();
     SceneUniformBlock* sceneUniforms;
     unsigned int scene_ubo_id;
+    std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
+    GameObject* CheckObjectSelection();
 
 private:
     static glm::mat4 LightProjection;

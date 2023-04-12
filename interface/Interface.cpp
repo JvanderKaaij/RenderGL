@@ -33,14 +33,12 @@ float lastTime = 0.0f;
 FrameBuffer* fb;
 DepthFrameBuffer* directional_light_shadow_map;
 
-std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
 std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
 
 Scene scene = Scene();
 InputInterface* inputInterface;
 
-GameObject* teapot;
-
+bool blockMouseMove;
 bool rotateTool;
 bool translateTool = true;
 
@@ -85,7 +83,7 @@ void drawFrameBuffer(FrameBuffer* buffer){
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for(auto gObj : backBufferObjects){
+    for(auto gObj : scene.backBufferObjects){
         gObj->Draw(scene.sceneUniforms);
     }
 }
@@ -94,7 +92,7 @@ void drawBackBuffer(){
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,width,height);
 
-    for(auto gObj : backBufferObjects){
+    for(auto gObj : scene.backBufferObjects){
         gObj->Draw(scene.sceneUniforms);
     }
 }
@@ -106,7 +104,7 @@ void drawShadowBuffer(){
     glViewport(0, 0, directional_light_shadow_map->texture->width, directional_light_shadow_map->texture->width);
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    for(auto gObj : backBufferObjects){
+    for(auto gObj : scene.backBufferObjects){
         if(gObj->material->castShadow){
             gObj->DrawDepth(scene.sceneUniforms);
         }
@@ -134,13 +132,12 @@ void drawUI(){
     ImGui::SetNextWindowSize(screenSize);
     ImGui::SetNextWindowPos(ImVec2(0,0));
 
-    ImGui::Begin("Hello, teapot!", nullptr, ImGuiWindowFlags_NoBackground);
+    ImGui::Begin("Hello, teapot!", nullptr, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoCollapse);
 
     ImGuizmo::SetOrthographic(false); // Set the projection matrix to perspective
     ImGuizmo::SetDrawlist(); // Setup draw list for rendering
     ImGuizmo::Enable(true);
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(),ImGui::GetWindowHeight());
-//    ImGuizmo::DrawGrid(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), glm::value_ptr(glm::mat4(1.0f)), 100.f);
     if(translateTool){
         ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(scene.directionalLight.transform.matrix));
     }
@@ -148,12 +145,9 @@ void drawUI(){
         ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, glm::value_ptr(scene.directionalLight.transform.matrix));
     }
 
-    if(ImGuizmo::IsUsing()){
-    }
+    blockMouseMove = ImGuizmo::IsUsing();
     scene.directionalLight.Update();
 
-
-    ImGui::Text("Hello, teapot!");
     if(ImGui::Button("Translate")){
         rotateTool = false;
         translateTool = true;
@@ -191,14 +185,11 @@ void draw(){
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
 
-    ImGuiIO& io = ImGui::GetIO();
-
-    if (io.WantCaptureMouse) {
+    if (blockMouseMove) {
         // Scroll event should be handled by Dear ImGui, not OpenGL
         return;
     }
     inputInterface->Update(window);
-
 
 }
 
@@ -338,7 +329,7 @@ int init() {
         helmet->material = helmetMaterials[i];
         helmet->depthMaterial = depthMat;//this is the material used in the shadow depth pass
         helmet->material->shadowMapID = directional_light_shadow_map->texture->textureID;
-        backBufferObjects.push_back(helmet);
+        scene.backBufferObjects.push_back(helmet);
     }
 
     //LightBulb Game Object
@@ -352,7 +343,7 @@ int init() {
 
     scene.directionalLight.gizmoObjTransform = &lightBulb->transform;
 
-    backBufferObjects.push_back(lightBulb);
+    scene.backBufferObjects.push_back(lightBulb);
 
     //Skybox Game Object
     auto* cube = initMesh("../assets/cube.obj");
@@ -381,7 +372,7 @@ int init() {
     debug->material = shadowMapTextureMat;
     debug->material->renderedTextID = directional_light_shadow_map->texture->textureID;
     debug->depthMaterial = depthMat;
-    backBufferObjects.push_back(debug);
+    scene.backBufferObjects.push_back(debug);
 
     //Render Texture Debug
     auto* renderTextureMesh = initMesh("../assets/plane.obj");
@@ -392,7 +383,7 @@ int init() {
     renderTextureObj->material = renderTextureMat;
     renderTextureObj->material->renderedTextID = fb->texture->textureID;
     renderTextureObj->depthMaterial = depthMat;
-    backBufferObjects.push_back(renderTextureObj);
+    scene.backBufferObjects.push_back(renderTextureObj);
 
     scene.camera.SetCameraPos(glm::vec3(0., -2., 60.));
 

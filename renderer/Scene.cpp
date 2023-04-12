@@ -25,3 +25,7 @@ SceneUniformBlock* Scene::SetSceneUniforms(){
 
     return this->sceneUniforms;
 }
+
+GameObject* Scene::CheckObjectSelection(){
+    
+}
