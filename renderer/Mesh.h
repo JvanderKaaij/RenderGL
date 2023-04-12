@@ -5,6 +5,7 @@
 
 #include <vector>
 #include "Materials/Material.h"
+#include "Misc/BoundingBox.h"
 
 struct aiMaterial; //I need to forward declare aiMaterial here for some reason
 
@@ -18,6 +19,9 @@ public:
     std::vector<float> Normals;
     std::vector<float> TextureCoords;
     std::vector<unsigned int> Indices;
+
+    BoundingBox* boundingBox;
+
     unsigned int vaoID;
 
     GLuint vertexBuffer;

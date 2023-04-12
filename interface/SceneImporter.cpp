@@ -24,6 +24,9 @@ Mesh* SceneImporter::ParseMesh(const aiMesh& mesh) {
     Mesh* result_mesh = new Mesh();
     std::cout << "Number of Vertices: " << mesh.mNumVertices << std::endl;
 
+    result_mesh->boundingBox = new BoundingBox();
+    result_mesh->boundingBox->FromAssimpMesh(mesh);
+
     for(unsigned int j = 0; j < mesh.mNumVertices; j++) {
         // Extract vertex position, normal, and texture coordinates
         result_mesh->Vertices.push_back(mesh.mVertices[j].x);

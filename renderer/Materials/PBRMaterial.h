@@ -32,7 +32,7 @@ public:
         glUniform1f(light_intensity_location, this->light_intensity);
 
         GLuint is_metal_location = glGetUniformLocation(this->programID, "isMetal");
-        glUniform1i(is_metal_location, true);
+        glUniform1i(is_metal_location, this->is_metal);
 
         GLuint color_location = glGetUniformLocation(this->programID, "color");
         glUniform3fv(color_location, 1, glm::value_ptr(this->color));

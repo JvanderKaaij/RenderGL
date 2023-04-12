@@ -6,13 +6,15 @@
 
 class GameObject {
 public:
-    Mesh* mesh;
     Material* material;
     Material* depthMaterial;
     Transform transform;
     
+    void SetMesh(Mesh* _mesh);
     void Draw(SceneUniformBlock* sceneUniforms);
     void DrawDepth(SceneUniformBlock* sceneUniforms);
+private:
+    Mesh* mesh;
 };
 
 void GameObject::Draw(SceneUniformBlock* sceneUniforms){
@@ -23,6 +25,10 @@ void GameObject::Draw(SceneUniformBlock* sceneUniforms){
 void GameObject::DrawDepth(SceneUniformBlock* sceneUniforms){
     this->depthMaterial->Draw(this->transform, sceneUniforms);
     this->mesh->Draw();
+}
+
+void GameObject::SetMesh(Mesh *_mesh) {
+    mesh = _mesh;
 }
 
 #endif //RENDERGL_GAMEOBJECT_H

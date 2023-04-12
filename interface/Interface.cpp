@@ -68,7 +68,6 @@ Mesh* initMesh(const std::string& path){
 
 GameObject* initGameObject(){
     auto* go = new GameObject();
-//    go->transform.position = glm::linearRand(glm::vec3(-50), glm::vec3(50));
     return go;
 }
 
@@ -293,7 +292,7 @@ int init() {
     helmetPBRMaterial->cubemapID = skyboxTexture->textureID;
     helmetPBRMaterial->roughness = 0.1f;
     helmetPBRMaterial->light_intensity = 1.0f;
-    helmetPBRMaterial->is_metal = false;
+    helmetPBRMaterial->is_metal = true;
     helmetPBRMaterial->color = glm::vec3(1.0, 1.0, 1.0);
 
     //HELMET FACE MATERIAL PBR
@@ -307,7 +306,7 @@ int init() {
     helmetFacePBRMaterial->cubemapID = skyboxTexture->textureID;
     helmetFacePBRMaterial->roughness = 0.1f;
     helmetFacePBRMaterial->light_intensity = 1.0f;
-    helmetFacePBRMaterial->is_metal = false;
+    helmetFacePBRMaterial->is_metal = true;
     helmetFacePBRMaterial->color = glm::vec3(1.0, 1.0, 1.0);
 
     //HELMET MATERIAL PBR
@@ -321,7 +320,7 @@ int init() {
     helmetNeckPBRMaterial->cubemapID = skyboxTexture->textureID;
     helmetNeckPBRMaterial->roughness = 0.1f;
     helmetNeckPBRMaterial->light_intensity = 1.0f;
-    helmetNeckPBRMaterial->is_metal = false;
+    helmetNeckPBRMaterial->is_metal = true;
     helmetNeckPBRMaterial->color = glm::vec3(1.0, 1.0, 1.0);
 
     std::vector<PBRMaterial*> helmetMaterials;
@@ -335,7 +334,7 @@ int init() {
     auto* helmetS = new SceneImporter("../assets/salletHelmet/SalletHelmet.fbx");
     for(unsigned int i=0;i<helmetS->meshCollection.size();i++){
         auto* helmet = initGameObject();
-        helmet->mesh = helmetS->meshCollection[i];
+        helmet->SetMesh(helmetS->meshCollection[i]);
         helmet->material = helmetMaterials[i];
         helmet->depthMaterial = depthMat;//this is the material used in the shadow depth pass
         helmet->material->shadowMapID = directional_light_shadow_map->texture->textureID;
@@ -346,7 +345,7 @@ int init() {
     auto* lightBulbMesh = initMesh("../assets/lightbulb.obj");
     auto* lightBulb = initGameObject();
 
-    lightBulb->mesh = lightBulbMesh;
+    lightBulb->SetMesh(lightBulbMesh);
     lightBulb->material = gizmoMat;
     lightBulb->depthMaterial = depthMat;//this is the material used in the shadow depth pass
     lightBulb->material->shadowMapID = directional_light_shadow_map->texture->textureID;
@@ -358,8 +357,8 @@ int init() {
     //Skybox Game Object
     auto* cube = initMesh("../assets/cube.obj");
     auto* skybox = initGameObject();
+    skybox->SetMesh(cube);
     skybox->material = skyboxMat;
-    skybox->mesh = cube;
     skyboxBufferObjects.push_back(skybox);
 
     //Floor Game Object
@@ -378,7 +377,7 @@ int init() {
     auto* debug = initGameObject();
     debug->transform.AddPosition(glm::vec3(40.0f,0.0f, 0.0f));
     debug->transform.AddRotation(glm::vec3(M_PI / 2.0f, 0.0f, 0.0f));
-    debug->mesh = debugMesh;
+    debug->SetMesh(debugMesh);
     debug->material = shadowMapTextureMat;
     debug->material->renderedTextID = directional_light_shadow_map->texture->textureID;
     debug->depthMaterial = depthMat;
@@ -389,7 +388,7 @@ int init() {
     auto* renderTextureObj = initGameObject();
     renderTextureObj->transform.AddPosition(glm::vec3(80.0f, 0.0f, 0.0f));
     renderTextureObj->transform.AddRotation(glm::vec3(M_PI / 2.0f, 0.0f, 0.0f));
-    renderTextureObj->mesh = renderTextureMesh;
+    renderTextureObj->SetMesh(renderTextureMesh);
     renderTextureObj->material = renderTextureMat;
     renderTextureObj->material->renderedTextID = fb->texture->textureID;
     renderTextureObj->depthMaterial = depthMat;
