@@ -34,6 +34,15 @@ void InputInterface::OnCursorPosition(glm::vec2 position)
         float deltaMouseX = (position.x - xMousePos) * 0.004f;
         float deltaMouseY = (position.y - yMousePos) * 0.004f;
         m_scene->camera.UpdateCameraDirection(deltaMouseX, deltaMouseY);
+        GameObject* selection;
+
+        selection = m_scene->CheckObjectSelection(position);
+
+        if(selection){
+            m_scene->selectedTransform = &selection->transform;
+            std::cout << "INTERSECTOR! " << std::endl;
+        }
+
     }
     xMousePos = position.x;
     yMousePos = position.y;

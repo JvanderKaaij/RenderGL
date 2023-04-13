@@ -18,6 +18,10 @@ struct Transform{
         return this->position - glm::vec3(m[2][0], m[2][1], m[2][2]);
     }
 
+    glm::vec3 GetPosition(){
+        return glm::vec3(this->matrix[3][0],this->matrix[3][1],this->matrix[3][2]);
+    }
+
     void SetPosition(glm::vec3 pos){
         position = pos;
         matrix = glm::translate(matrix, position);

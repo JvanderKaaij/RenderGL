@@ -13,3 +13,7 @@ void GameObject::DrawDepth(SceneUniformBlock* sceneUniforms){
 void GameObject::SetMesh(Mesh *_mesh) {
     mesh = _mesh;
 }
+
+Mesh* GameObject::GetMesh() {
+    return mesh;
+}

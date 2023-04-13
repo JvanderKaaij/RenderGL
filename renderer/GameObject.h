@@ -12,6 +12,7 @@ public:
     Transform transform;
     
     void SetMesh(Mesh* _mesh);
+    Mesh* GetMesh();
     void Draw(SceneUniformBlock* sceneUniforms);
     void DrawDepth(SceneUniformBlock* sceneUniforms);
 private:

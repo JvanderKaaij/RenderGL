@@ -9,7 +9,6 @@
 #include "../renderer/Materials/Material.h"
 #include "../renderer/Materials/StandardMaterial.h"
 #include "../renderer/Materials/RenderMaterial.h"
-#include "../renderer/GameObject.h"
 #include "../renderer/Materials/SkyboxMaterial.h"
 #include "../renderer/Materials/DepthMaterial.h"
 #include "../renderer/Buffers/FrameBuffer.h"
@@ -24,8 +23,6 @@
 
 GLFWwindow* window;
 static bool throw_exit = false;
-int width = 1024;
-int height = 768;
 
 float deltaTime = 0.0f;
 float lastTime = 0.0f;
@@ -90,7 +87,7 @@ void drawFrameBuffer(FrameBuffer* buffer){
 
 void drawBackBuffer(){
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0,0,width,height);
+    glViewport(0,0,scene.screenWidth,scene.screenHeight);
 
     for(auto gObj : scene.backBufferObjects){
         gObj->Draw(scene.sceneUniforms);
@@ -139,10 +136,10 @@ void drawUI(){
     ImGuizmo::Enable(true);
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(),ImGui::GetWindowHeight());
     if(translateTool){
-        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(scene.directionalLight.transform.matrix));
+        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(scene.selectedTransform->matrix));
     }
     if(rotateTool){
-        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, glm::value_ptr(scene.directionalLight.transform.matrix));
+        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, glm::value_ptr(scene.selectedTransform->matrix));
     }
 
     blockMouseMove = ImGuizmo::IsUsing();
@@ -204,7 +201,7 @@ int init() {
     if (!glfwInit())
         return -1;
 
-    window = glfwCreateWindow(width, height, "Hello Teapot", NULL, NULL);
+    window = glfwCreateWindow(scene.screenWidth, scene.screenHeight, "Hello Teapot", NULL, NULL);
 
     if (!window)
     {
