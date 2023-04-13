@@ -13,12 +13,9 @@
 #include "../renderer/Materials/DepthMaterial.h"
 #include "../renderer/Buffers/FrameBuffer.h"
 #include "../renderer/Buffers/DepthFrameBuffer.h"
-#include "imgui.h"
-#include "ImGuizmo.h"
-#include "../libraries/imgui/backends/imgui_impl_glfw.h"
-#include "../libraries/imgui/backends/imgui_impl_opengl3.h"
 #include "../renderer/Materials/PBRMaterial.h"
 #include "SceneImporter.h"
+#include "../gui/MainGUI.h"
 #include <glm/gtx/euler_angles.hpp>
 
 GLFWwindow* window;
@@ -35,9 +32,7 @@ std::vector<GameObject*> skyboxBufferObjects = std::vector<GameObject*>();
 Scene scene = Scene();
 InputInterface* inputInterface;
 
-bool blockMouseMove;
-bool rotateTool;
-bool translateTool = true;
+MainGUI mainGui = MainGUI();
 
 //This file should be the RenderInterface
 //And inputs should be registered at an over-arching engine class
@@ -117,48 +112,6 @@ void drawSkyboxBuffer(){
     glDepthMask(GL_TRUE);
 }
 
-void drawUI(){
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    ImGuizmo::BeginFrame();
-
-    ImGuiIO& io = ImGui::GetIO();
-    ImVec2 screenSize = ImVec2(io.DisplaySize.x, io.DisplaySize.y);
-    ImGui::SetNextWindowSize(screenSize);
-    ImGui::SetNextWindowPos(ImVec2(0,0));
-
-    ImGui::Begin("Hello, teapot!", nullptr, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoCollapse);
-
-    ImGuizmo::SetOrthographic(false); // Set the projection matrix to perspective
-    ImGuizmo::SetDrawlist(); // Setup draw list for rendering
-    ImGuizmo::Enable(true);
-    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(),ImGui::GetWindowHeight());
-    if(translateTool){
-        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(scene.selectedTransform->matrix));
-    }
-    if(rotateTool){
-        ImGuizmo::Manipulate(glm::value_ptr(scene.camera.GetViewMatrix()), glm::value_ptr(scene.camera.GetProjectionMatrix()), ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, glm::value_ptr(scene.selectedTransform->matrix));
-    }
-
-    blockMouseMove = ImGuizmo::IsUsing();
-    scene.directionalLight.Update();
-
-    if(ImGui::Button("Translate")){
-        rotateTool = false;
-        translateTool = true;
-    }
-    if(ImGui::Button("Rotate")){
-        rotateTool = true;
-        translateTool = false;
-    }
-    ImGui::End();
-
-    // Render the ImGui elements to the screen
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
 
 void draw(){
     double currentTime = glfwGetTime();
@@ -177,12 +130,12 @@ void draw(){
     drawBackBuffer();
 
     //UI
-    drawUI();
+    mainGui.Draw(&scene);
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
 
-    if (blockMouseMove) {
+    if (mainGui.blockMouseMove) {
         // Scroll event should be handled by Dear ImGui, not OpenGL
         return;
     }
@@ -213,12 +166,7 @@ int init() {
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 450");
-    ImGui::StyleColorsDark();
+    mainGui.Init(window);
 
     //Needs to go after makeContextCurrent
     if(!gladLoadGL()){
@@ -392,16 +340,10 @@ int init() {
             glfwTerminate();
             return 0;
         }
-//        teapot->transform.position.x += 0.01f;
-
-//        teapot->transform.rotation.y += 0.05;
-//        floor->transform.rotation.y += 0.01;
         draw();
     }
 
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    mainGui.Close();
 
     glfwTerminate();
     return 0;
