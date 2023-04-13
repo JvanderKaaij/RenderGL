@@ -5,6 +5,7 @@
 #include <iostream>
 #include <functional>
 #include <map>
+#include <glad/glad.h>
 #include "GLFW/glfw3.h"
 #include "glm/ext.hpp"
 #include "../renderer/Scene.h"

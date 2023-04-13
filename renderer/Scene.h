@@ -22,7 +22,6 @@ public:
     SceneUniformBlock* sceneUniforms;
     unsigned int scene_ubo_id;
     std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
-    GameObject* CheckObjectSelection();
 
 private:
     static glm::mat4 LightProjection;

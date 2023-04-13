@@ -6,8 +6,10 @@
 #define RENDERGL_BOUNDINGBOX_H
 
 #include <limits>
+
 #include <assimp/mesh.h>
 #include "../Mesh.h"
+#include "glm/vec3.hpp"
 
 class BoundingBox{
 public:

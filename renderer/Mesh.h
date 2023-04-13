@@ -4,7 +4,8 @@
 #define RENDERGL_MESH_H
 
 #include <vector>
-#include "Materials/Material.h"
+#include <glad/glad.h>
+#include "GLFW/glfw3.h"
 #include "Misc/BoundingBox.h"
 
 class BoundingBox;
@@ -24,9 +25,9 @@ public:
 
     unsigned int vaoID;
 
-    GLuint vertexBuffer;
-    GLuint normalBuffer;
-    GLuint textureCoordBuffer;
+    unsigned int vertexBuffer;
+    unsigned int normalBuffer;
+    unsigned int textureCoordBuffer;
 
 };
 
