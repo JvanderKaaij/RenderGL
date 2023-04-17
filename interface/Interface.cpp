@@ -56,8 +56,8 @@ Mesh* initMesh(const std::string& path){
     return mesh;
 }
 
-GameObject* initGameObject(){
-    auto* go = new GameObject();
+GameObject* initGameObject(std::string name){
+    auto* go = new GameObject(name);
     return go;
 }
 
@@ -269,17 +269,19 @@ int init() {
     //Sallet Helmet
     auto* helmetS = new SceneImporter("../assets/salletHelmet/SalletHelmet.fbx");
     for(unsigned int i=0;i<helmetS->meshCollection.size();i++){
-        auto* helmet = initGameObject();
+        auto* helmet = initGameObject("Helmet_"+std::to_string(i));
         helmet->SetMesh(helmetS->meshCollection[i]);
         helmet->material = helmetMaterials[i];
         helmet->depthMaterial = depthMat;//this is the material used in the shadow depth pass
         helmet->material->shadowMapID = directional_light_shadow_map->texture->textureID;
         scene.backBufferObjects.push_back(helmet);
+        scene.selectedGameObject = helmet;
     }
+
 
     //LightBulb Game Object
     auto* lightBulbMesh = initMesh("../assets/lightbulb.obj");
-    auto* lightBulb = initGameObject();
+    auto* lightBulb = initGameObject("Lightbulb");
 
     lightBulb->SetMesh(lightBulbMesh);
     lightBulb->material = gizmoMat;
@@ -292,7 +294,7 @@ int init() {
 
     //Skybox Game Object
     auto* cube = initMesh("../assets/cube.obj");
-    auto* skybox = initGameObject();
+    auto* skybox = initGameObject("Skybox");
     skybox->SetMesh(cube);
     skybox->material = skyboxMat;
     skyboxBufferObjects.push_back(skybox);
@@ -310,7 +312,7 @@ int init() {
     auto* shadowMapTextureMat = new RenderMaterial("../shaders/lit.vert", "../shaders/unlit.frag");
 
     auto* debugMesh = initMesh("../assets/plane.obj");
-    auto* debug = initGameObject();
+    auto* debug = initGameObject("DebugObj");
     debug->transform.AddPosition(glm::vec3(40.0f,0.0f, 0.0f));
     debug->transform.AddRotation(glm::vec3(M_PI / 2.0f, 0.0f, 0.0f));
     debug->SetMesh(debugMesh);
@@ -321,7 +323,7 @@ int init() {
 
     //Render Texture Debug
     auto* renderTextureMesh = initMesh("../assets/plane.obj");
-    auto* renderTextureObj = initGameObject();
+    auto* renderTextureObj = initGameObject("RenderObj");
     renderTextureObj->transform.AddPosition(glm::vec3(80.0f, 0.0f, 0.0f));
     renderTextureObj->transform.AddRotation(glm::vec3(M_PI / 2.0f, 0.0f, 0.0f));
     renderTextureObj->SetMesh(renderTextureMesh);

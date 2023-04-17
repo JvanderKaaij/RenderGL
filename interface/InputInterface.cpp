@@ -39,8 +39,7 @@ void InputInterface::OnCursorPosition(glm::vec2 position)
         selection = m_scene->CheckObjectSelection(position);
 
         if(selection){
-            m_scene->selectedTransform = &selection->transform;
-            std::cout << "INTERSECTOR! " << std::endl;
+            m_scene->selectedGameObject = selection;
         }
 
     }
