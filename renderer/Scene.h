@@ -25,7 +25,7 @@ public:
     unsigned int scene_ubo_id;
     std::vector<GameObject*> backBufferObjects = std::vector<GameObject*>();
     GameObject* CheckObjectSelection(glm::vec2 screenPos);
-    Transform* selectedTransform;
+    GameObject* selectedGameObject;
 private:
     static glm::mat4 LightProjection;
     static glm::mat4 LightView;

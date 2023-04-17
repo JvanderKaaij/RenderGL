@@ -7,16 +7,18 @@
 
 class GameObject {
 public:
-    Material* material;
-    Material* depthMaterial;
+    std::string name;
+
+    Material* material{};
+    Material* depthMaterial{};
     Transform transform;
-    
+    GameObject(std::string name);
     void SetMesh(Mesh* _mesh);
     Mesh* GetMesh();
     void Draw(SceneUniformBlock* sceneUniforms);
     void DrawDepth(SceneUniformBlock* sceneUniforms);
 private:
-    Mesh* mesh;
+    Mesh* mesh{};
 };
 
 

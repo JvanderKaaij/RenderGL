@@ -19,12 +19,20 @@ void MainGUI::Draw(Scene* scene) {
     ImGuizmo::Enable(true);
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(),ImGui::GetWindowHeight());
     if(translateTool){
-        ImGuizmo::Manipulate(glm::value_ptr(scene->camera.GetViewMatrix()), glm::value_ptr(scene->camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(scene->selectedTransform->matrix));
+        ImGuizmo::Manipulate(glm::value_ptr(scene->camera.GetViewMatrix()), glm::value_ptr(scene->camera.GetProjectionMatrix()), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(scene->selectedGameObject->transform.matrix));
     }
     if(rotateTool){
-        ImGuizmo::Manipulate(glm::value_ptr(scene->camera.GetViewMatrix()), glm::value_ptr(scene->camera.GetProjectionMatrix()), ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, glm::value_ptr(scene->selectedTransform->matrix));
+        ImGuizmo::Manipulate(glm::value_ptr(scene->camera.GetViewMatrix()), glm::value_ptr(scene->camera.GetProjectionMatrix()), ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, glm::value_ptr(scene->selectedGameObject->transform.matrix));
     }
+    ImGui::Text(scene->selectedGameObject->name.c_str());
 
+    float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+    ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(scene->selectedGameObject->transform.matrix), matrixTranslation, matrixRotation, matrixScale);
+    ImGui::PushItemWidth(230);
+    ImGui::InputFloat3("Tr", matrixTranslation);
+    ImGui::InputFloat3("Rt", matrixRotation);
+    ImGui::InputFloat3("Sc", matrixScale);
+    ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, glm::value_ptr(scene->selectedGameObject->transform.matrix));
     blockMouseMove = ImGuizmo::IsUsing();
     scene->directionalLight.Update();
 

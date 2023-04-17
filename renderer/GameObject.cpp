@@ -1,5 +1,9 @@
 #include "GameObject.h"
 
+GameObject::GameObject(std::string _name) {
+    this->name = std::move(_name);
+}
+
 void GameObject::Draw(SceneUniformBlock* sceneUniforms){
     this->material->Draw(this->transform, sceneUniforms);
     this->mesh->Draw();

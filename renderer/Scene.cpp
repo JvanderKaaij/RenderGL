@@ -9,7 +9,6 @@ Scene::Scene() {
     this->directionalLight = DirectionalLight();
     this->directionalLight.transform.SetPosition(glm::vec3(0, 20, 0));
     this->directionalLight.transform.SetRotation(glm::vec3(0,0,0));
-    this->selectedTransform = &this->directionalLight.transform;
 }
 
 SceneUniformBlock* Scene::SetSceneUniforms(){
